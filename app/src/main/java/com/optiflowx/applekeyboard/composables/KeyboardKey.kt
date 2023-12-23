@@ -96,11 +96,9 @@ fun KeyboardKey(key: Key, buttonWidth: Dp) {
     if (key.id == "action") {
         LocalView.current.rootView.addOnLayoutChangeListener { view, _, _, _, _, _, _, _, _ ->
             view.isInLayout.let {
-//                Log.d("AppleKeyboardView", "isInLayout: $it")
                 if (it) {
                     action =
                         (ctx as IMEService).currentInputEditorInfo.imeOptions and EditorInfo.IME_MASK_ACTION
-//                    Log.d("Action:${key.id}", action.toString())
                     when (action) {
                         EditorInfo.IME_ACTION_DONE -> {
                             viewModel.actionButtonColor.value = colors.onSurface

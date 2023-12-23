@@ -2,17 +2,23 @@ package com.optiflowx.applekeyboard.models
 
 import android.content.Context
 import android.media.MediaPlayer
+import android.view.inputmethod.InputConnection.GET_TEXT_WITH_STYLES
 import androidx.compose.material.Colors
 import androidx.compose.ui.hapticfeedback.HapticFeedback
 import androidx.compose.ui.unit.IntOffset
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.optiflowx.applekeyboard.adapters.Key
+import com.optiflowx.applekeyboard.database.EmojisDatabase
+import com.optiflowx.applekeyboard.database.dao.RecentEmojiDatabaseDAO
+import com.optiflowx.applekeyboard.database.entities.EmojiData
 import com.optiflowx.applekeyboard.services.IMEService
 import com.optiflowx.applekeyboard.utils.KeyboardType
 import com.optiflowx.applekeyboard.utils.first5kWords
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import splitties.experimental.ExperimentalSplittiesApi
+import splitties.views.InputType
 import java.util.Locale
 
 
@@ -26,8 +32,9 @@ class KeyboardViewModel(screenWidth: Int, colors: Colors) : ViewModel() {
     var isCapsLock = MutableLiveData(false)
     var keyboardSize = MutableLiveData(IntOffset(screenWidth, 275 + 50))
     var wordsList = MutableLiveData(first5kWords)
-//    var appSettings = MutableLiveData(AppSettings())
-
+    var emojiDataDao: RecentEmojiDatabaseDAO? = null
+    var dataB: EmojisDatabase? = null
+    val isPhoneSymbol = MutableLiveData(false)
 
 
     private fun playBeep( m: MediaPlayer): Unit {
@@ -41,12 +48,27 @@ class KeyboardViewModel(screenWidth: Int, colors: Colors) : ViewModel() {
         }
     }
 
-    fun onEmojiClick(context: Context, emoji: String,scope: CoroutineScope) {
-        val connection = (context as IMEService).currentInputConnection
+    fun onEmojiClick(context: Context, emoji: String, scope: CoroutineScope) {
         scope.launch {
-//            dataStore.saveEmail(email)
-
+            val connection = (context as IMEService).currentInputConnection
             connection.commitText(emoji, emoji.length)
+
+
+            val data = emojiDataDao?.getEmojisById(emoji)
+            val all = emojiDataDao?.getAllEmojis()?.value
+
+            if(data != null && data.id == emoji) {
+                emojiDataDao?.delete(data).let {
+                    emojiDataDao?.insert(data)
+                }
+            }
+
+            if(data != null && all != null && all.size >= 12) {
+                val last: EmojiData = all.last()
+                emojiDataDao?.delete(last).let {
+                    emojiDataDao?.insert(EmojiData(id = emoji))
+                }
+            } else emojiDataDao?.insert(EmojiData(id = emoji))
         }
     }
 
@@ -64,9 +86,9 @@ class KeyboardViewModel(screenWidth: Int, colors: Colors) : ViewModel() {
             "action" -> ctx.sendDefaultEditorAction(false)
             
             "space" -> {
-                val textBeforeCursor = connection.getTextBeforeCursor(1, 0)
+                val textBeforeCursor = connection.getTextBeforeCursor(1, GET_TEXT_WITH_STYLES)
                 if (textBeforeCursor.toString() == " ") {
-                    connection.deleteSurroundingText(1, 67).let {
+                    connection.deleteSurroundingText(1, 0).let {
                         connection.commitText(". ", ". ".length)
                     }
                 } else connection.commitText(" ", " ".length)
@@ -84,6 +106,33 @@ class KeyboardViewModel(screenWidth: Int, colors: Colors) : ViewModel() {
         //Play Sound
 //        playBeep(m)
         //Handle HapticFeedback
+//        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+    }
+
+    fun onNumKeyClick(
+        haptic: HapticFeedback,
+        key: Key, ctx: Context
+    ) {
+        val connection = (ctx as IMEService).currentInputConnection
+
+        if(key.id != "shift") {
+            connection.commitText(key.id, key.id.length)
+        }
+
+        //Play Sound
+//        playBeep(m)
+        //Handle HapticFeedback
+//        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+    }
+
+    fun onPhoneSymbol(
+        haptic: HapticFeedback,
+        key: Key, ctx: Context
+    ) {
+        isPhoneSymbol.value = !(isPhoneSymbol.value)!!
+        //Play Sound
+//        playBeep(m)
+        // it is safe to cancel other vibrations currently taking place
 //        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
     }
 

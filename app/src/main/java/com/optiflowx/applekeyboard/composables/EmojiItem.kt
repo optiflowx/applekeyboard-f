@@ -17,7 +17,7 @@ import com.optiflowx.applekeyboard.ui.iosEmojiFontFamily
 @Composable
 fun EmojiItem(
     emoji: String,
-    viewModel: KeyboardViewModel,
+    viewModel: KeyboardViewModel
 ) {
     // context
     val context = LocalContext.current
@@ -32,9 +32,7 @@ fun EmojiItem(
         modifier = Modifier
             .padding(5.dp)
             .clickable(
-                onClick = {
-                    viewModel.onEmojiClick(context, emoji, scope)
-                },
+                onClick = {viewModel.onEmojiClick(context, emoji, scope)},
             ),
     )
 }

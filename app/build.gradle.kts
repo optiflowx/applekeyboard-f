@@ -1,7 +1,9 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
-    kotlin("plugin.serialization")
+//    id ("dagger.hilt.android.plugin")
+//    kotlin("plugin.serialization")
+    id("com.google.devtools.ksp")
 }
 
 val composeVersion = "1.5.3"
@@ -34,6 +36,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("debug")
         }
     }
     compileOptions {
@@ -58,6 +61,7 @@ android {
 
 dependencies {
 //    implementation ("com.github.dcendents:android-maven-gradle-plugin:2.1")
+    androidTestImplementation("androidx.test:runner:1.5.2")
 
     implementation ("org.jetbrains.kotlin:kotlin-stdlib:1.9.21")
     implementation ("androidx.appcompat:appcompat:1.6.1")
@@ -71,7 +75,10 @@ dependencies {
     implementation ("androidx.compose.runtime:runtime-livedata:$composeVersion")
 
     //Activity Compose
-    implementation ("androidx.activity:activity-compose:1.8.1")
+    implementation ("androidx.activity:activity-compose:1.8.2")
+
+    //Ui Controller
+    implementation("com.google.accompanist:accompanist-systemuicontroller:0.32.0")
 
     implementation ("androidx.core:core-ktx:1.12.0")
     //    implementation("io.coil-kt:coil-compose:2.5.0")
@@ -110,12 +117,24 @@ dependencies {
 
     //Local Storage
     implementation("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.7")
-//    implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2"
+//    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2")
+
+    //Gson
+    implementation ("com.google.code.gson:gson:2.10.1")
 
     //Room database
     implementation("androidx.room:room-runtime:$roomVersion")
-    annotationProcessor("androidx.room:room-compiler:$roomVersion")
+//    annotationProcessor("androidx.room:room-compiler:$roomVersion")
+    // To use Kotlin annotation processing tool (kapt)
+//    kapt("androidx.room:room-compiler:$roomVersion")
+    // To use Kotlin Symbol Processing (KSP)
+    ksp("androidx.room:room-compiler:$roomVersion")
 
     // optional - Kotlin Extensions and Coroutines support for Room
     implementation("androidx.room:room-ktx:$roomVersion")
+
+    // Dagger Hilt
+//    implementation ("com.google.dagger:hilt-android:2.48")
+//    ksp("com.google.dagger:hilt-android-compiler:2.48")
+//    implementation ("androidx.hilt:hilt-navigation-compose:1.1.0")
 }

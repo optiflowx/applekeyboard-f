@@ -1,7 +1,5 @@
 package com.optiflowx.applekeyboard.views
 
-import android.content.Context
-import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
@@ -16,9 +14,11 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
@@ -26,14 +26,14 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.room.Room
 import com.optiflowx.applekeyboard.composables.EmojiItem
+import com.optiflowx.applekeyboard.database.EmojisDatabase
 import com.optiflowx.applekeyboard.models.KeyboardViewModel
 import com.optiflowx.applekeyboard.ui.mediumFontFamily
 import com.optiflowx.applekeyboard.utils.emojiData
 import io.github.alexzhirkevich.cupertino.theme.CupertinoColors
 import io.github.alexzhirkevich.cupertino.theme.systemGray
-import kotlinx.collections.immutable.PersistentList
-import kotlinx.collections.immutable.persistentListOf
 
 @Preview
 @OptIn(ExperimentalFoundationApi::class)
@@ -41,6 +41,7 @@ import kotlinx.collections.immutable.persistentListOf
 fun EmojiKeyboardView() {
     val colors = MaterialTheme.colors
     val screenWidth = LocalConfiguration.current.screenWidthDp
+    val context = LocalContext.current
 
     val viewModel = viewModel<KeyboardViewModel>(
         factory = object : ViewModelProvider.Factory {
@@ -50,10 +51,18 @@ fun EmojiKeyboardView() {
         }
     )
 
-//    val frequentEmojis = viewModel.appSettings.value?.frequentlyUsedEmojis!!
+    if(viewModel.dataB == null) {
+        viewModel.dataB = Room.inMemoryDatabaseBuilder(context, EmojisDatabase::class.java)
+            .allowMainThreadQueries()
+            .build()
 
-    val emojiViewPager = arrayListOf<HashMap<String, PersistentList<String>>>(
-        hashMapOf("Frequently Used" to persistentListOf()),
+        viewModel.emojiDataDao = viewModel.dataB?.appDataDAO()
+    }
+
+    val frequentEmojis = viewModel.emojiDataDao?.getAllEmojis()?.observeAsState()?.value?.reversed()
+
+    val emojiViewPager = arrayListOf(
+        hashMapOf("Frequently Used" to listOf()),
         hashMapOf("Smileys & People" to emojiData.smilesAndPeople),
         hashMapOf("Animals & Nature" to emojiData.animalsAndNature),
         hashMapOf("Food & Drink" to emojiData.foodAndDrinks),
@@ -64,12 +73,7 @@ fun EmojiKeyboardView() {
         hashMapOf("Flags" to emojiData.flags),
     )
 
-    val pagerState = rememberPagerState(
-        pageCount = { emojiViewPager.size },
-        initialPage = 0,
-    )
-
-    Log.d("Emoji List Tracker", "Emoji List: $emojiViewPager")
+    val pagerState = rememberPagerState(pageCount = { emojiViewPager.size }, initialPage = 0)
 
 //    LaunchedEffect(Unit) {
 //        while (pagerState.currentPage < pagerState.pageCount - 1) {
@@ -79,7 +83,7 @@ fun EmojiKeyboardView() {
 //        }
 //    }
 
-    val freqViewPort = (screenWidth * 0.8f).dp
+    val freqViewPort = (screenWidth * 0.76f).dp
     val defaultViewPort = (screenWidth).dp
 
     Column {
@@ -99,13 +103,25 @@ fun EmojiKeyboardView() {
                         modifier = Modifier.padding(start = 15.dp, bottom = 3.dp)
                     )
                     Surface(
-                        modifier = Modifier.height(195.dp),
+                        modifier = Modifier.height(200.dp),
                         color = Color.Transparent
                     ) {
-                        LazyVerticalGrid(columns = GridCells.Fixed(6)) {
-                            emojis.forEach { emoji ->
-                                item("$page$emoji") {
-                                    EmojiItem(emoji, viewModel)
+                        if (page == 0 && frequentEmojis != null) {
+                            LazyVerticalGrid(columns = GridCells.Fixed(5)) {
+                                frequentEmojis.forEach { data ->
+                                    item("Key:$data") {
+                                        EmojiItem(data.id, viewModel)
+                                    }
+                                }
+                            }
+                        }
+
+                        if (page != 0) {
+                            LazyVerticalGrid(columns = GridCells.Fixed(6)) {
+                                emojis.forEach { emoji ->
+                                    item("$page$emoji") {
+                                        EmojiItem(emoji, viewModel)
+                                    }
                                 }
                             }
                         }

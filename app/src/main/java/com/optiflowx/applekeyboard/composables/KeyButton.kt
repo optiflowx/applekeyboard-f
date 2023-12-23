@@ -30,6 +30,7 @@ import androidx.constraintlayout.compose.Dimension
 fun KeyButton(
     onClick: () -> Unit,
     onDoubleClick: (() -> Unit)?,
+    elevation: Dp = 2.dp,
     color: Color,
     buttonWidth: Dp,
     id: String,
@@ -49,7 +50,7 @@ fun KeyButton(
     }
 
     Surface(
-        elevation = 3.dp,
+        elevation = elevation,
         modifier = Modifier
             .layoutId(id)
             .width(buttonWidth)

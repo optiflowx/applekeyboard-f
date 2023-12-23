@@ -89,7 +89,7 @@ fun SymbolAKeyboardView() {
     )
 
     val constraints = ConstraintSet {
-        val topGuideline = createGuidelineFromTop(18.dp)
+        val topGuideline = createGuidelineFromTop(10.dp)
 
         val firstRow = createRefFor('1')
         val secondRow = createRefFor('2')

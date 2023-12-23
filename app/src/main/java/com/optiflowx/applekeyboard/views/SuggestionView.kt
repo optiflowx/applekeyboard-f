@@ -1,7 +1,5 @@
 package com.optiflowx.applekeyboard.views
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,7 +15,6 @@ import androidx.constraintlayout.compose.ConstraintSet
 import com.optiflowx.applekeyboard.composables.Div
 import com.optiflowx.applekeyboard.composables.Suggestion
 
-@RequiresApi(Build.VERSION_CODES.R)
 @Composable
 fun SuggestionView() {
     val viewWidth = LocalConfiguration.current.screenWidthDp.dp

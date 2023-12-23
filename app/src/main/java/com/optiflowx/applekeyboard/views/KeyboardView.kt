@@ -1,21 +1,51 @@
 package com.optiflowx.applekeyboard.views
 
+import android.inputmethodservice.InputMethodService
+import android.util.Log
+import android.view.inputmethod.EditorInfo
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.compose.ui.input.InputMode
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalInputModeManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.LocalView
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.optiflowx.applekeyboard.models.KeyboardViewModel
+import com.optiflowx.applekeyboard.services.IMEService
 import com.optiflowx.applekeyboard.utils.KeyboardType
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.yield
+import splitties.experimental.ExperimentalSplittiesApi
+import splitties.views.InputType
 
+@OptIn(ExperimentalSplittiesApi::class, ExperimentalComposeUiApi::class)
 @Composable
 fun KeyboardView() {
     val width = LocalConfiguration.current.screenWidthDp
     val colors = MaterialTheme.colors
+    val context = LocalContext.current
+    val view = LocalView.current
     val viewModel = viewModel<KeyboardViewModel>(
         factory = object : ViewModelProvider.Factory {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
@@ -26,32 +56,49 @@ fun KeyboardView() {
 
     val keyboardType = viewModel.keyboardType.observeAsState()
 
+    LaunchedEffect(Unit) {
+        while (true) {
+            val editor = (context as IMEService).currentInputEditorInfo
+            when (editor.inputType and EditorInfo.IME_MASK_ACTION) {
+                InputType.number.value ->
+                    viewModel.keyboardType.value = KeyboardType.Number
+
+                InputType.phone.value ->
+                    viewModel.keyboardType.value = KeyboardType.Phone
+
+                else -> viewModel.keyboardType.value = KeyboardType.Normal
+            }
+            yield()
+            delay(1000)
+        }
+    }
+
     Column {
         KeyboardTopView(keyboardType)
-        AnimatedContent(keyboardType, label = "KeyboardView") { type ->
+        AnimatedContent(
+            keyboardType,
+            label = "KeyboardView",
+            transitionSpec = {
+                (fadeIn(animationSpec = tween(180, delayMillis = 15)) +
+                        scaleIn(initialScale = 0.9f, animationSpec = tween(180, delayMillis = 15)))
+                    .togetherWith(fadeOut(animationSpec = tween(15)))
+            },
+        ) { type ->
             when (type.value ?: KeyboardType.Normal) {
-                KeyboardType.Normal -> {
-                    NormalKeyboardView()
-                }
+                KeyboardType.Normal -> NormalKeyboardView()
 
-                KeyboardType.Symbol -> {
-                    SymbolAKeyboardView()
-                }
+                KeyboardType.Symbol -> SymbolAKeyboardView()
 
-                KeyboardType.Number -> {
-                    NumberKeyboardView()
-                }
+                KeyboardType.Number -> NumberKeyboardView()
 
-                KeyboardType.NumberSymbol -> {
-                    NumberSymbolKeyboardView()
-                }
+                KeyboardType.Phone -> PhoneNumberKeyboardView()
 
-                KeyboardType.Emoji -> {
-                    EmojiKeyboardView()
-                }
+                KeyboardType.Emoji -> EmojiKeyboardView()
             }
         }
-        KeyboardBottomView(viewModel)
+        if (keyboardType.value != KeyboardType.Number && keyboardType.value != KeyboardType.Phone) {
+            KeyboardBottomView(viewModel)
+        }
     }
 }
 

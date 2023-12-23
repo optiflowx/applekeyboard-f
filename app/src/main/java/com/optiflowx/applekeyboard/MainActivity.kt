@@ -1,14 +1,13 @@
-@file:Suppress("UNCHECKED_CAST")
-
 package com.optiflowx.applekeyboard
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.provider.Settings
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -16,73 +15,68 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContent
+import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.systemGestures
 import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.optiflowx.applekeyboard.models.KeyboardViewModel
 import com.optiflowx.applekeyboard.ui.AppleKeyboardIMETheme
 import io.github.alexzhirkevich.cupertino.CupertinoScaffold
+import io.github.alexzhirkevich.cupertino.CupertinoTextField
 import io.github.alexzhirkevich.cupertino.CupertinoTopAppBar
 import io.github.alexzhirkevich.cupertino.ExperimentalCupertinoApi
+import io.github.alexzhirkevich.cupertino.Surface
 import io.github.alexzhirkevich.cupertino.icons.CupertinoIcons
 import io.github.alexzhirkevich.cupertino.icons.outlined.AppleLogo
+import io.github.alexzhirkevich.cupertino.theme.CupertinoColors
+import io.github.alexzhirkevich.cupertino.theme.CupertinoTheme
+import io.github.alexzhirkevich.cupertino.theme.systemGray
+import io.github.alexzhirkevich.cupertino.theme.systemGray3
+import io.github.alexzhirkevich.cupertino.theme.systemGray5
 import splitties.systemservices.inputMethodManager
 
+//@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
-
     @OptIn(ExperimentalCupertinoApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContent {
-            AppleKeyboardIMETheme {
-                val colors = MaterialTheme.colors
-                val screenWidth = LocalConfiguration.current.screenWidthDp
-
-                val viewModel = viewModel<KeyboardViewModel>(
-                    factory = object : ViewModelProvider.Factory {
-                        override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                            return KeyboardViewModel(screenWidth, colors) as T
-                        }
-                    }
-                )
-
-                LaunchedEffect(Unit) {
-//                    if (!appSettings.isFirstRun) {
-//                        startActivity(Intent(Settings.ACTION_INPUT_METHOD_SETTINGS))
-//                    }
-                }
-
+            CupertinoTheme {
                 CupertinoScaffold(
-                    containerColor = Color.Black,
-                    contentColor = Color.White,
+                    containerColor = CupertinoTheme.colorScheme.systemBackground,
+                    contentColor = CupertinoTheme.colorScheme.label,
+                    contentWindowInsets = WindowInsets.safeDrawing,
                     topBar = {
                         CupertinoTopAppBar(
-                            windowInsets = WindowInsets.safeContent,
                             isTransparent = true,
                             title = {
                                 Row {
                                     Icon(
                                         CupertinoIcons.Default.AppleLogo,
-                                        "logo",
-//                                        tint = Color.White
+                                        "logo"
                                     )
                                     Text(" Apple Keyboard")
                                 }
@@ -92,7 +86,12 @@ class MainActivity : AppCompatActivity() {
                 ) {
                     //Disclaimer Block
                     //Caution Block
-                    Options()
+                    Surface(
+                        color = Color.Transparent,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(top = 40.dp)
+                    ) { Options() }
                 }
                 isSystemInDarkTheme()
             }
@@ -105,9 +104,14 @@ fun Options() {
     Column(
         Modifier
             .fillMaxSize()
-            .windowInsetsPadding(WindowInsets.safeContent)) {
+            .windowInsetsPadding(WindowInsets.safeDrawing)
+    ) {
         val ctx = LocalContext.current
-        val (text, setValue) = remember { mutableStateOf(TextFieldValue("Try here")) }
+        val (text, setValue) = remember { mutableStateOf(TextFieldValue("")) }
+        val (text2, setValue2) = remember { mutableStateOf(TextFieldValue("")) }
+        val (text3, setValue3) = remember { mutableStateOf(TextFieldValue("")) }
+
+
         Button(modifier = Modifier.fillMaxWidth(), onClick = {
             ctx.startActivity(Intent(Settings.ACTION_INPUT_METHOD_SETTINGS))
         }) {
@@ -120,6 +124,62 @@ fun Options() {
             Text(text = "Select IME")
         }
         Spacer(modifier = Modifier.height(16.dp))
-        TextField(value = text, onValueChange = setValue, modifier = Modifier.fillMaxWidth())
+
+        Text(text = "Text", color = MaterialTheme.colors.primary)
+        Surface(
+            shape = RoundedCornerShape(12.dp),
+            color = (CupertinoColors.systemGray5(isSystemInDarkTheme()))
+        ) {
+
+            CupertinoTextField(
+                value = text,
+                onValueChange = setValue,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp),
+                keyboardOptions = KeyboardOptions(
+                    imeAction = ImeAction.Done,
+                    keyboardType = KeyboardType.Text
+                )
+            )
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+        Text(text = "Number", color = MaterialTheme.colors.primary)
+        Surface(
+            shape = RoundedCornerShape(12.dp),
+            color = (CupertinoColors.systemGray5(isSystemInDarkTheme()))
+        ) {
+
+            CupertinoTextField(
+                value = text2,
+                onValueChange = setValue2,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp),
+                keyboardOptions = KeyboardOptions(
+                    imeAction = ImeAction.Done,
+                    keyboardType = KeyboardType.Number
+                )
+            )
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+        Text(text = "Phone", color = MaterialTheme.colors.primary)
+        Surface(
+            shape = RoundedCornerShape(12.dp),
+            color = (CupertinoColors.systemGray5(isSystemInDarkTheme()))
+        ) {
+
+            CupertinoTextField(
+                value = text3,
+                onValueChange = setValue3,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp),
+                keyboardOptions = KeyboardOptions(
+                    imeAction = ImeAction.Done,
+                    keyboardType = KeyboardType.Phone
+                )
+            )
+        }
     }
 }

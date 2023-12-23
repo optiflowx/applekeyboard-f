@@ -60,13 +60,12 @@ fun NormalKeyboardView() {
     )
 
     val constraints = ConstraintSet {
-        val topGuideline = createGuidelineFromTop(18.dp)
-
         val firstRow = createRefFor('1')
         val secondRow = createRefFor('2')
         val thirdRow = createRefFor('3')
         val fourthRow = createRefFor('4')
 //        val fifthRow = createRefFor('5')
+        val topGuideline = createGuidelineFromTop(10.dp)
 
         constrain(firstRow) {
             top.linkTo(topGuideline)
@@ -382,9 +381,7 @@ fun NormalKeyboardView() {
                     .fillMaxWidth()
                     .padding(horizontal = 4.dp), 100
             ) {
-                for (key in row1Keys) {
-                    KeyboardKey(key, keyWidth)
-                }
+                for (key in row1Keys) KeyboardKey(key, keyWidth)
             }
 
         }
@@ -400,9 +397,7 @@ fun NormalKeyboardView() {
                     .fillMaxWidth()
                     .padding(horizontal = 20.dp), 100
             ) {
-                for (key in row2Keys) {
-                    KeyboardKey(key, keyWidth)
-                }
+                for (key in row2Keys) KeyboardKey(key, keyWidth)
             }
         }
         Box(

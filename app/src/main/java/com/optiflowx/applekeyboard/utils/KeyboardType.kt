@@ -5,5 +5,5 @@ enum class KeyboardType {
     Emoji,
     Symbol,
     Number,
-    NumberSymbol
+    Phone
 }
