@@ -13,6 +13,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -35,6 +36,7 @@ import com.optiflowx.applekeyboard.adapters.Key
 import com.optiflowx.applekeyboard.models.KeyboardViewModel
 import com.optiflowx.applekeyboard.services.IMEService
 import com.optiflowx.applekeyboard.ui.defaultFontFamily
+import kotlinx.coroutines.launch
 
 @Composable
 fun KeyboardKey(key: Key, buttonWidth: Dp) {
@@ -59,6 +61,7 @@ fun KeyboardKey(key: Key, buttonWidth: Dp) {
     val actionText = viewModel.actionButtonText.observeAsState().value
     val actionTextColor = viewModel.actionTextColor.observeAsState().value
     val isCapsLock = viewModel.isCapsLock.observeAsState().value
+    val scope = rememberCoroutineScope()
 
 
     // Declaring and Initializing
@@ -158,15 +161,23 @@ fun KeyboardKey(key: Key, buttonWidth: Dp) {
             painterResource(R.drawable.deletebackward)
         }).apply {
             KeyButton(
-                color = (if(isShift && isAllCaps!!) colors.surface else colors.secondaryVariant),
+                color = (if (isShift && isAllCaps!!) colors.surface else colors.secondaryVariant),
                 buttonWidth = buttonWidth,
                 id = key.id,
-                onClick = { viewModel.onIKeyClick(haptic, key, ctx) },
-                onDoubleClick = if (isShift) { { viewModel.onIDoubleClick(haptic, key) } } else null
+                onClick = {
+                    scope.launch {
+                        viewModel.onIKeyClick(haptic, key, ctx)
+                    }
+                },
+                onDoubleClick = {
+                    scope.launch {
+                        if (isShift) viewModel.onIDoubleClick(haptic, key)
+                    }
+                }
             ) {
                 Icon(
                     painter = this, "icon",
-                    tint = if(isAllCaps!! && !isErase) Color.Black else MaterialTheme.colors.primary,
+                    tint = if (isAllCaps!! && !isErase) Color.Black else MaterialTheme.colors.primary,
                     modifier = Modifier
                         .fillMaxWidth(0.55f)
                         .fillMaxHeight(0.48f),
@@ -182,7 +193,11 @@ fun KeyboardKey(key: Key, buttonWidth: Dp) {
                 color = this,
                 buttonWidth = buttonWidth,
                 id = key.id,
-                onClick = { viewModel.onTKeyClick(haptic, key, ctx) },
+                onClick = {
+                    scope.launch {
+                        viewModel.onTKeyClick(haptic, key, ctx)
+                    }
+                },
                 onDoubleClick = null
             ) {
                 Text(
@@ -192,7 +207,10 @@ fun KeyboardKey(key: Key, buttonWidth: Dp) {
                     fontWeight = FontWeight.Light,
                     textAlign = TextAlign.Center,
                     fontFamily = defaultFontFamily,
-                    style = TextStyle(if (key.id == "action") actionTextColor!! else MaterialTheme.colors.primary, TextUnit(20f, TextUnitType.Sp)),
+                    style = TextStyle(
+                        if (key.id == "action") actionTextColor!! else MaterialTheme.colors.primary,
+                        TextUnit(20f, TextUnitType.Sp)
+                    ),
                 )
             }
         }

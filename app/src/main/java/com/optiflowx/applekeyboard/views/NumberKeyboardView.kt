@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -24,7 +23,6 @@ import com.optiflowx.applekeyboard.composables.NumKeyboardKey
 fun NumberKeyboardView() {
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp.dp
-//    val screenWidth = 480.dp
     val row1Keys = listOf(
         Key("1", ""),
         Key("2", "ABC"),
@@ -44,7 +42,7 @@ fun NumberKeyboardView() {
     )
 
     val row4Keys = listOf(
-        Key("shift", ""),
+        Key(".", ""),
         Key("0", ""),
         Key("erase", ""),
     )
@@ -152,7 +150,6 @@ fun NumberKeyboardView() {
     }
 
     val secondRowConstraints = ConstraintSet {
-
         val four = createRefFor('4')
         val five = createRefFor('5')
         val six = createRefFor('6')
@@ -201,18 +198,18 @@ fun NumberKeyboardView() {
     }
 
     val fourthRowConstraints = ConstraintSet {
-        val shift = createRefFor("shift")
+        val period = createRefFor(".")
         val zero = createRefFor('0')
         val erase = createRefFor("erase")
 
-        constrain(shift) {
+        constrain(period) {
             start.linkTo(parent.start)
             end.linkTo(zero.start)
             height = Dimension.value(55.dp)
         }
 
         constrain(zero) {
-            start.linkTo(shift.end)
+            start.linkTo(period.end)
             end.linkTo(erase.start)
             height = Dimension.value(55.dp)
         }
@@ -262,7 +259,7 @@ fun NumberKeyboardView() {
                 100
             ) {
                 for (key in row3Keys) {
-                    if (key.id == "shift" || key.id == "erase") {
+                    if (key.id == "." || key.id == "erase") {
                         NumKeyboardKey(key, keyWidth)
                     } else {
                         NumKeyboardKey(key, keyWidth)

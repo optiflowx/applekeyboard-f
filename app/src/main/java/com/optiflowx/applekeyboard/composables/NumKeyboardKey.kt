@@ -1,6 +1,5 @@
 package com.optiflowx.applekeyboard.composables
 
-import android.view.inputmethod.EditorInfo
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -9,8 +8,6 @@ import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -33,7 +30,6 @@ import com.optiflowx.applekeyboard.R
 import com.optiflowx.applekeyboard.adapters.Key
 import com.optiflowx.applekeyboard.models.KeyboardViewModel
 import com.optiflowx.applekeyboard.ui.defaultFontFamily
-import com.optiflowx.applekeyboard.utils.KeyboardType
 import kotlinx.coroutines.launch
 
 @Composable
@@ -51,6 +47,7 @@ fun NumKeyboardKey(key: Key, buttonWidth: Dp) {
             }
         }
     )
+
 
     val isPeriod: Boolean = key.id == "."
     val isErase: Boolean = key.id == "erase"

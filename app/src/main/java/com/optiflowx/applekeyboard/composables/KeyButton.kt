@@ -1,6 +1,7 @@
 package com.optiflowx.applekeyboard.composables
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Indication
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
@@ -36,7 +37,6 @@ fun KeyButton(
     id: String,
     content: @Composable () -> Unit,
 ) {
-    val interactionSource = remember { MutableInteractionSource() }
 
     val constraints = ConstraintSet() {
         val view = createRefFor("content")
@@ -58,8 +58,6 @@ fun KeyButton(
                 onClick = onClick,
                 onDoubleClick = onDoubleClick,
                 role = Role.Button,
-                interactionSource = interactionSource,
-                indication = null,
             ),
         shape = RoundedCornerShape(6.dp),
         color = color,

@@ -13,6 +13,7 @@ import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import com.optiflowx.applekeyboard.models.KeyboardViewModel
 import com.optiflowx.applekeyboard.ui.iosEmojiFontFamily
+import kotlinx.coroutines.launch
 
 @Composable
 fun EmojiItem(
@@ -32,7 +33,11 @@ fun EmojiItem(
         modifier = Modifier
             .padding(5.dp)
             .clickable(
-                onClick = {viewModel.onEmojiClick(context, emoji, scope)},
+                onClick = {
+                    scope.launch {
+                        viewModel.onEmojiClick(context, emoji, scope)
+                    }
+                },
             ),
     )
 }

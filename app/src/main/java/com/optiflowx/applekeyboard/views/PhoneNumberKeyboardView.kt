@@ -5,9 +5,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.layoutId
@@ -40,8 +39,8 @@ fun PhoneNumberKeyboardView() {
         }
     )
 
-    val isPhoneSymbols = viewModel.isPhoneSymbol.value!!
-//    val screenWidth = 480.dp
+    val isPhoneSymbols = viewModel.isPhoneSymbol.observeAsState().value!!
+
     val row1Keys = listOf(
         Key("1", ""),
         Key("2", "ABC"),
@@ -55,9 +54,9 @@ fun PhoneNumberKeyboardView() {
     )
 
     val row2KeysB = listOf(
-        Key("4", "wait"),
+        Key("4", "pause"),
         Key("5", "JKL"),
-        Key("6", "pause"),
+        Key("6", "wait"),
     )
 
     val row3Keys = listOf(
@@ -67,14 +66,20 @@ fun PhoneNumberKeyboardView() {
     )
 
     val row3KeysB = listOf(
-        Key("*", "*"),
+        Key("7", "*"),
         Key("8", "TUV"),
-        Key("#", "#"),
+        Key("9", "#"),
     )
 
     val row4Keys = listOf(
-        Key("special", ""),
-        Key(if (isPhoneSymbols) "+" else "0", if (isPhoneSymbols) "+" else ""),
+        Key("switch", ""),
+        Key("0", ""),
+        Key("erase", ""),
+    )
+
+    val row4keysB = listOf(
+        Key("switch", ""),
+        Key("0", "+"),
         Key("erase", ""),
     )
 
@@ -182,9 +187,9 @@ fun PhoneNumberKeyboardView() {
 
     val secondRowConstraints = ConstraintSet {
 
-        val four = createRefFor((if (isPhoneSymbols) "pause" else '4'))
+        val four = createRefFor('4')
         val five = createRefFor('5')
-        val six = createRefFor((if (isPhoneSymbols) "wait" else '6'))
+        val six = createRefFor('6')
 
         constrain(four) {
             start.linkTo(parent.start)
@@ -206,9 +211,9 @@ fun PhoneNumberKeyboardView() {
     }
 
     val thirdRowConstraints = ConstraintSet {
-        val seven = createRefFor((if (isPhoneSymbols) "*" else '7'))
+        val seven = createRefFor('7')
         val eight = createRefFor('8')
-        val nine = createRefFor((if (isPhoneSymbols) "#" else '9'))
+        val nine = createRefFor('9')
 
         constrain(seven) {
             start.linkTo(parent.start)
@@ -230,18 +235,18 @@ fun PhoneNumberKeyboardView() {
     }
 
     val fourthRowConstraints = ConstraintSet {
-        val special = createRefFor("special")
-        val zero = createRefFor(if (isPhoneSymbols) "+" else "0")
+        val switch = createRefFor("switch")
+        val zero = createRefFor("0")
         val erase = createRefFor("erase")
 
-        constrain(special) {
+        constrain(switch) {
             start.linkTo(parent.start)
             end.linkTo(zero.start)
             height = Dimension.value(55.dp)
         }
 
         constrain(zero) {
-            start.linkTo(special.end)
+            start.linkTo(switch.end)
             end.linkTo(erase.start)
             height = Dimension.value(55.dp)
         }
@@ -275,9 +280,9 @@ fun PhoneNumberKeyboardView() {
                     .fillMaxWidth()
                     .padding(horizontal = 2.dp), 100
             ) {
-                for (key in (if (isPhoneSymbols) row2KeysB else row2Keys)) {
-                    PhoneNumKeyboardKey(key, keyWidth)
-                }
+                if (isPhoneSymbols) {
+                    for (key in row2KeysB) PhoneNumKeyboardKey(key, keyWidth)
+                } else for (key in row2Keys) PhoneNumKeyboardKey(key, keyWidth)
             }
         }
         Box(Modifier.layoutId('3')) {
@@ -289,9 +294,9 @@ fun PhoneNumberKeyboardView() {
                     .padding(horizontal = 2.dp),
                 100
             ) {
-                for (key in (if (isPhoneSymbols) row3KeysB else row3Keys)) {
-                    PhoneNumKeyboardKey(key, keyWidth)
-                }
+                if (isPhoneSymbols) {
+                    for (key in row3KeysB) PhoneNumKeyboardKey(key, keyWidth)
+                } else for (key in row3Keys) PhoneNumKeyboardKey(key, keyWidth)
             }
         }
         Box(Modifier.layoutId('4')) {
@@ -300,7 +305,11 @@ fun PhoneNumberKeyboardView() {
                 Modifier
                     .align(Alignment.Center)
                     .padding(horizontal = 2.dp), 100
-            ) { for (key in row4Keys) PhoneNumKeyboardKey(key, keyWidth) }
+            ) {
+                if (isPhoneSymbols) {
+                    for (key in row4keysB) PhoneNumKeyboardKey(key, keyWidth)
+                } else for (key in row4Keys) PhoneNumKeyboardKey(key, keyWidth)
+            }
         }
     }
 }

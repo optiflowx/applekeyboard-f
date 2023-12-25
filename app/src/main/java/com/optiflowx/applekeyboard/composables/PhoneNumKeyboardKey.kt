@@ -1,6 +1,5 @@
 package com.optiflowx.applekeyboard.composables
 
-import android.view.inputmethod.EditorInfo
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -9,8 +8,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -33,7 +31,6 @@ import com.optiflowx.applekeyboard.R
 import com.optiflowx.applekeyboard.adapters.Key
 import com.optiflowx.applekeyboard.models.KeyboardViewModel
 import com.optiflowx.applekeyboard.ui.defaultFontFamily
-import com.optiflowx.applekeyboard.utils.KeyboardType
 import kotlinx.coroutines.launch
 
 @Composable
@@ -51,29 +48,27 @@ fun PhoneNumKeyboardKey(key: Key, buttonWidth: Dp) {
             }
         }
     )
-    val type = viewModel.keyboardType.value
 
-    val isSpecial: Boolean = key.id == "special"
+    val isSwitch: Boolean = key.id == "switch"
     val isErase: Boolean = key.id == "erase"
-    val isPhone = type == KeyboardType.Phone
-    val isPhoneSymbols = viewModel.isPhoneSymbol.value!!
+    val isPhoneSymbols = viewModel.isPhoneSymbol.observeAsState().value!!
 
-    //Erase and Shift Keys
+    //Erase and Switch Keys
     KeyButton(
-        elevation = (if (isErase || isSpecial) 0.dp else 3.dp),
-        color = (if (isErase || isSpecial) Color.Transparent else colors.secondary),
+        elevation = (if (isErase || isSwitch) 0.dp else 3.dp),
+        color = (if (isErase || isSwitch) Color.Transparent else colors.secondary),
         buttonWidth = buttonWidth,
         id = key.id,
         onClick = {
             scope.launch {
                 if (isErase) viewModel.onIKeyClick(haptic, key, ctx)
-                else if (isPhone) viewModel.onPhoneSymbol(haptic, key, ctx)
+                else if (isSwitch) viewModel.onPhoneSymbol(haptic, key, ctx)
                 else viewModel.onNumKeyClick(haptic, key, ctx)
             }
         },
         onDoubleClick = null
     ) {
-        if ((isSpecial && isPhone) || isErase) {
+        if (isSwitch || isErase) {
             Icon(
                 painter = (if (isErase) painterResource(R.drawable.deletebackward)
                 else if (isPhoneSymbols) painterResource(R.drawable.num)
@@ -84,43 +79,48 @@ fun PhoneNumKeyboardKey(key: Key, buttonWidth: Dp) {
                     .fillMaxWidth(0.3f)
                     .fillMaxHeight(0.3f),
             )
-        } else if (!isSpecial) {
+        } else {
             Column(
                 verticalArrangement = Arrangement.Bottom,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(
-                    text = key.id,
-                    fontWeight = FontWeight.Light,
-                    textAlign = TextAlign.Center,
-                    fontFamily = defaultFontFamily,
-                    style = TextStyle(
-                        MaterialTheme.colors.primary,
-                        TextUnit(26f, TextUnitType.Sp)
-                    ),
-                )
-                Text(
-                    text = key.value,
-                    fontWeight = FontWeight.Light,
-                    textAlign = TextAlign.Center,
-                    fontFamily = defaultFontFamily,
-                    style = TextStyle(
-                        MaterialTheme.colors.primary,
-                        TextUnit(12f, TextUnitType.Sp)
-                    ),
-                )
+                if (key.value == "wait" || key.value == "pause"
+                    || key.value == "*" || key.value == "#"
+                    || key.value == "+"
+                ) {
+                    Text(
+                        text = key.value,
+                        fontWeight = FontWeight.Light,
+                        textAlign = TextAlign.Center,
+                        fontFamily = defaultFontFamily,
+                        style = TextStyle(
+                            MaterialTheme.colors.primary,
+                            TextUnit(26f, TextUnitType.Sp)
+                        ),
+                    )
+                } else {
+                    Text(
+                        text = key.id,
+                        fontWeight = FontWeight.Light,
+                        textAlign = TextAlign.Center,
+                        fontFamily = defaultFontFamily,
+                        style = TextStyle(
+                            MaterialTheme.colors.primary,
+                            TextUnit(26f, TextUnitType.Sp)
+                        ),
+                    )
+                    Text(
+                        text = key.value,
+                        fontWeight = FontWeight.Light,
+                        textAlign = TextAlign.Center,
+                        fontFamily = defaultFontFamily,
+                        style = TextStyle(
+                            MaterialTheme.colors.primary,
+                            TextUnit(12f, TextUnitType.Sp)
+                        ),
+                    )
+                }
             }
-        } else if (isPhoneSymbols && isPhone) {
-            Text(
-                text = key.id,
-                fontWeight = FontWeight.Light,
-                textAlign = TextAlign.Center,
-                fontFamily = defaultFontFamily,
-                style = TextStyle(
-                    MaterialTheme.colors.primary,
-                    TextUnit(12f, TextUnitType.Sp)
-                ),
-            )
         }
     }
 }

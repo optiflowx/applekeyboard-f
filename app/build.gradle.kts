@@ -63,6 +63,9 @@ dependencies {
 //    implementation ("com.github.dcendents:android-maven-gradle-plugin:2.1")
     androidTestImplementation("androidx.test:runner:1.5.2")
 
+    //Blur Kit
+    implementation("io.alterac.blurkit:blurkit:1.1.0")
+
     implementation ("org.jetbrains.kotlin:kotlin-stdlib:1.9.21")
     implementation ("androidx.appcompat:appcompat:1.6.1")
 

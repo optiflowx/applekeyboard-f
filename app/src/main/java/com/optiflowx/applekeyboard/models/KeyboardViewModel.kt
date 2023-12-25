@@ -6,6 +6,7 @@ import android.view.inputmethod.InputConnection.GET_TEXT_WITH_STYLES
 import androidx.compose.material.Colors
 import androidx.compose.ui.hapticfeedback.HapticFeedback
 import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.optiflowx.applekeyboard.adapters.Key
@@ -17,8 +18,6 @@ import com.optiflowx.applekeyboard.utils.KeyboardType
 import com.optiflowx.applekeyboard.utils.first5kWords
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import splitties.experimental.ExperimentalSplittiesApi
-import splitties.views.InputType
 import java.util.Locale
 
 
@@ -35,6 +34,7 @@ class KeyboardViewModel(screenWidth: Int, colors: Colors) : ViewModel() {
     var emojiDataDao: RecentEmojiDatabaseDAO? = null
     var dataB: EmojisDatabase? = null
     val isPhoneSymbol = MutableLiveData(false)
+    val bottomPaddingValue = MutableLiveData(0.dp)
 
 
     private fun playBeep( m: MediaPlayer): Unit {
@@ -100,7 +100,6 @@ class KeyboardViewModel(screenWidth: Int, colors: Colors) : ViewModel() {
                 } else key.value.lowercase(Locale.getDefault())), key.value.length
             )
         }
-
         //Handle Caps State
         if(isAllCaps.value == true && isCapsLock.value == false) isAllCaps.value = false
         //Play Sound
@@ -115,8 +114,13 @@ class KeyboardViewModel(screenWidth: Int, colors: Colors) : ViewModel() {
     ) {
         val connection = (ctx as IMEService).currentInputConnection
 
-        if(key.id != "shift") {
-            connection.commitText(key.id, key.id.length)
+        when (key.value) {
+            "*" -> connection.commitText(key.value, key.value.length)
+            "#" -> connection.commitText(key.value, key.value.length)
+            "+" -> connection.commitText(key.value, key.value.length)
+            "wait" -> connection.commitText(";", ";".length)
+            "pause" -> connection.commitText(".", ".".length)
+            else -> connection.commitText(key.id, key.id.length)
         }
 
         //Play Sound

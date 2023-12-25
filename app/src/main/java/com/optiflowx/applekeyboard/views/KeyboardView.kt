@@ -1,7 +1,5 @@
 package com.optiflowx.applekeyboard.views
 
-import android.inputmethodservice.InputMethodService
-import android.util.Log
 import android.view.inputmethod.EditorInfo
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.tween
@@ -13,23 +11,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.ExperimentalComposeUiApi
-import androidx.compose.ui.input.InputMode
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalInputModeManager
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.LocalView
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.optiflowx.applekeyboard.models.KeyboardViewModel
 import com.optiflowx.applekeyboard.services.IMEService
@@ -39,7 +27,7 @@ import kotlinx.coroutines.yield
 import splitties.experimental.ExperimentalSplittiesApi
 import splitties.views.InputType
 
-@OptIn(ExperimentalSplittiesApi::class, ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalSplittiesApi::class)
 @Composable
 fun KeyboardView() {
     val width = LocalConfiguration.current.screenWidthDp
@@ -55,6 +43,7 @@ fun KeyboardView() {
     )
 
     val keyboardType = viewModel.keyboardType.observeAsState()
+    val isNumSym = viewModel.isNumberSymbol.observeAsState().value!!
 
     LaunchedEffect(Unit) {
         while (true) {
@@ -66,7 +55,13 @@ fun KeyboardView() {
                 InputType.phone.value ->
                     viewModel.keyboardType.value = KeyboardType.Phone
 
-                else -> viewModel.keyboardType.value = KeyboardType.Normal
+                else -> {
+                    if (keyboardType.value != KeyboardType.Emoji) {
+                        if(keyboardType.value != KeyboardType.Symbol) {
+                            viewModel.keyboardType.value = KeyboardType.Normal
+                        }
+                    }
+                }
             }
             yield()
             delay(1000)
@@ -84,7 +79,7 @@ fun KeyboardView() {
                     .togetherWith(fadeOut(animationSpec = tween(15)))
             },
         ) { type ->
-            when (type.value ?: KeyboardType.Normal) {
+            when (type.value!!) {
                 KeyboardType.Normal -> NormalKeyboardView()
 
                 KeyboardType.Symbol -> SymbolAKeyboardView()
