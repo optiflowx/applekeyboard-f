@@ -2,10 +2,8 @@ package com.optiflowx.applekeyboard.services
 
 import android.os.Build
 import android.view.View
-import android.view.WindowManager
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
-import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
@@ -47,6 +45,7 @@ class IMEService : LifecycleInputMethodService(),
         val windowCompat = window?.window
 
         if (windowCompat != null) {
+//            BlurKit.init(this)
 //            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
 //                ResourcesCompat.getDrawable(resources, R.drawable.bg, null)?.let {
 //                    windowCompat.setBackgroundBlurRadius(20)

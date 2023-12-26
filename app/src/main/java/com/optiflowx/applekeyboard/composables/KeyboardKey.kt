@@ -13,13 +13,11 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -36,12 +34,11 @@ import com.optiflowx.applekeyboard.adapters.Key
 import com.optiflowx.applekeyboard.models.KeyboardViewModel
 import com.optiflowx.applekeyboard.services.IMEService
 import com.optiflowx.applekeyboard.ui.defaultFontFamily
-import kotlinx.coroutines.launch
 
 @Composable
 fun KeyboardKey(key: Key, buttonWidth: Dp) {
     val ctx = LocalContext.current
-    val haptic = LocalHapticFeedback.current
+    val view = LocalView.current
     var keyValue by remember { mutableStateOf(key.value) }
     var action by remember { mutableIntStateOf(((ctx as IMEService).currentInputEditorInfo.imeOptions and EditorInfo.IME_MASK_ACTION)) }
     val width = LocalConfiguration.current.screenWidthDp
@@ -61,30 +58,6 @@ fun KeyboardKey(key: Key, buttonWidth: Dp) {
     val actionText = viewModel.actionButtonText.observeAsState().value
     val actionTextColor = viewModel.actionTextColor.observeAsState().value
     val isCapsLock = viewModel.isCapsLock.observeAsState().value
-    val scope = rememberCoroutineScope()
-
-
-    // Declaring and Initializing
-//    val player = MediaPlayer.create(
-//        ctx, (when (key.id) {
-//            "action" -> {
-//                R.raw.ret
-//            }
-//
-//            "space" -> {
-//                R.raw.spacebar
-//            }
-//
-//            "erase" -> {
-//                R.raw.delete
-//            }
-//
-//            else -> {
-//                R.raw.standard
-//            }
-//        })
-//    )
-
 
     val isSymbols: Boolean = key.id == "symbol"
     val isShift: Boolean = key.id == "shift"
@@ -96,47 +69,49 @@ fun KeyboardKey(key: Key, buttonWidth: Dp) {
         }
     }
 
-    if (key.id == "action") {
-        LocalView.current.rootView.addOnLayoutChangeListener { view, _, _, _, _, _, _, _, _ ->
-            view.isInLayout.let {
-                if (it) {
-                    action =
-                        (ctx as IMEService).currentInputEditorInfo.imeOptions and EditorInfo.IME_MASK_ACTION
-                    when (action) {
-                        EditorInfo.IME_ACTION_DONE -> {
-                            viewModel.actionButtonColor.value = colors.onSurface
-                            viewModel.actionButtonText.value = "done"
-                            viewModel.actionTextColor.value = colors.primaryVariant
-                        }
+    LaunchedEffect(key.id) {
+        if (key.id == "action") {
+            view.rootView.addOnLayoutChangeListener { view, _, _, _, _, _, _, _, _ ->
+                view.isInLayout.let {
+                    if (it) {
+                        action =
+                            (ctx as IMEService).currentInputEditorInfo.imeOptions and EditorInfo.IME_MASK_ACTION
+                        when (action) {
+                            EditorInfo.IME_ACTION_DONE -> {
+                                viewModel.actionButtonColor.value = colors.onSurface
+                                viewModel.actionButtonText.value = "done"
+                                viewModel.actionTextColor.value = colors.primaryVariant
+                            }
 
-                        EditorInfo.IME_ACTION_GO -> {
-                            viewModel.actionButtonColor.value = colors.onSurface
-                            viewModel.actionButtonText.value = "go"
-                            viewModel.actionTextColor.value = colors.primaryVariant
-                        }
+                            EditorInfo.IME_ACTION_GO -> {
+                                viewModel.actionButtonColor.value = colors.onSurface
+                                viewModel.actionButtonText.value = "go"
+                                viewModel.actionTextColor.value = colors.primaryVariant
+                            }
 
-                        EditorInfo.IME_ACTION_SEARCH -> {
-                            viewModel.actionButtonColor.value = colors.onSurface
-                            viewModel.actionButtonText.value = "search"
-                            viewModel.actionTextColor.value = colors.primaryVariant
-                        }
+                            EditorInfo.IME_ACTION_SEARCH -> {
+                                viewModel.actionButtonColor.value = colors.onSurface
+                                viewModel.actionButtonText.value = "search"
+                                viewModel.actionTextColor.value = colors.primaryVariant
+                            }
 
-                        EditorInfo.IME_ACTION_NEXT -> {
-                            viewModel.actionButtonColor.value = colors.onSurface
-                            viewModel.actionButtonText.value = "next"
-                            viewModel.actionTextColor.value = colors.primaryVariant
-                        }
+                            EditorInfo.IME_ACTION_NEXT -> {
+                                viewModel.actionButtonColor.value = colors.onSurface
+                                viewModel.actionButtonText.value = "next"
+                                viewModel.actionTextColor.value = colors.primaryVariant
+                            }
 
-                        EditorInfo.IME_ACTION_SEND -> {
-                            viewModel.actionButtonColor.value = colors.onSurface
-                            viewModel.actionButtonText.value = "send"
-                            viewModel.actionTextColor.value = colors.primaryVariant
-                        }
+                            EditorInfo.IME_ACTION_SEND -> {
+                                viewModel.actionButtonColor.value = colors.onSurface
+                                viewModel.actionButtonText.value = "send"
+                                viewModel.actionTextColor.value = colors.primaryVariant
+                            }
 
-                        else -> {
-                            viewModel.actionButtonColor.value = colors.secondaryVariant
-                            viewModel.actionButtonText.value = "return"
-                            viewModel.actionTextColor.value = colors.primary
+                            else -> {
+                                viewModel.actionButtonColor.value = colors.secondaryVariant
+                                viewModel.actionButtonText.value = "return"
+                                viewModel.actionTextColor.value = colors.primary
+                            }
                         }
                     }
                 }
@@ -148,32 +123,22 @@ fun KeyboardKey(key: Key, buttonWidth: Dp) {
     if (isShift || isErase || isSymbols) {
         (if (isShift) {
             if (isCapsLock!!) painterResource(R.drawable.capslockfill)
-            else {
-                if (isAllCaps == true) {
-                    painterResource(R.drawable.shift_fill)
-                } else painterResource(R.drawable.shift)
-            }
+            else if (isAllCaps == true) {
+                painterResource(R.drawable.shift_fill)
+            } else painterResource(R.drawable.shift)
         } else if (isSymbols) {
             if (isNumberSymbol == true) {
                 painterResource(R.drawable.num)
             } else painterResource(R.drawable.sym)
-        } else {
-            painterResource(R.drawable.deletebackward)
-        }).apply {
+        } else painterResource(R.drawable.deletebackward)).apply {
             KeyButton(
                 color = (if (isShift && isAllCaps!!) colors.surface else colors.secondaryVariant),
                 buttonWidth = buttonWidth,
                 id = key.id,
                 onClick = {
-                    scope.launch {
-                        viewModel.onIKeyClick(haptic, key, ctx)
-                    }
+                    viewModel.onIKeyClick(key, ctx)
                 },
-                onDoubleClick = {
-                    scope.launch {
-                        if (isShift) viewModel.onIDoubleClick(haptic, key)
-                    }
-                }
+                onDoubleClick = { if (isShift) viewModel.onIDoubleClick(key) }
             ) {
                 Icon(
                     painter = this, "icon",
@@ -193,11 +158,7 @@ fun KeyboardKey(key: Key, buttonWidth: Dp) {
                 color = this,
                 buttonWidth = buttonWidth,
                 id = key.id,
-                onClick = {
-                    scope.launch {
-                        viewModel.onTKeyClick(haptic, key, ctx)
-                    }
-                },
+                onClick = { viewModel.onTKeyClick(key, ctx) },
                 onDoubleClick = null
             ) {
                 Text(

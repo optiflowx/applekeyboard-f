@@ -64,7 +64,7 @@ dependencies {
     androidTestImplementation("androidx.test:runner:1.5.2")
 
     //Blur Kit
-    implementation("io.alterac.blurkit:blurkit:1.1.0")
+//    implementation("io.alterac.blurkit:blurkit:1.1.1")
 
     implementation ("org.jetbrains.kotlin:kotlin-stdlib:1.9.21")
     implementation ("androidx.appcompat:appcompat:1.6.1")

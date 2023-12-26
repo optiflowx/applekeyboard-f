@@ -22,9 +22,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.optiflowx.applekeyboard.R
+import com.optiflowx.applekeyboard.adapters.Key
+import com.optiflowx.applekeyboard.models.KeyboardViewModel
 import io.github.alexzhirkevich.cupertino.Surface
 import io.github.alexzhirkevich.cupertino.theme.CupertinoColors
 import io.github.alexzhirkevich.cupertino.theme.systemGray
@@ -33,7 +36,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalFoundationApi::class)
 
 @Composable
-fun EmojiPagerActionView(pagerState: PagerState) {
+fun EmojiPagerActionView(pagerState: PagerState, viewModel: KeyboardViewModel) {
     val listProps: ArrayList<Int> = arrayListOf(
         R.drawable.recents,
         R.drawable.smileys_people,
@@ -50,6 +53,8 @@ fun EmojiPagerActionView(pagerState: PagerState) {
     val interactionSource = remember {
         MutableInteractionSource()
     }
+
+    val context = LocalContext.current
 
     val scope = rememberCoroutineScope()
 
@@ -81,15 +86,18 @@ fun EmojiPagerActionView(pagerState: PagerState) {
                             RoundedCornerShape(20.dp),
                         )
                         .padding(5.dp)
-                        .size(17.dp)
+                        .size(15.dp)
                         .clickable(
                             indication = null,
                             interactionSource = interactionSource,
                             onClick = {
-                                scope.launch {
-                                    if (id != R.drawable.ic_backspace) {
-                                        pagerState.scrollToPage(i)
-                                    }
+                                if (id != R.drawable.ic_backspace) {
+                                    scope.launch { pagerState.scrollToPage(i) }
+                                } else {
+                                    viewModel.onIKeyClick(
+                                        Key("erase", "erase"),
+                                        ctx = context
+                                    )
                                 }
                             },
                         ),

@@ -74,15 +74,6 @@ fun EmojiKeyboardView() {
     )
 
     val pagerState = rememberPagerState(pageCount = { emojiViewPager.size }, initialPage = 0)
-
-//    LaunchedEffect(Unit) {
-//        while (pagerState.currentPage < pagerState.pageCount - 1) {
-//            yield()
-//            kotlinx.coroutines.delay(3000)
-//            pagerState.animateScrollToPage(pagerState.currentPage + 1)
-//        }
-//    }
-
     val freqViewPort = (screenWidth * 0.76f).dp
     val defaultViewPort = (screenWidth).dp
 
@@ -110,7 +101,7 @@ fun EmojiKeyboardView() {
                             LazyVerticalGrid(columns = GridCells.Fixed(5)) {
                                 frequentEmojis.forEach { data ->
                                     item("Key:$data") {
-                                        EmojiItem(data.id, viewModel)
+                                        EmojiItem(data.emoji, viewModel, title)
                                     }
                                 }
                             }
@@ -120,7 +111,7 @@ fun EmojiKeyboardView() {
                             LazyVerticalGrid(columns = GridCells.Fixed(6)) {
                                 emojis.forEach { emoji ->
                                     item("$page$emoji") {
-                                        EmojiItem(emoji, viewModel)
+                                        EmojiItem(emoji, viewModel, title)
                                     }
                                 }
                             }
@@ -129,6 +120,6 @@ fun EmojiKeyboardView() {
                 }
             }
         }
-        EmojiPagerActionView(pagerState)
+        EmojiPagerActionView(pagerState, viewModel)
     }
 }

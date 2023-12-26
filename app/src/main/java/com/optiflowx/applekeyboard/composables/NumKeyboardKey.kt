@@ -8,13 +8,11 @@ import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -30,15 +28,12 @@ import com.optiflowx.applekeyboard.R
 import com.optiflowx.applekeyboard.adapters.Key
 import com.optiflowx.applekeyboard.models.KeyboardViewModel
 import com.optiflowx.applekeyboard.ui.defaultFontFamily
-import kotlinx.coroutines.launch
 
 @Composable
 fun NumKeyboardKey(key: Key, buttonWidth: Dp) {
     val ctx = LocalContext.current
-    val haptic = LocalHapticFeedback.current
     val width = LocalConfiguration.current.screenWidthDp
     val colors = MaterialTheme.colors
-    val scope = rememberCoroutineScope()
 
     val viewModel = viewModel<KeyboardViewModel>(
         factory = object : ViewModelProvider.Factory {
@@ -47,7 +42,6 @@ fun NumKeyboardKey(key: Key, buttonWidth: Dp) {
             }
         }
     )
-
 
     val isPeriod: Boolean = key.id == "."
     val isErase: Boolean = key.id == "erase"
@@ -59,10 +53,8 @@ fun NumKeyboardKey(key: Key, buttonWidth: Dp) {
         buttonWidth = buttonWidth,
         id = key.id,
         onClick = {
-            scope.launch {
-                if (isErase) viewModel.onIKeyClick(haptic, key, ctx)
-                else viewModel.onNumKeyClick(haptic, key, ctx)
-            }
+            if (isErase) viewModel.onIKeyClick(key, ctx)
+            else viewModel.onNumKeyClick( key, ctx)
         },
         onDoubleClick = null
     ) {

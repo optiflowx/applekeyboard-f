@@ -6,9 +6,9 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "Frequently_Used_Emojis")
 data class EmojiData(
-    @PrimaryKey(autoGenerate = true)
-    val key: Int = 0,
+    @PrimaryKey(autoGenerate = false)
+    val id: Int = 0,
 
-    @ColumnInfo(name = "id")
-    val id: String
+    @ColumnInfo(name = "emoji")
+    val emoji: String
 )

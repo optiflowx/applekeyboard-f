@@ -13,7 +13,7 @@ interface RecentEmojiDatabaseDAO {
     fun getAllEmojis(): LiveData<List<EmojiData>>
 
     @Query("SELECT * from Frequently_Used_Emojis where id = :id")
-    fun getEmojisById(id: String): EmojiData?
+    fun getEmojisById(id: Int): EmojiData?
 
     @Insert
     suspend fun insert(emojiData: EmojiData)
