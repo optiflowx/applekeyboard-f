@@ -1,3 +1,5 @@
+@file:Suppress("UNCHECKED_CAST")
+
 package com.optiflowx.applekeyboard
 
 import android.content.Context
@@ -9,17 +11,20 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.Card
-import androidx.compose.material.MaterialTheme
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults.cardColors
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.AbstractComposeView
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.optiflowx.applekeyboard.composables.keyboard.LanguageSelectionPopup
 import com.optiflowx.applekeyboard.models.KeyboardViewModel
 import com.optiflowx.applekeyboard.ui.AppleKeyboardIMETheme
 import com.optiflowx.applekeyboard.views.KeyboardView
@@ -28,37 +33,42 @@ class AppleKeyboardView(context: Context) : AbstractComposeView(context) {
     @Composable
     override fun Content() {
         val width = LocalConfiguration.current.screenWidthDp
-        val colors = MaterialTheme.colors
-
+        val height = LocalConfiguration.current.screenHeightDp
+        val colorScheme = MaterialTheme.colorScheme
+        val context = LocalContext.current
         val viewModel = viewModel<KeyboardViewModel>(
             factory = object : ViewModelProvider.Factory {
                 override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                    return KeyboardViewModel(width, colors) as T
+                    return KeyboardViewModel(width, colorScheme, context) as T
                 }
             }
         )
 
         val keyboardSize = viewModel.keyboardSize.observeAsState().value!!
+        val showPopup = viewModel.showPopup.observeAsState().value
+        val bottomPadding = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
 
-
-        viewModel.bottomPaddingValue.value =WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
-        val bottomPadding = viewModel.bottomPaddingValue.observeAsState().value!!
+        //Keyboard
+        val keyboardHeight = keyboardSize.y.dp + bottomPadding
+        val keyboardWidth = keyboardSize.x.dp
 
         AppleKeyboardIMETheme {
             Box(
                 modifier = Modifier
-                    .height(keyboardSize.y.dp + bottomPadding)
-                    .width(keyboardSize.x.dp)
+                    .height(keyboardHeight)
+                    .width(keyboardWidth)
             ) {
-//            FullSizeBlur(height = keyboardSize.y, width = keyboardSize.x, content= {
-//
-//            })
+                if(showPopup == true)  {
+                    LanguageSelectionPopup(keyboardHeight.value, keyboardWidth.value, viewModel)
+                }
                 Card(
-                    backgroundColor = MaterialTheme.colors.background.copy(alpha = 1f),
+                    colors = cardColors(
+                        containerColor = MaterialTheme.colorScheme.background
+                    ),
                     modifier = Modifier.fillMaxSize()
-                ) { KeyboardView() }
+                ) { KeyboardView(viewModel) }
             }
+            isSystemInDarkTheme()
         }
-        isSystemInDarkTheme()
     }
 }

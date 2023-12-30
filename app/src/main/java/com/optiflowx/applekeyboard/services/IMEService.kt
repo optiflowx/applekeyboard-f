@@ -1,5 +1,8 @@
 package com.optiflowx.applekeyboard.services
 
+import android.app.Activity
+import android.content.Context
+import android.content.ContextWrapper
 import android.os.Build
 import android.view.View
 import androidx.compose.ui.graphics.Color
@@ -23,16 +26,6 @@ class IMEService : LifecycleInputMethodService(),
     ViewModelStoreOwner,
     SavedStateRegistryOwner {
 
-//    Background blur
-//
-//    Use background blur on floating windows to create a window background effect which is a blurred image of the underlying content. To add a blurred background for your window, do the following:
-//
-//    Call Window#setBackgroundBlurRadius(int) to set a background blur radius. Or, in the window theme, set R.attr.windowBackgroundBlurRadius.
-//    Set R.attr.windowIsTranslucent to true to make the window translucent. The blur is drawn under the window surface, so the window needs to be translucent to let the blur be visible.
-//    Optionally, call Window#setBackgroundDrawableResource(int) to add a rectangular window background drawable with a translucent color. Or, in the window theme, set R.attr.windowBackground.
-//    For a window with rounded corners, determine the rounded corners for the blurred area by setting a ShapeDrawable with rounded corners as the window background drawable.
-//    Handle blur enabled and disabled states. Refer to the Guidelines to use window blur in apps section for more information.
-
     override fun onCreateInputView(): View {
         val view = AppleKeyboardView(this)
 
@@ -45,17 +38,6 @@ class IMEService : LifecycleInputMethodService(),
         val windowCompat = window?.window
 
         if (windowCompat != null) {
-//            BlurKit.init(this)
-//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-//                ResourcesCompat.getDrawable(resources, R.drawable.bg, null)?.let {
-//                    windowCompat.setBackgroundBlurRadius(20)
-//                    windowCompat.setBackgroundDrawable(it)
-//                    windowCompat.setFlags(
-//                        WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION,
-//                        WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION
-//                    )
-//                }
-//            }
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                 windowCompat.setDecorFitsSystemWindows(false)
@@ -78,9 +60,44 @@ class IMEService : LifecycleInputMethodService(),
 
             // Hide the system bars.
             windowInsetsController.hide(WindowInsetsCompat.Type.navigationBars())
+
+//            val radius = 20f
+//
+//            // ViewGroup you want to start blur from. Choose root as close to BlurView in hierarchy as possible.
+////            val rootView = windowCompat.decorView.findViewById<ViewGroup>(android.R.id.content)
+//             val blurView = view.findViewById<BlurView>(R.id.keyboard_blur_view)
+//
+//            val decorView = this.window.window?.decorView
+//            val rootView = view.rootView as ViewGroup
+//            val windowBackground = decorView?.background
+//
+//
+//            blurView.setupWith(rootView, RenderScriptBlur(this)) // or RenderEffectBlur
+//                .setFrameClearDrawable(windowBackground)
+//                .setBlurRadius(radius)
         }
 
+
+
         return view
+    }
+
+    init {
+
+    }
+
+    private fun getActivityDecorView(context: Context): View? {
+        var ctx = context
+        var i = 0
+        while (i < 4 && ctx !is Activity && ctx is ContextWrapper) {
+            ctx = ctx.baseContext
+            i++
+        }
+        return if (ctx is Activity) {
+            ctx.window.decorView
+        } else {
+            null
+        }
     }
 
 

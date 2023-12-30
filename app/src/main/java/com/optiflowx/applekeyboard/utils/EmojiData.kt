@@ -1,6 +1,10 @@
 package com.optiflowx.applekeyboard.utils
 
-val emojiData: EmojiData = EmojiData()
+import androidx.compose.runtime.Immutable
+
+val frequentlyUsedEmoji: EmojiData = EmojiData()
+
+@Immutable
 data class EmojiData(
     val smilesAndPeople: List<String> = listOf(
         "😀", "😃", "😄", "😁", "😆", "😅", "🤣", "😂", "🙂", "🙃",

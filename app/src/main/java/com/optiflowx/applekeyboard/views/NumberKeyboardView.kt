@@ -15,12 +15,13 @@ import androidx.constraintlayout.compose.ChainStyle
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
 import androidx.constraintlayout.compose.Dimension
-import com.optiflowx.applekeyboard.adapters.Key
-import com.optiflowx.applekeyboard.composables.NumKeyboardKey
+import com.optiflowx.applekeyboard.composables.keyboard.NumKeyboardKey
+import com.optiflowx.applekeyboard.models.Key
+import com.optiflowx.applekeyboard.models.KeyboardViewModel
 
 @Preview
 @Composable
-fun NumberKeyboardView() {
+fun NumberKeyboardView(viewModel: KeyboardViewModel) {
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp.dp
     val row1Keys = listOf(
@@ -221,7 +222,7 @@ fun NumberKeyboardView() {
         }
     }
 
-    ConstraintLayout(constraints, Modifier.width(screenWidth), 100) {
+    ConstraintLayout(constraints, Modifier.width(screenWidth), 100, true) {
         val keyWidth = (screenWidth.value * 0.31).dp
 
         Box(Modifier.layoutId('1')) {
@@ -233,7 +234,7 @@ fun NumberKeyboardView() {
                     .fillMaxWidth()
                     .padding(horizontal = 2.dp), 100
             ) {
-                for (key in row1Keys) NumKeyboardKey(key, keyWidth)
+                for (key in row1Keys) NumKeyboardKey(key, keyWidth, viewModel)
             }
         }
         Box(Modifier.layoutId('2')) {
@@ -243,10 +244,9 @@ fun NumberKeyboardView() {
                     .width(screenWidth)
                     .align(Alignment.Center)
                     .fillMaxWidth()
-                    .padding(horizontal = 2.dp), 100
+                    .padding(horizontal = 2.dp), 100, true
             ) {
-                for (key in row2Keys) NumKeyboardKey(key, keyWidth)
-
+                for (key in row2Keys) NumKeyboardKey(key, keyWidth, viewModel)
             }
         }
         Box(Modifier.layoutId('3')) {
@@ -256,13 +256,13 @@ fun NumberKeyboardView() {
                     .width(screenWidth)
                     .align(Alignment.Center)
                     .padding(horizontal = 2.dp),
-                100
+                100, true
             ) {
                 for (key in row3Keys) {
                     if (key.id == "." || key.id == "erase") {
-                        NumKeyboardKey(key, keyWidth)
+                        NumKeyboardKey(key, keyWidth, viewModel)
                     } else {
-                        NumKeyboardKey(key, keyWidth)
+                        NumKeyboardKey(key, keyWidth, viewModel)
                     }
                 }
             }
@@ -272,9 +272,9 @@ fun NumberKeyboardView() {
                 fourthRowConstraints,
                 Modifier
                     .align(Alignment.Center)
-                    .padding(horizontal = 2.dp), 100
+                    .padding(horizontal = 2.dp), 100, true
             ) {
-                for(key in row4Keys) NumKeyboardKey(key, keyWidth)
+                for(key in row4Keys) NumKeyboardKey(key, keyWidth, viewModel)
 
             }
         }

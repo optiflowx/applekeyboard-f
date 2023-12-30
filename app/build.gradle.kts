@@ -32,6 +32,10 @@ android {
         release {
             isMinifyEnabled = true
             isShrinkResources = true
+//            isProfileable = true
+//            isDebuggable = true
+//            isJniDebuggable = true
+
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -63,25 +67,35 @@ dependencies {
 //    implementation ("com.github.dcendents:android-maven-gradle-plugin:2.1")
     androidTestImplementation("androidx.test:runner:1.5.2")
 
+    //Hoko Blur
+//    implementation("io.github.hokofly:hoko-blur:1.5.3")
+//    implementation("jp.wasabeef:blurry:4.0.1")
+
+    //Realtime BlurView
+//    implementation (project(":library"))
+//    implementation("com.github.Dimezis:BlurView:version-2.0.4")
+
     //Blur Kit
 //    implementation("io.alterac.blurkit:blurkit:1.1.1")
+
+//    implementation ("androidx.navigation:navigation-compose:2.7.6")
+    //Destinations
+    implementation ("io.github.raamcosta.compose-destinations:core:1.1.2-beta")
+    ksp ("io.github.raamcosta.compose-destinations:ksp:1.1.2-beta")
 
     implementation ("org.jetbrains.kotlin:kotlin-stdlib:1.9.21")
     implementation ("androidx.appcompat:appcompat:1.6.1")
 
     //Compose Dependencies
     implementation ("androidx.compose.ui:ui:$composeVersion")
-    implementation ("androidx.compose.material:material:$composeVersion")
+//    implementation ("androidx.compose.material3:material3:$composeVersion")
     implementation ("androidx.compose.ui:ui-tooling:$composeVersion")
-    implementation ("androidx.compose.material:material:$composeVersion")
+    implementation ("androidx.compose.material3:material3:1.1.2")
     implementation ("androidx.compose.foundation:foundation:$composeVersion")
     implementation ("androidx.compose.runtime:runtime-livedata:$composeVersion")
 
     //Activity Compose
     implementation ("androidx.activity:activity-compose:1.8.2")
-
-    //Ui Controller
-    implementation("com.google.accompanist:accompanist-systemuicontroller:0.32.0")
 
     implementation ("androidx.core:core-ktx:1.12.0")
     //    implementation("io.coil-kt:coil-compose:2.5.0")

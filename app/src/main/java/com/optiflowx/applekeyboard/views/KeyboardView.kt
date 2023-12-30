@@ -8,16 +8,10 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Column
-import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalView
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.optiflowx.applekeyboard.models.KeyboardViewModel
 import com.optiflowx.applekeyboard.services.IMEService
 import com.optiflowx.applekeyboard.utils.KeyboardType
@@ -28,21 +22,9 @@ import splitties.views.InputType
 
 @OptIn(ExperimentalSplittiesApi::class)
 @Composable
-fun KeyboardView() {
-    val width = LocalConfiguration.current.screenWidthDp
-    val colors = MaterialTheme.colors
+fun KeyboardView(viewModel: KeyboardViewModel) {
     val context = LocalContext.current
-    val view = LocalView.current
-    val viewModel = viewModel<KeyboardViewModel>(
-        factory = object : ViewModelProvider.Factory {
-            override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                return KeyboardViewModel(width, colors) as T
-            }
-        }
-    )
-
     val keyboardType = viewModel.keyboardType.observeAsState()
-    val isNumSym = viewModel.isNumberSymbol.observeAsState().value!!
 
     LaunchedEffect(Unit) {
         while (true) {
@@ -54,11 +36,9 @@ fun KeyboardView() {
                 InputType.phone.value ->
                     viewModel.keyboardType.value = KeyboardType.Phone
 
-                else -> {
-                    if (keyboardType.value != KeyboardType.Emoji) {
-                        if(keyboardType.value != KeyboardType.Symbol) {
-                            viewModel.keyboardType.value = KeyboardType.Normal
-                        }
+                else -> if (keyboardType.value != KeyboardType.Emoji) {
+                    if (keyboardType.value != KeyboardType.Symbol) {
+                        viewModel.keyboardType.value = KeyboardType.Normal
                     }
                 }
             }
@@ -68,26 +48,28 @@ fun KeyboardView() {
     }
 
     Column {
-        KeyboardTopView(keyboardType)
+        if (keyboardType.value != KeyboardType.Symbol) {
+            KeyboardTopView(viewModel)
+        }
         AnimatedContent(
             keyboardType,
             label = "KeyboardView",
             transitionSpec = {
-                (fadeIn(animationSpec = tween(180, delayMillis = 15)) +
-                        scaleIn(initialScale = 0.9f, animationSpec = tween(180, delayMillis = 15)))
-                    .togetherWith(fadeOut(animationSpec = tween(15)))
+                (fadeIn(animationSpec = tween(250, delayMillis = 5)) +
+                        scaleIn(initialScale = 0.9f, animationSpec = tween(250, delayMillis = 5)))
+                    .togetherWith(fadeOut(animationSpec = tween(5)))
             },
         ) { type ->
             when (type.value!!) {
-                KeyboardType.Normal -> NormalKeyboardView()
+                KeyboardType.Normal -> NormalKeyboardView(viewModel)
 
-                KeyboardType.Symbol -> SymbolAKeyboardView()
+                KeyboardType.Symbol -> SymbolAKeyboardView(viewModel)
 
-                KeyboardType.Number -> NumberKeyboardView()
+                KeyboardType.Number -> NumberKeyboardView(viewModel)
 
-                KeyboardType.Phone -> PhoneNumberKeyboardView()
+                KeyboardType.Phone -> PhoneNumberKeyboardView(viewModel)
 
-                KeyboardType.Emoji -> EmojiKeyboardView()
+                KeyboardType.Emoji -> EmojiKeyboardView(viewModel)
             }
         }
         if (keyboardType.value != KeyboardType.Number && keyboardType.value != KeyboardType.Phone) {

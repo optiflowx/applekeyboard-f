@@ -14,7 +14,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.MaterialTheme
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -26,7 +26,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.optiflowx.applekeyboard.R
-import com.optiflowx.applekeyboard.adapters.Key
+import com.optiflowx.applekeyboard.models.Key
 import com.optiflowx.applekeyboard.models.KeyboardViewModel
 import io.github.alexzhirkevich.cupertino.Surface
 import io.github.alexzhirkevich.cupertino.theme.CupertinoColors
@@ -80,7 +80,7 @@ fun EmojiPagerActionView(pagerState: PagerState, viewModel: KeyboardViewModel) {
                         .background(
                             (if (id != R.drawable.ic_backspace) {
                                 if (pagerState.currentPage == i) {
-                                    MaterialTheme.colors.secondaryVariant
+                                    MaterialTheme.colorScheme.secondaryContainer
                                 } else Color.Transparent
                             } else Color.Transparent),
                             RoundedCornerShape(20.dp),
@@ -96,7 +96,8 @@ fun EmojiPagerActionView(pagerState: PagerState, viewModel: KeyboardViewModel) {
                                 } else {
                                     viewModel.onIKeyClick(
                                         Key("erase", "erase"),
-                                        ctx = context
+                                        context,
+                                        viewModel.soundPool?.load(context, R.raw.delete, 1),
                                     )
                                 }
                             },

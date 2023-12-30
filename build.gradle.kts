@@ -3,12 +3,14 @@ buildscript {
     repositories {
         google()
         mavenCentral()
-        //noinspection JcenterRepositoryObsolete
-//        jcenter()
+        maven(
+            uri("https://jitpack.io")
+        )
     }
 
     dependencies {
         classpath("com.google.dagger:hilt-android-gradle-plugin:2.48")
+
     }
 }
 

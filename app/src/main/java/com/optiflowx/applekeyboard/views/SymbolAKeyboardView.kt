@@ -5,25 +5,26 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ChainStyle
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
 import androidx.constraintlayout.compose.Dimension
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.optiflowx.applekeyboard.adapters.Key
-import com.optiflowx.applekeyboard.composables.KeyboardKey
+import com.optiflowx.applekeyboard.R
+import com.optiflowx.applekeyboard.composables.keyboard.KeyboardKey
+import com.optiflowx.applekeyboard.models.Key
 import com.optiflowx.applekeyboard.models.KeyboardViewModel
 
 
 @Composable
-fun SymbolAKeyboardView() {
-    val viewModel = viewModel<KeyboardViewModel>()
+fun SymbolAKeyboardView(viewModel: KeyboardViewModel) {
     val isSymbol = viewModel.isNumberSymbol.observeAsState().value
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp.dp
@@ -379,13 +380,28 @@ fun SymbolAKeyboardView() {
         )
     }
 
-    ConstraintLayout(constraints, Modifier.width(screenWidth), 100) {
+    val language = viewModel.currentLanguage.observeAsState()
+
+    val spaceAction: String = when(language.value) {
+        "fr" -> "espace"
+        "pt" -> "espaço"
+        "es" -> "espacio"
+        else -> "space"
+    }
+
+    val returnAction: String = when(language.value) {
+        "fr" -> "retour"
+        "pt" -> "retornar"
+        "es" -> "retorno"
+        else -> "return"
+    }
+
+    ConstraintLayout(constraints, Modifier.width(screenWidth), 100, true) {
         val keyWidth = (screenWidth.value * 0.082).dp
         val keyWidthR3 = (screenWidth.value * 0.11).dp
         val keyWidthB = (screenWidth.value * 0.45).dp
         val keyWidthM = (screenWidth.value * 0.25).dp
         val keyWidthSE = (screenWidth.value * 0.13).dp
-        val iconKeyViewPadding = (screenWidth.value * 0.075).dp
 
         Box(
             Modifier
@@ -397,12 +413,12 @@ fun SymbolAKeyboardView() {
                     .width(screenWidth)
                     .align(Alignment.Center)
                     .fillMaxWidth()
-                    .padding(horizontal = 4.dp), 100
+                    .padding(horizontal = 4.dp), 100, true
             ) {
                 if(isSymbol != true) {
-                    for (key in row1Keys) KeyboardKey(key, keyWidth)
+                    for (key in row1Keys) KeyboardKey(key, keyWidth, viewModel)
                 } else {
-                    for (key in row1SymbolKeys) KeyboardKey(key, keyWidth)
+                    for (key in row1SymbolKeys) KeyboardKey(key, keyWidth, viewModel)
                 }
             }
         }
@@ -416,12 +432,12 @@ fun SymbolAKeyboardView() {
                     .width(screenWidth)
                     .align(Alignment.Center)
                     .fillMaxWidth()
-                    .padding(horizontal = 14.dp), 100
+                    .padding(horizontal = 14.dp), 100, true
             ) {
                 if(isSymbol != true) {
-                    for (key in row2Keys) KeyboardKey(key, keyWidth)
+                    for (key in row2Keys) KeyboardKey(key, keyWidth, viewModel)
                 } else {
-                    for (key in row2SymbolKeys) KeyboardKey(key, keyWidth)
+                    for (key in row2SymbolKeys) KeyboardKey(key, keyWidth, viewModel)
                 }
             }
         }
@@ -436,11 +452,11 @@ fun SymbolAKeyboardView() {
                     .align(Alignment.Center)
                     .fillMaxWidth()
                     .padding(horizontal = 4.dp),
-                100
+                100, true
             ) {
-                KeyboardKey(Key("symbol", ""), keyWidthSE)
-                for (key in row3Keys) KeyboardKey(key, keyWidthR3)
-                KeyboardKey(Key("erase", ""), keyWidthSE)
+                KeyboardKey(Key("symbol", ""), keyWidthSE, viewModel)
+                for (key in row3Keys) KeyboardKey(key, keyWidthR3, viewModel)
+                KeyboardKey(Key("erase", ""), keyWidthSE, viewModel)
             }
         }
         Box(
@@ -453,11 +469,11 @@ fun SymbolAKeyboardView() {
                     .width(screenWidth)
                     .align(Alignment.Center)
                     .fillMaxWidth()
-                    .padding(horizontal = 4.dp), 100
+                    .padding(horizontal = 4.dp), 100, true
             ) {
-                KeyboardKey(Key("ABC", "ABC"), keyWidthM)
-                KeyboardKey(Key("space","space"), keyWidthB)
-                KeyboardKey(Key("action", "return"), keyWidthM)
+                KeyboardKey(Key("ABC", stringResource(R.string.abc)), keyWidthM, viewModel)
+                KeyboardKey(Key("space", spaceAction), keyWidthB, viewModel)
+                KeyboardKey(Key("action", returnAction), keyWidthM, viewModel)
             }
         }
     }

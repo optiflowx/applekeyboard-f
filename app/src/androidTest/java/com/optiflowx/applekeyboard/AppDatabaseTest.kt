@@ -3,7 +3,7 @@ package com.optiflowx.applekeyboard
 import androidx.room.Room
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import com.optiflowx.applekeyboard.database.EmojisDatabase
+import com.optiflowx.applekeyboard.database.FrequentlyUsedDatabase
 import com.optiflowx.applekeyboard.database.dao.RecentEmojiDatabaseDAO
 import com.optiflowx.applekeyboard.database.entities.EmojiData
 import kotlinx.coroutines.runBlocking
@@ -23,17 +23,17 @@ import java.io.IOException
 class AppDatabaseTest {
 
     private lateinit var appDataDao: RecentEmojiDatabaseDAO
-    private lateinit var dataB: EmojisDatabase
+    private lateinit var dataB: FrequentlyUsedDatabase
 
     @Before
     fun createDb() {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
 
-        dataB = Room.inMemoryDatabaseBuilder(context, EmojisDatabase::class.java)
+        dataB = Room.inMemoryDatabaseBuilder(context, FrequentlyUsedDatabase::class.java)
             .allowMainThreadQueries()
             .build()
 
-        appDataDao = dataB.appDataDAO()
+        appDataDao = dataB.fUsedEmojiDatabaseDAO()
     }
 
     @After

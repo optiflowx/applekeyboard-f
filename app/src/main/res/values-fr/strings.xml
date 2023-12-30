@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Apple Keyboard</string>
+    <string name="abc">ABC</string>
+    <string name="num">123</string>
+    <string name="space">espace</string>
+    <string name="action">retour</string>
+    <string name="actionDone">fait</string>
+    <string name="actionGo">aller</string>
+    <string name="actionSearch">chercher</string>
+    <string name="actionNext">à côté</string>
+    <string name="actionSend">lancer</string>
+</resources>
