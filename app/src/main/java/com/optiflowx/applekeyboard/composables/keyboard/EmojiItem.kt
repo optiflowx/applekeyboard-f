@@ -10,8 +10,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
-import com.optiflowx.applekeyboard.models.KeyboardViewModel
 import com.optiflowx.applekeyboard.ui.iosEmojiFontFamily
+import com.optiflowx.applekeyboard.viewmodels.KeyboardViewModel
 
 @Composable
 fun EmojiItem(emoji: String, viewModel: KeyboardViewModel, title: String) {

@@ -36,7 +36,7 @@ fun KeyboardTestScreen(navigator: DestinationsNavigator) {
     val (text3, setValue3) = remember { mutableStateOf(TextFieldValue("")) }
 
     CupertinoScaffold(
-        topBar = { TopBar(navigator) },
+        topBar = { TestScreenTopBar(navigator) },
         containerColor = Color.Black,
         contentColor = Color.White,
         contentWindowInsets = WindowInsets.safeContent,
@@ -57,14 +57,12 @@ fun KeyboardTestScreen(navigator: DestinationsNavigator) {
     }
 }
 
-@OptIn(ExperimentalCupertinoApi::class)
 @Composable
-fun TopBar(navigator: DestinationsNavigator) {
+@OptIn(ExperimentalCupertinoApi::class)
+fun TestScreenTopBar(navigator: DestinationsNavigator) {
     CupertinoTopAppBar(
         isTransparent = true,
-        title = {
-            Text("Test Keyboard", color = Color.White)
-        },
+        title = {Text("Test Keyboard", color = Color.White)},
         modifier = Modifier.padding(vertical = 5.dp),
         navigationIcon = {
             IconButton(onClick = {navigator.popBackStack()}) {

@@ -12,9 +12,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.platform.LocalContext
-import com.optiflowx.applekeyboard.models.KeyboardViewModel
 import com.optiflowx.applekeyboard.services.IMEService
 import com.optiflowx.applekeyboard.utils.KeyboardType
+import com.optiflowx.applekeyboard.viewmodels.KeyboardViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.yield
 import splitties.experimental.ExperimentalSplittiesApi

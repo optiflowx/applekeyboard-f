@@ -5,7 +5,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.layoutId
@@ -19,7 +19,7 @@ import androidx.constraintlayout.compose.Dimension
 import com.optiflowx.applekeyboard.R
 import com.optiflowx.applekeyboard.composables.keyboard.KeyboardKey
 import com.optiflowx.applekeyboard.models.Key
-import com.optiflowx.applekeyboard.models.KeyboardViewModel
+import com.optiflowx.applekeyboard.viewmodels.KeyboardViewModel
 
 @Composable
 fun NormalKeyboardView(viewModel: KeyboardViewModel) {
@@ -366,21 +366,7 @@ fun NormalKeyboardView(viewModel: KeyboardViewModel) {
         )
     }
 
-    val language = viewModel.currentLanguage.observeAsState()
-
-    val spaceAction: String = when(language.value) {
-        "fr" -> "espace"
-        "pt" -> "espaço"
-        "es" -> "espacio"
-        else -> "space"
-    }
-
-    val returnAction: String = when(language.value) {
-        "fr" -> "retour"
-        "pt" -> "retornar"
-        "es" -> "retorno"
-        else -> "return"
-    }
+    val language = viewModel.locale.collectAsState("en").value
 
     ConstraintLayout(constraints, Modifier.width(screenWidth), 100, true) {
         val keyWidth = (screenWidth.value * 0.082).dp
@@ -454,8 +440,18 @@ fun NormalKeyboardView(viewModel: KeyboardViewModel) {
                     .padding(horizontal = 4.dp), 100, true
             ) {
                 KeyboardKey(Key("123", stringResource(R.string.num)), keyWidthM, viewModel)
-                KeyboardKey(Key("space", spaceAction), keyWidthB, viewModel)
-                KeyboardKey(Key("action", returnAction), keyWidthM, viewModel)
+                KeyboardKey(Key("space", when(language){
+                    "fr" -> "espace"
+                    "pt" -> "espaço"
+                    "es" -> "espacio"
+                    else -> "space"
+                }), keyWidthB, viewModel)
+                KeyboardKey(Key("action", when(language) {
+                    "fr" -> "retour"
+                    "pt" -> "retornar"
+                    "es" -> "retorno"
+                    else -> "return"
+                }), keyWidthM, viewModel)
             }
         }
     }

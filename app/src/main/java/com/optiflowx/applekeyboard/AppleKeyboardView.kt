@@ -3,6 +3,8 @@
 package com.optiflowx.applekeyboard
 
 import android.content.Context
+import android.util.Log
+import android.view.View
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
@@ -24,16 +26,45 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.optiflowx.applekeyboard.composables.keyboard.LanguageSelectionPopup
-import com.optiflowx.applekeyboard.models.KeyboardViewModel
 import com.optiflowx.applekeyboard.ui.AppleKeyboardIMETheme
+import com.optiflowx.applekeyboard.viewmodels.KeyboardViewModel
 import com.optiflowx.applekeyboard.views.KeyboardView
 
 class AppleKeyboardView(context: Context) : AbstractComposeView(context) {
+
+    override fun onViewAdded(child: View?) {
+        super.onViewAdded(child)
+        Log.d("AppleKeyboardView", "onViewAdded")
+    }
+
+    override fun onViewRemoved(child: View?) {
+        super.onViewRemoved(child)
+        Log.d("AppleKeyboardView", "onViewRemoved")
+    }
+
+    override fun onStartTemporaryDetach() {
+        super.onStartTemporaryDetach()
+        Log.d("AppleKeyboardView", "onStartTemporaryDetach")
+    }
+
+    override fun addOnAttachStateChangeListener(listener: OnAttachStateChangeListener?) {
+        super.addOnAttachStateChangeListener(listener)
+        Log.d("AppleKeyboardView", "addOnAttachStateChangeListener")
+    }
+
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        Log.d("AppleKeyboardView", "onAttachedToWindow")
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        Log.d("AppleKeyboardView", "onDetachedFromWindow")
+    }
+
     @Composable
     override fun Content() {
         val width = LocalConfiguration.current.screenWidthDp
-        val height = LocalConfiguration.current.screenHeightDp
         val colorScheme = MaterialTheme.colorScheme
         val context = LocalContext.current
         val viewModel = viewModel<KeyboardViewModel>(
@@ -45,7 +76,6 @@ class AppleKeyboardView(context: Context) : AbstractComposeView(context) {
         )
 
         val keyboardSize = viewModel.keyboardSize.observeAsState().value!!
-        val showPopup = viewModel.showPopup.observeAsState().value
         val bottomPadding = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
 
         //Keyboard
@@ -58,9 +88,9 @@ class AppleKeyboardView(context: Context) : AbstractComposeView(context) {
                     .height(keyboardHeight)
                     .width(keyboardWidth)
             ) {
-                if(showPopup == true)  {
-                    LanguageSelectionPopup(keyboardHeight.value, keyboardWidth.value, viewModel)
-                }
+//                if(showPopup == true)  {
+//                    LanguageSelectionPopup(keyboardHeight.value, keyboardWidth.value, viewModel)
+//                }
                 Card(
                     colors = cardColors(
                         containerColor = MaterialTheme.colorScheme.background

@@ -8,6 +8,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -21,9 +22,9 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import com.optiflowx.applekeyboard.R
+import com.optiflowx.applekeyboard.common.appFontType
 import com.optiflowx.applekeyboard.models.Key
-import com.optiflowx.applekeyboard.models.KeyboardViewModel
-import com.optiflowx.applekeyboard.ui.defaultFontFamily
+import com.optiflowx.applekeyboard.viewmodels.KeyboardViewModel
 
 @Composable
 fun NumKeyboardKey(key: Key, buttonWidth: Dp, viewModel: KeyboardViewModel) {
@@ -36,6 +37,8 @@ fun NumKeyboardKey(key: Key, buttonWidth: Dp, viewModel: KeyboardViewModel) {
         "erase" -> viewModel.soundPool?.load(ctx, R.raw.delete, 1)
         else -> viewModel.soundPool?.load(ctx, R.raw.standard, 1)
     }
+
+    val fontType = viewModel.fontType.collectAsState("regular").value
 
     //Erase and Period Keys
     KeyButton(
@@ -66,7 +69,7 @@ fun NumKeyboardKey(key: Key, buttonWidth: Dp, viewModel: KeyboardViewModel) {
                     text = key.id,
                     fontWeight = FontWeight.Light,
                     textAlign = TextAlign.Center,
-                    fontFamily = defaultFontFamily,
+                    fontFamily = appFontType(fontType),
                     style = TextStyle(
                         MaterialTheme.colorScheme.primary,
                         TextUnit(26f, TextUnitType.Sp)
@@ -76,7 +79,7 @@ fun NumKeyboardKey(key: Key, buttonWidth: Dp, viewModel: KeyboardViewModel) {
                     text = key.value,
                     fontWeight = FontWeight.Light,
                     textAlign = TextAlign.Center,
-                    fontFamily = defaultFontFamily,
+                    fontFamily = appFontType(fontType),
                     style = TextStyle(
                         MaterialTheme.colorScheme.primary,
                         TextUnit(12f, TextUnitType.Sp)

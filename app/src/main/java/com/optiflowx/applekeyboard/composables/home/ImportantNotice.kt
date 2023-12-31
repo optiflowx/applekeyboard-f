@@ -13,7 +13,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
-import com.optiflowx.applekeyboard.ui.defaultFontFamily
+import com.optiflowx.applekeyboard.ui.regular
 import io.github.alexzhirkevich.cupertino.Surface
 
 @Composable
@@ -21,30 +21,27 @@ fun ImportantNotice() {
     val radius = 12.dp
     Surface(
         shape = RoundedCornerShape(radius),
-        color = Color.Red.copy(alpha = 0.25f),
+        color = Color.DarkGray,
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 10.dp)
-            .border(BorderStroke(1.dp, Color.Red), RoundedCornerShape(radius))
+            .border(BorderStroke(1.dp, Color.Gray), RoundedCornerShape(radius))
     ) {
         Text(
-            "IMPORTANT MESSAGE:\n" +
-                    "\n" +
-                    "Thank you for choosing our application with the application ID: `com.optiflowx.applekeyboard`. " +
-                    "We would like to reassure you that we DO NOT collect any personal information from our users. " +
-                    "This application is a paid product because it is developed solely by OptiFlowX. Your purchase is a valuable " +
+            "IMPORTANT MESSAGE: I would like to reassure you that I do not collect any personal information from any user. " +
+                    "This application is a PAID product because it is developed solely by OptiFlowX. Your purchase is a valuable " +
                     "expression of support for the dedication and effort put into creating and maintaining this app.\n" +
                     "\n" +
-                    "PLEASE BE CAUTIOUS: acquiring this application for free from unofficial sources may expose " +
-                    "you to potential malware threats. We strongly advise against accepting or using any " +
-                    "free or modified versions of this specific app.\n" +
+                    "CAUTION: Acquiring this application for free from unofficial sources may expose " +
+                    "you to potential malware threats. Thus, I strongly advise against accepting or using any " +
+                    "modified versions of this app.\n" +
                     "\n" +
-                    "We sincerely appreciate your support and understanding. If you have any concerns or questions, " +
-                    "feel free to contact us. Thank you for being a part of the OptiFlowX community! \uD83D\uDE0A",
+                    "Thank you for your support and understanding. If you have any concerns or questions, " +
+                    "feel free to contact me.\uD83D\uDE0A",
             style = TextStyle(
-                color = Color.Red,
+                color = Color.White,
                 fontSize = TextUnit(12f, TextUnitType.Sp),
-                fontFamily = defaultFontFamily,
+                fontFamily = regular,
             ),
             modifier = Modifier.padding(8.dp)
         )

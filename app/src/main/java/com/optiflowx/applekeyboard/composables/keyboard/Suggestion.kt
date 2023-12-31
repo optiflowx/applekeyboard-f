@@ -22,10 +22,10 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
-import com.optiflowx.applekeyboard.ui.defaultFontFamily
+import com.optiflowx.applekeyboard.common.appFontType
 
 @Composable
-fun Suggestion(id: String, suggestion: String, onClick: () -> Unit) {
+fun Suggestion(id: String, suggestion: String, fontType: String?, onClick: () -> Unit) {
     val keyboardWidth = LocalConfiguration.current.screenWidthDp
     val width: Dp = (keyboardWidth * 0.31).dp
 
@@ -52,7 +52,7 @@ fun Suggestion(id: String, suggestion: String, onClick: () -> Unit) {
                 style = TextStyle(
                     color = MaterialTheme.colorScheme.primary.copy(alpha = 0.85f),
                     fontSize = TextUnit(16f, TextUnitType.Sp),
-                    fontFamily = defaultFontFamily,
+                    fontFamily = appFontType(fontType),
                 ),
             )
         }

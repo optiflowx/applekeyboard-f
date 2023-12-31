@@ -14,6 +14,7 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -21,10 +22,11 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
+import com.optiflowx.applekeyboard.common.appFontType
 import com.optiflowx.applekeyboard.composables.keyboard.EmojiItem
-import com.optiflowx.applekeyboard.models.KeyboardViewModel
-import com.optiflowx.applekeyboard.ui.mediumFontFamily
 import com.optiflowx.applekeyboard.utils.frequentlyUsedEmoji
+import com.optiflowx.applekeyboard.utils.handleTitle
+import com.optiflowx.applekeyboard.viewmodels.KeyboardViewModel
 import io.github.alexzhirkevich.cupertino.theme.CupertinoColors
 import io.github.alexzhirkevich.cupertino.theme.systemGray
 
@@ -32,9 +34,12 @@ import io.github.alexzhirkevich.cupertino.theme.systemGray
 @Composable
 fun EmojiKeyboardView(viewModel: KeyboardViewModel) {
     val screenWidth = LocalConfiguration.current.screenWidthDp
-//    val context = LocalContext.current
-
-    val frequentEmojis = viewModel.frequentlyUsedEmojiDao?.getAllEmojis()?.observeAsState()?.value?.reversed()
+    val defaultViewPort = (screenWidth).dp
+    val freqViewPort = (screenWidth * 0.76f).dp
+    val isESearch = viewModel.isEmojiSearch.observeAsState()
+    val fontType = viewModel.fontType.collectAsState("regular").value
+    val locale = viewModel.locale.collectAsState("en").value
+    val frequentEmojis = viewModel.frequentlyUsedEmojis.observeAsState().value?.reversed()
 
     val emojiViewPager = arrayListOf(
         hashMapOf("Frequently Used" to listOf()),
@@ -47,11 +52,8 @@ fun EmojiKeyboardView(viewModel: KeyboardViewModel) {
         hashMapOf("Symbols" to frequentlyUsedEmoji.symbols),
         hashMapOf("Flags" to frequentlyUsedEmoji.flags),
     )
-
     val pagerState = rememberPagerState(pageCount = { emojiViewPager.size }, initialPage = 0)
-    val freqViewPort = (screenWidth * 0.76f).dp
-    val defaultViewPort = (screenWidth).dp
-    val isESearch = viewModel.isEmojiSearch.observeAsState()
+
 
     AnimatedContent(isESearch, label = "Alternating Views") {
         if (it.value!!) NormalKeyboardView(viewModel)
@@ -66,9 +68,9 @@ fun EmojiKeyboardView(viewModel: KeyboardViewModel) {
                     emojiViewPager[page].forEach { (title, emojis) ->
                         Column {
                             Text(
-                                text = title.uppercase(),
+                                text = handleTitle(title, locale).uppercase(),
                                 fontSize = TextUnit(13f, TextUnitType.Sp),
-                                fontFamily = mediumFontFamily,
+                                fontFamily = appFontType(fontType),
                                 color = CupertinoColors.systemGray(isSystemInDarkTheme()),
                                 modifier = Modifier.padding(start = 15.dp, bottom = 3.dp)
                             )
@@ -104,3 +106,4 @@ fun EmojiKeyboardView(viewModel: KeyboardViewModel) {
         }
     }
 }
+

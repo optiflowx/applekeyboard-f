@@ -27,7 +27,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.optiflowx.applekeyboard.R
 import com.optiflowx.applekeyboard.models.Key
-import com.optiflowx.applekeyboard.models.KeyboardViewModel
+import com.optiflowx.applekeyboard.viewmodels.KeyboardViewModel
 import io.github.alexzhirkevich.cupertino.Surface
 import io.github.alexzhirkevich.cupertino.theme.CupertinoColors
 import io.github.alexzhirkevich.cupertino.theme.systemGray

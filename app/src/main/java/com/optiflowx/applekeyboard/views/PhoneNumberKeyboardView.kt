@@ -17,7 +17,7 @@ import androidx.constraintlayout.compose.ConstraintSet
 import androidx.constraintlayout.compose.Dimension
 import com.optiflowx.applekeyboard.composables.keyboard.PhoneNumKeyboardKey
 import com.optiflowx.applekeyboard.models.Key
-import com.optiflowx.applekeyboard.models.KeyboardViewModel
+import com.optiflowx.applekeyboard.viewmodels.KeyboardViewModel
 
 @Composable
 fun PhoneNumberKeyboardView(viewModel: KeyboardViewModel) {

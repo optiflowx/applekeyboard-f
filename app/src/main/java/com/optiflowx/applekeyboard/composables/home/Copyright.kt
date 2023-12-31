@@ -13,7 +13,7 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import com.optiflowx.applekeyboard.ui.cupertinoBlue1
-import com.optiflowx.applekeyboard.ui.defaultFontFamily
+import com.optiflowx.applekeyboard.ui.regular
 import io.github.alexzhirkevich.cupertino.Surface
 
 @Composable
@@ -35,20 +35,17 @@ fun CopyrightView() {
                     "\n" +
                     "This application, developed by OptiFlowX, is designed for use on Android devices. " +
                     "While OptiFlowX holds the rights to the application as a whole, it is important to " +
-                    "acknowledge that the keyboard design and specific resources incorporated herein " +
-                    "draw inspiration from Apple Inc.'s intellectual property.\n" +
-                    "\n" +
-                    "Any unauthorized reproduction, distribution, or modification of the application design and " +
-                    "associated resources that mimic Apple's design may infringe upon the intellectual property rights. " +
+                    "acknowledge that any unauthorized reproduction, distribution, or modification of the application " +
+                    "design and associated resources may infringe upon the intellectual property rights. " +
                     "This application is fully owned by OptiFlowX, and no other person holds responsibility for this app. " +
                     "OptiFlowX operates under fair use and acknowledges Apple Inc. rights to its design property.\n" +
                     "\n" +
-                    "2023 © OptiFlowX. All rights reserved. This application is not " +
+                    "2024 © OptiFlowX. All rights reserved. This application is not " +
                     "endorsed by or affiliated with Apple Inc.",
             style = TextStyle(
                 color = cupertinoBlue1,
                 fontSize = TextUnit(14f, TextUnitType.Sp),
-                fontFamily = defaultFontFamily,
+                fontFamily = regular,
             ),
             modifier = Modifier.padding(8.dp)
         )

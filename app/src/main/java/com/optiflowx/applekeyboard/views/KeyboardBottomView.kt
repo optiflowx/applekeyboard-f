@@ -17,6 +17,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -28,9 +29,9 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import com.optiflowx.applekeyboard.R
-import com.optiflowx.applekeyboard.models.KeyboardViewModel
-import com.optiflowx.applekeyboard.ui.defaultFontFamily
+import com.optiflowx.applekeyboard.ui.regular
 import com.optiflowx.applekeyboard.utils.KeyboardType
+import com.optiflowx.applekeyboard.viewmodels.KeyboardViewModel
 import io.github.alexzhirkevich.cupertino.icons.CupertinoIcons
 import io.github.alexzhirkevich.cupertino.icons.outlined.Mic
 
@@ -61,7 +62,7 @@ fun KeyboardBottomView(viewModel: KeyboardViewModel) {
                 Text(
                     text = "ABC",
                     color = MaterialTheme.colorScheme.primary,
-                    fontFamily = defaultFontFamily,
+                    fontFamily = regular,
                     fontSize = TextUnit(18f, TextUnitType.Sp),
                     modifier = Modifier.clickable(
                         indication = null,
@@ -81,7 +82,7 @@ fun KeyboardBottomView(viewModel: KeyboardViewModel) {
                             indication = null,
                             interactionSource = interactionSource,
                             onClick = { viewModel.onEmojiTap() },
-                            onLongClick = { viewModel.showPopup.value = true }
+                            onLongClick = {  }
                         ),
                 )
             }

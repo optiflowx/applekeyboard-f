@@ -17,9 +17,8 @@ import androidx.constraintlayout.compose.ConstraintSet
 import androidx.constraintlayout.compose.Dimension
 import com.optiflowx.applekeyboard.composables.keyboard.NumKeyboardKey
 import com.optiflowx.applekeyboard.models.Key
-import com.optiflowx.applekeyboard.models.KeyboardViewModel
+import com.optiflowx.applekeyboard.viewmodels.KeyboardViewModel
 
-@Preview
 @Composable
 fun NumberKeyboardView(viewModel: KeyboardViewModel) {
     val configuration = LocalConfiguration.current

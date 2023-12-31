@@ -8,6 +8,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableIntStateOf
@@ -19,18 +20,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import com.optiflowx.applekeyboard.R
+import com.optiflowx.applekeyboard.common.appFontType
 import com.optiflowx.applekeyboard.models.Key
-import com.optiflowx.applekeyboard.models.KeyboardViewModel
 import com.optiflowx.applekeyboard.services.IMEService
-import com.optiflowx.applekeyboard.ui.defaultFontFamily
+import com.optiflowx.applekeyboard.viewmodels.KeyboardViewModel
 
 @Composable
 fun KeyboardKey(key: Key, buttonWidth: Dp, viewModel: KeyboardViewModel) {
@@ -51,7 +50,7 @@ fun KeyboardKey(key: Key, buttonWidth: Dp, viewModel: KeyboardViewModel) {
     val isShift: Boolean = key.id == "shift"
     val isErase: Boolean = key.id == "erase"
 
-    val soundID = when(key.id) {
+    val soundID = when (key.id) {
         "erase" -> viewModel.soundPool?.load(ctx, R.raw.delete, 1)
         "action" -> viewModel.soundPool?.load(ctx, R.raw.ret, 1)
         "space" -> viewModel.soundPool?.load(ctx, R.raw.spacebar, 1)
@@ -59,52 +58,53 @@ fun KeyboardKey(key: Key, buttonWidth: Dp, viewModel: KeyboardViewModel) {
     }
 
     //Actions
-    val language = viewModel.currentLanguage.observeAsState()
+    val language = viewModel.locale.collectAsState("en").value
     val actionDone = viewModel.actionDone.observeAsState().value
     val actionSend = viewModel.actionSend.observeAsState().value
     val defaultAction = viewModel.actionDefault.observeAsState().value
     val actionNext = viewModel.actionNext.observeAsState().value
     val actionSearch = viewModel.actionSearch.observeAsState().value
     val actionGo = viewModel.actionGo.observeAsState().value
+    val fontType = viewModel.fontType.collectAsState("regular").value
 
     //State Handlers
     LaunchedEffect(language) {
-        viewModel.actionDone.value = when(language.value) {
+        viewModel.actionDone.value = when (language) {
             "fr" -> "fait"
             "pt" -> "terminado"
             "es" -> "hecho"
             else -> "done"
         }
 
-        viewModel.actionSend.value = when(language.value) {
+        viewModel.actionSend.value = when (language) {
             "fr" -> "lancer"
             "pt" -> "enviar"
             "es" -> "enviar"
             else -> "send"
         }
 
-        viewModel.actionDefault.value = when(language.value) {
+        viewModel.actionDefault.value = when (language) {
             "fr" -> "retour"
             "pt" -> "retornar"
             "es" -> "retorno"
             else -> "return"
         }
 
-        viewModel.actionNext.value = when(language.value) {
+        viewModel.actionNext.value = when (language) {
             "fr" -> "à côté"
             "pt" -> "próximo"
             "es" -> "próximo"
             else -> "next"
         }
 
-        viewModel.actionSearch.value = when(language.value) {
+        viewModel.actionSearch.value = when (language) {
             "fr" -> "chercher"
             "pt" -> "procurar"
             "es" -> "buscar"
             else -> "search"
         }
 
-        viewModel.actionGo.value = when(language.value) {
+        viewModel.actionGo.value = when (language) {
             "fr" -> "aller"
             "pt" -> "ir"
             "es" -> "ir"
@@ -119,7 +119,7 @@ fun KeyboardKey(key: Key, buttonWidth: Dp, viewModel: KeyboardViewModel) {
     }
 
 
-    LaunchedEffect(key.id,language) {
+    LaunchedEffect(key.id, language) {
         if (key.id == "action") {
             view.rootView.addOnLayoutChangeListener { view, _, _, _, _, _, _, _, _ ->
                 view.isInLayout.let {
@@ -141,7 +141,7 @@ fun KeyboardKey(key: Key, buttonWidth: Dp, viewModel: KeyboardViewModel) {
 
                             EditorInfo.IME_ACTION_SEARCH -> {
                                 viewModel.actionButtonColor.value = colorScheme.onSurface
-                                viewModel.actionButtonText.value =actionSearch
+                                viewModel.actionButtonText.value = actionSearch
                                 viewModel.actionTextColor.value = colorScheme.inversePrimary
                             }
 
@@ -213,11 +213,13 @@ fun KeyboardKey(key: Key, buttonWidth: Dp, viewModel: KeyboardViewModel) {
                     } else keyValue),
                     fontWeight = FontWeight.Light,
                     textAlign = TextAlign.Center,
-                    fontFamily = defaultFontFamily,
-                    style = TextStyle(
-                        if (key.id == "action") actionTextColor!! else colorScheme.primary,
-                        TextUnit(20f, TextUnitType.Sp)
+                    fontFamily = appFontType(fontType),
+                    fontSize = TextUnit(
+                        (if (key.id == "action" || key.id == "space") {
+                            16f
+                        } else 20f), TextUnitType.Sp
                     ),
+                    color = if (key.id == "action") actionTextColor!! else colorScheme.primary,
                 )
             }
         }

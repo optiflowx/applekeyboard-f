@@ -36,9 +36,10 @@ import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import com.optiflowx.applekeyboard.composables.home.CopyrightView
 import com.optiflowx.applekeyboard.composables.home.ImportantNotice
+import com.optiflowx.applekeyboard.screens.destinations.KeyboardSettingsScreenDestination
 import com.optiflowx.applekeyboard.screens.destinations.KeyboardTestScreenDestination
 import com.optiflowx.applekeyboard.ui.cupertinoBlue1
-import com.optiflowx.applekeyboard.ui.defaultFontFamily
+import com.optiflowx.applekeyboard.ui.regular
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import io.github.alexzhirkevich.cupertino.CupertinoButton
@@ -100,6 +101,14 @@ fun HomeScreen(navigator: DestinationsNavigator) {
                                 navigator.navigate(KeyboardTestScreenDestination)
                             },
                         ) { Text(text = "Test Keyboard") }
+                        Spacer(modifier = Modifier.height(8.dp))
+                        CupertinoButton(
+                            size = CupertinoButtonSize.Small,
+                            modifier = Modifier.fillMaxWidth(),
+                            onClick = {
+                                navigator.navigate(KeyboardSettingsScreenDestination)
+                            },
+                        ) { Text(text = "Keyboard Settings") }
                     }
                 }
             }
@@ -119,7 +128,7 @@ fun HomeTopBar() {
                     "logo",
                     tint = Color.White,
                 )
-                androidx.compose.material3.Text(" Keyboard", color = Color.White)
+                Text(" Keyboard", color = Color.White)
             }
         }
     )
@@ -133,11 +142,11 @@ fun HomeBottomBar() {
         BottomSheet() { showSheet = false }
     }
 
-    androidx.compose.material3.Text(
+    Text(
         "Copyright Information",
         color = cupertinoBlue1,
         textAlign = TextAlign.Center,
-        fontFamily = defaultFontFamily,
+        fontFamily = regular,
         fontWeight = FontWeight.ExtraBold,
         fontSize = TextUnit(14f, TextUnitType.Sp),
         modifier = Modifier
@@ -164,7 +173,7 @@ fun BottomSheet(onDismiss: () -> Unit) {
                 "Copyright Notice",
                 textAlign = TextAlign.Center,
                 fontWeight = FontWeight.Black,
-                fontFamily = defaultFontFamily,
+                fontFamily = regular,
                 color = Color.White,
                 fontSize = TextUnit(22f, TextUnitType.Sp),
                 textDecoration = TextDecoration.Underline,

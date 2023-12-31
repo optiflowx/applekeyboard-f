@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -19,7 +20,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
 import com.optiflowx.applekeyboard.composables.keyboard.Div
 import com.optiflowx.applekeyboard.composables.keyboard.Suggestion
-import com.optiflowx.applekeyboard.models.KeyboardViewModel
+import com.optiflowx.applekeyboard.viewmodels.KeyboardViewModel
 
 @Composable
 fun SuggestionView(viewModel: KeyboardViewModel) {
@@ -38,6 +39,8 @@ fun SuggestionView(viewModel: KeyboardViewModel) {
     val suggestion3 = remember(suggestions) {
         mutableStateOf(if (suggestions != null && suggestions.size >= 3) suggestions.elementAt(2) else "")
     }
+
+    val fontType = viewModel.fontType.collectAsState("regular").value
 
     val constraints = ConstraintSet {
         val firstSuggestion = createRefFor("sug1")
@@ -109,21 +112,21 @@ fun SuggestionView(viewModel: KeyboardViewModel) {
                 .align(Alignment.Center),
             100, true
         ) {
-            Suggestion("sug1", suggestion1.value, onClick = {
+            Suggestion("sug1", suggestion1.value,fontType, onClick = {
                 viewModel.onSuggestionClick(
                     suggestion1.value,
                     context
                 )
             })
             Div("div1")
-            Suggestion("sug2", suggestion2.value, onClick = {
+            Suggestion("sug2", suggestion2.value,fontType,  onClick = {
                 viewModel.onSuggestionClick(
                     suggestion2.value,
                     context
                 )
             })
             Div("div2")
-            Suggestion("sug3", suggestion3.value, onClick = {
+            Suggestion("sug3", suggestion3.value,fontType,  onClick = {
                 viewModel.onSuggestionClick(
                     suggestion3.value,
                     context

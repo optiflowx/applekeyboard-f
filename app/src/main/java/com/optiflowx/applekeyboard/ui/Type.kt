@@ -9,45 +9,45 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.optiflowx.applekeyboard.R
 
-val boldFontFamily = FontFamily(Font(R.font.bold, FontWeight.Bold))
-val mediumFontFamily = FontFamily(Font(R.font.medium, FontWeight.Medium))
-val defaultFontFamily = FontFamily(Font(R.font.regular, FontWeight.Normal))
+val bold = FontFamily(Font(R.font.bold, FontWeight.Bold))
+val medium = FontFamily(Font(R.font.medium, FontWeight.Medium))
+val regular = FontFamily(Font(R.font.regular, FontWeight.Normal))
 val iosEmojiFontFamily = FontFamily(Font(R.font.iosemojifont, loadingStrategy = FontLoadingStrategy.Async))
 // Set of Material typography styles to start with
 val typography = Typography(
     bodyLarge = TextStyle(
         fontWeight = FontWeight.Normal,
         fontSize = 16.sp,
-        fontFamily = defaultFontFamily,
+        fontFamily = regular,
     ),
     bodyMedium = TextStyle(
         fontWeight = FontWeight.W500,
         fontSize = 14.sp,
-        fontFamily = defaultFontFamily,
+        fontFamily = regular,
     ),
     bodySmall = TextStyle(
         fontWeight = FontWeight.Normal,
         fontSize = 12.sp,
-        fontFamily = defaultFontFamily,
+        fontFamily = regular,
     ),
     headlineLarge = TextStyle(
         fontWeight = FontWeight.W500,
         fontSize = 30.sp,
-        fontFamily = defaultFontFamily,
+        fontFamily = regular,
     ),
     headlineMedium = TextStyle(
         fontWeight = FontWeight.W500,
         fontSize = 24.sp,
-        fontFamily = defaultFontFamily,
+        fontFamily = regular,
     ),
     headlineSmall = TextStyle(
         fontWeight = FontWeight.W500,
         fontSize = 20.sp,
-        fontFamily = defaultFontFamily,
+        fontFamily = regular,
     ),
     displaySmall = TextStyle(
         fontWeight = FontWeight.Normal,
         fontSize = 16.sp,
-        fontFamily = defaultFontFamily,
+        fontFamily = regular,
     ),
 )

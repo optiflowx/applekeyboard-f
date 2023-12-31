@@ -5,19 +5,20 @@ import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.optiflowx.applekeyboard.databases.entities.FrequentlyUsedEmoji
 
 @Dao
 @Immutable
 interface FrequentlyUsedEmojiDatabaseDAO {
-    @Query("SELECT * FROM Frequently_Used_Emoji_Database")
+    @Query("SELECT * FROM Frequently_Used_Emoji_Database ORDER BY id ASC")
     fun getAllEmojis(): LiveData<List<FrequentlyUsedEmoji>>
 
-    @Query("SELECT * from Frequently_Used_Emoji_Database where id = :id")
+    @Query("SELECT * FROM Frequently_Used_Emoji_Database WHERE id = :id")
     fun getEmojisById(id: Int): FrequentlyUsedEmoji?
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(frequentlyUsedEmoji: FrequentlyUsedEmoji)
 
     @Delete
