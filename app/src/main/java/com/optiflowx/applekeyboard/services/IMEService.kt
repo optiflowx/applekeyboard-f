@@ -1,8 +1,5 @@
 package com.optiflowx.applekeyboard.services
 
-import android.app.Activity
-import android.content.Context
-import android.content.ContextWrapper
 import android.os.Build
 import android.view.View
 import androidx.compose.ui.graphics.Color
@@ -22,9 +19,7 @@ import androidx.savedstate.setViewTreeSavedStateRegistryOwner
 import com.optiflowx.applekeyboard.AppleKeyboardView
 
 @Suppress("DEPRECATION")
-class IMEService : LifecycleInputMethodService(),
-    ViewModelStoreOwner,
-    SavedStateRegistryOwner {
+class IMEService : LifecycleInputMethodService(), ViewModelStoreOwner, SavedStateRegistryOwner {
 
     override fun onCreateInputView(): View {
         val view = AppleKeyboardView(this)
@@ -77,27 +72,7 @@ class IMEService : LifecycleInputMethodService(),
 //                .setBlurRadius(radius)
         }
 
-
-
         return view
-    }
-
-    init {
-
-    }
-
-    private fun getActivityDecorView(context: Context): View? {
-        var ctx = context
-        var i = 0
-        while (i < 4 && ctx !is Activity && ctx is ContextWrapper) {
-            ctx = ctx.baseContext
-            i++
-        }
-        return if (ctx is Activity) {
-            ctx.window.decorView
-        } else {
-            null
-        }
     }
 
 

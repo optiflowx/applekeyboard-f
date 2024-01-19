@@ -1,56 +1,66 @@
 package com.optiflowx.applekeyboard.viewmodels
 
 import android.content.Context
-import android.content.SharedPreferences
-import android.util.Log
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asFlow
 import androidx.lifecycle.viewModelScope
-import com.optiflowx.applekeyboard.utils.booleanLiveData
-import com.optiflowx.applekeyboard.utils.intLiveData
-import com.optiflowx.applekeyboard.utils.stringLiveData
-import kotlinx.coroutines.flow.collectLatest
+import com.optiflowx.applekeyboard.storage.PreferencesConstants
+import com.optiflowx.applekeyboard.storage.PreferencesHelper
 import kotlinx.coroutines.launch
+
 
 @Stable
 class AppViewModel(context: Context) : ViewModel() {
-    //SharedPrefs Data`
-    private val prefsFileName = "com.optiflowx.applekeyboard"
-    private val prefsMode = Context.MODE_PRIVATE
-    private val prefs: SharedPreferences = context.getSharedPreferences(prefsFileName, prefsMode)
-
-    private val isFirstRun = prefs.booleanLiveData("isFirstRun", true).asFlow()
-    val locale = prefs.stringLiveData("locale", "en")
-    val fontType = prefs.stringLiveData("fontType", "regular")
-    val fontSize = prefs.intLiveData("fontSize", 18)
-    val vibrateOnKeyPress = prefs.booleanLiveData("vibrateOnKeyPress", true)
-    val soundOnKeyPress = prefs.booleanLiveData("soundOnKeyPress", true)
-    val autoCapitalize = prefs.booleanLiveData("autoCapitalize", true)
-    val autoCorrect = prefs.booleanLiveData("autoCorrect", false)
-    val doubleSpacePeriod = prefs.booleanLiveData("doubleSpacePeriod", true)
-    val autoCapitalizeFirstWord = prefs.booleanLiveData("autoCapitalizeFirstWord", false)
-    val autoCapitalizeI = prefs.booleanLiveData("autoCapitalizeI", true)
-    val showSuggestions = prefs.booleanLiveData("showSuggestions", true)
-    val showEmojiSearchBar = prefs.booleanLiveData("showEmojiSearchBar", true)
-    val autoCheckSpelling = prefs.booleanLiveData("autoCheckSpelling", false)
+    val preferences = PreferencesHelper(context)
+    private val pC = PreferencesConstants
 
     init {
-        // Set isFirstRun to false
         viewModelScope.launch {
-            isFirstRun.collectLatest {
-                if (it) prefs.edit().putBoolean("isFirstRun", false).apply()
-                Log.d("AppViewModel", "postUpdateIsFirstRun: $it")
+            val isFirstRun = preferences.getStaticPreference(pC.FIRST_RUN_KEY, true)
+
+            if (isFirstRun) {
+                preferences.putPreference(pC.FIRST_RUN_KEY, false)
             }
         }
-
     }
 
-    fun updateStringColumn(columnInfo: String, value: String) {
-        prefs.edit().putString(columnInfo, value).apply()
+    fun updateLocale(value: String) = viewModelScope.launch {
+        preferences.putPreference(pC.LOCALE_KEY, value)
     }
 
-    fun updateBooleanColumn(columnInfo: String, value: Boolean) {
-        prefs.edit().putBoolean(columnInfo, value).apply()
+    fun updateFontType(value: String) = viewModelScope.launch {
+        preferences.putPreference(pC.FONT_TYPE_KEY, value)
+    }
+
+    fun updateVibrateOnKeyPress(value: Boolean) = viewModelScope.launch {
+        preferences.putPreference(pC.VIBRATE_ON_KEY_PRESS_KEY, value)
+    }
+
+    fun updateSoundOnKeyPress(value: Boolean) = viewModelScope.launch {
+        preferences.putPreference(pC.SOUND_ON_KEY_PRESS_KEY, value)
+    }
+
+    fun updateAutoCapitalize(value: Boolean) = viewModelScope.launch {
+        preferences.putPreference(pC.AUTO_CAPITALIZE_KEY, value)
+    }
+
+    fun updateAutoCorrect(value: Boolean) = viewModelScope.launch {
+        preferences.putPreference(pC.AUTO_CORRECT_KEY, value)
+    }
+
+    fun updateDoubleSpacePeriod(value: Boolean) = viewModelScope.launch {
+        preferences.putPreference(pC.DOUBLE_SPACE_PERIOD_KEY, value)
+    }
+
+    fun updateAutoCapitalizeI(value: Boolean) = viewModelScope.launch {
+        preferences.putPreference(pC.AUTO_CAPITALIZE_I_KEY, value)
+    }
+
+    fun updateShowSuggestions(value: Boolean) = viewModelScope.launch {
+        preferences.putPreference(pC.SHOW_SUGGESTIONS_KEY, value)
+    }
+
+    fun updateAutoCheckSpelling(value: Boolean) = viewModelScope.launch {
+        preferences.putPreference(pC.AUTO_CHECK_SPELLING_KEY, value)
     }
 }

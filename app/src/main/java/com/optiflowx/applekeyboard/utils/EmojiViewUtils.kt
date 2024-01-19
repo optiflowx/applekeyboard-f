@@ -4,127 +4,118 @@ fun handleTitle(title: String, locale: String?): String {
     return when(title) {
         "Smileys & People" -> {
             when(locale) {
-                "es" -> "Caras y Personas"
-                "fr" -> "Smileys et Personnes"
-                "de" -> "Smileys & Personen"
-                "it" -> "Faccine e Persone"
-                "pt" -> "Carinhas e Pessoas"
-                "ru" -> "Смайлики и люди"
-                "ja" -> "顔文字と人々"
-                "ko" -> "스마일리 및 사람들"
-                "zh" -> "表情符号和人物"
+                KeyboardLanguage.ENGLISH.name -> "Smileys & People"
+                KeyboardLanguage.SPANISH.name -> "Caras y Personas"
+                KeyboardLanguage.FRENCH.name -> "Smileys et Personnes"
+                KeyboardLanguage.GERMAN.name -> "Smileys & Personen"
+                KeyboardLanguage.ITALIAN.name -> "Faccine e Persone"
+                KeyboardLanguage.PORTUGUESE.name -> "Carinhas e Pessoas"
+                KeyboardLanguage.DUTCH.name -> "Smileys en Mensen"
+                KeyboardLanguage.RUSSIAN.name -> "Смайлики и люди"
                 else -> "Smileys & People"
             }
         }
         "Animals & Nature" -> {
             when(locale) {
-                "es" -> "Animales y Naturaleza"
-                "fr" -> "Animaux et Nature"
-                "de" -> "Tiere & Natur"
-                "it" -> "Animali e Natura"
-                "pt" -> "Animais e Natureza"
-                "ru" -> "Животные и природа"
-                "ja" -> "動物と自然"
-                "ko" -> "동물 및 자연"
-                "zh" -> "动物和自然"
+                KeyboardLanguage.ENGLISH.name -> "Animals & Nature"
+                KeyboardLanguage.SPANISH.name -> "Animales y Naturaleza"
+                KeyboardLanguage.FRENCH.name -> "Animaux et Nature"
+                KeyboardLanguage.GERMAN.name -> "Tiere & Natur"
+                KeyboardLanguage.ITALIAN.name -> "Animali e Natura"
+                KeyboardLanguage.PORTUGUESE.name -> "Animais e Natureza"
+                KeyboardLanguage.DUTCH.name -> "Dieren en Natuur"
+                KeyboardLanguage.RUSSIAN.name -> "Животные и природа"
                 else -> "Animals & Nature"
             }
         }
         "Food & Drink" -> {
             when(locale) {
-                "es" -> "Comida y Bebida"
-                "fr" -> "Nourriture et Boissons"
-                "de" -> "Essen & Trinken"
-                "it" -> "Cibo e Bevande"
-                "pt" -> "Comida e Bebida"
-                "ru" -> "Еда и напитки"
-                "ja" -> "食べ物と飲み物"
-                "ko" -> "음식 및 음료"
-                "zh" -> "食物和饮料"
+                KeyboardLanguage.ENGLISH.name -> "Food & Drink"
+                KeyboardLanguage.SPANISH.name -> "Comida y Bebida"
+                KeyboardLanguage.FRENCH.name -> "Nourriture et Boissons"
+                KeyboardLanguage.GERMAN.name -> "Essen & Trinken"
+                KeyboardLanguage.ITALIAN.name -> "Cibo e Bevande"
+                KeyboardLanguage.PORTUGUESE.name -> "Comida e Bebida"
+                KeyboardLanguage.DUTCH.name -> "Eten en Drinken"
+                KeyboardLanguage.RUSSIAN.name -> "Еда и напитки"
                 else -> "Food & Drink"
             }
         }
         "Activities" -> {
             when(locale) {
-                "es" -> "Actividades"
-                "fr" -> "Activités"
-                "de" -> "Aktivitäten"
-                "it" -> "Attività"
-                "pt" -> "Atividades"
-                "ru" -> "Деятельность"
-                "ja" -> "アクティビティ"
-                "ko" -> "활동"
-                "zh" -> "活动"
+                KeyboardLanguage.ENGLISH.name -> "Activities"
+                KeyboardLanguage.SPANISH.name -> "Actividades"
+                KeyboardLanguage.FRENCH.name -> "Activités"
+                KeyboardLanguage.GERMAN.name -> "Aktivitäten"
+                KeyboardLanguage.ITALIAN.name -> "Attività"
+                KeyboardLanguage.PORTUGUESE.name -> "Atividades"
+                KeyboardLanguage.DUTCH.name -> "Activiteiten"
+                KeyboardLanguage.RUSSIAN.name -> "Мероприятия"
                 else -> "Activities"
             }
         }
         "Travel & Places" -> {
             when(locale) {
-                "es" -> "Viajes y Lugares"
-                "fr" -> "Voyages et Lieux"
-                "de" -> "Reisen & Orte"
-                "it" -> "Viaggi e Luoghi"
-                "pt" -> "Viagens e Locais"
-                "ru" -> "Путешествия и места"
-                "ja" -> "旅行と場所"
-                "ko" -> "여행 및 장소"
-                "zh" -> "旅行和地点"
+                KeyboardLanguage.ENGLISH.name -> "Travel & Places"
+                KeyboardLanguage.SPANISH.name -> "Viajes y Lugares"
+                KeyboardLanguage.FRENCH.name -> "Voyages et Lieux"
+                KeyboardLanguage.GERMAN.name -> "Reisen & Orte"
+                KeyboardLanguage.ITALIAN.name -> "Viaggi e Luoghi"
+                KeyboardLanguage.PORTUGUESE.name -> "Viagens e Lugares"
+                KeyboardLanguage.DUTCH.name -> "Reizen en Plaatsen"
+                KeyboardLanguage.RUSSIAN.name -> "Путешествия и места"
                 else -> "Travel & Places"
             }
         }
-        "Objects" -> {
+        "Objects"-> {
             when(locale) {
-                "es" -> "Objetos"
-                "fr" -> "Objets"
-                "de" -> "Objekte"
-                "it" -> "Oggetti"
-                "pt" -> "Objetos"
-                "ru" -> "Объекты"
-                "ja" -> "オブジェクト"
-                "ko" -> "물건"
-                "zh" -> "物品"
+                KeyboardLanguage.ENGLISH.name -> "Objects"
+                KeyboardLanguage.SPANISH.name -> "Objetos"
+                KeyboardLanguage.FRENCH.name -> "Objets"
+                KeyboardLanguage.GERMAN.name -> "Objekte"
+                KeyboardLanguage.ITALIAN.name -> "Oggetti"
+                KeyboardLanguage.PORTUGUESE.name -> "Objetos"
+                KeyboardLanguage.DUTCH.name -> "Objecten"
+                KeyboardLanguage.RUSSIAN.name -> "Объекты"
                 else -> "Objects"
             }
         }
         "Symbols" -> {
             when(locale) {
-                "es" -> "Símbolos"
-                "fr" -> "Symboles"
-                "de" -> "Symbole"
-                "it" -> "Simboli"
-                "pt" -> "Símbolos"
-                "ru" -> "Символы"
-                "ja" -> "シンボル"
-                "ko" -> "기호"
-                "zh" -> "符号"
+                KeyboardLanguage.ENGLISH.name -> "Symbols"
+                KeyboardLanguage.SPANISH.name -> "Símbolos"
+                KeyboardLanguage.FRENCH.name -> "Symboles"
+                KeyboardLanguage.GERMAN.name -> "Symbole"
+                KeyboardLanguage.ITALIAN.name -> "Simboli"
+                KeyboardLanguage.PORTUGUESE.name -> "Símbolos"
+                KeyboardLanguage.DUTCH.name -> "Symbolen"
+                KeyboardLanguage.RUSSIAN.name -> "Символы"
                 else -> "Symbols"
             }
         }
         "Flags" -> {
             when(locale) {
-                "es" -> "Banderas"
-                "fr" -> "Drapeaux"
-                "de" -> "Flaggen"
-                "it" -> "Bandiere"
-                "pt" -> "Bandeiras"
-                "ru" -> "Флаги"
-                "ja" -> "旗"
-                "ko" -> "깃발"
-                "zh" -> "旗帜"
+                KeyboardLanguage.ENGLISH.name -> "Flags"
+                KeyboardLanguage.SPANISH.name -> "Banderas"
+                KeyboardLanguage.FRENCH.name -> "Drapeaux"
+                KeyboardLanguage.GERMAN.name -> "Flaggen"
+                KeyboardLanguage.ITALIAN.name -> "Bandiere"
+                KeyboardLanguage.PORTUGUESE.name -> "Bandeiras"
+                KeyboardLanguage.DUTCH.name -> "Vlaggen"
+                KeyboardLanguage.RUSSIAN.name -> "Флаги"
                 else -> "Flags"
             }
         }
         else -> {
-            when(locale) {
-                "es" -> "Frecuentemente Usado"
-                "fr" -> "Utilisé Fréquemment"
-                "de" -> "Häufig verwendet"
-                "it" -> "Usato frequentemente"
-                "pt" -> "Usado com frequência"
-                "ru" -> "Часто используется"
-                "ja" -> "よく使う"
-                "ko" -> "자주 사용"
-                "zh" -> "经常使用"
+            when (locale) {
+                KeyboardLanguage.ENGLISH.name -> "Frequently Used"
+                KeyboardLanguage.SPANISH.name -> "Frecuentemente Usado"
+                KeyboardLanguage.FRENCH.name -> "Utilisé Fréquemment"
+                KeyboardLanguage.GERMAN.name -> "Häufig verwendet"
+                KeyboardLanguage.ITALIAN.name -> "Usato frequentemente"
+                KeyboardLanguage.PORTUGUESE.name -> "Usado com frequência"
+                KeyboardLanguage.DUTCH.name -> "Vaak gebruikt"
+                KeyboardLanguage.RUSSIAN.name -> "Часто используется"
                 else -> "Frequently Used"
             }
         }

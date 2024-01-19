@@ -19,8 +19,8 @@ interface FrequentlyUsedEmojiDatabaseDAO {
     fun getEmojisById(id: Int): FrequentlyUsedEmoji?
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insert(frequentlyUsedEmoji: FrequentlyUsedEmoji)
+     fun insert(frequentlyUsedEmoji: FrequentlyUsedEmoji)
 
     @Delete
-    suspend fun delete(frequentlyUsedEmoji: FrequentlyUsedEmoji)
+     fun delete(frequentlyUsedEmoji: FrequentlyUsedEmoji)
 }

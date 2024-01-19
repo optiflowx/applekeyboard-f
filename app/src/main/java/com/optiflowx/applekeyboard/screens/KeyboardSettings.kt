@@ -1,5 +1,3 @@
-@file:Suppress("UNCHECKED_CAST")
-
 package com.optiflowx.applekeyboard.screens
 
 import androidx.compose.foundation.layout.Column
@@ -12,16 +10,19 @@ import androidx.compose.foundation.layout.safeContent
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.optiflowx.applekeyboard.composables.home.BooleanListTile
 import com.optiflowx.applekeyboard.composables.home.StringListTile
+import com.optiflowx.applekeyboard.storage.PreferencesConstants
+import com.optiflowx.applekeyboard.utils.KeyboardFontType
+import com.optiflowx.applekeyboard.utils.KeyboardLanguage
 import com.optiflowx.applekeyboard.viewmodels.AppViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -34,12 +35,18 @@ import io.github.alexzhirkevich.cupertino.Surface
 import io.github.alexzhirkevich.cupertino.icons.CupertinoIcons
 import io.github.alexzhirkevich.cupertino.icons.outlined.ChevronBackward
 
+@Suppress("UNCHECKED_CAST")
 @OptIn(ExperimentalCupertinoApi::class)
 @Destination
 @Composable
-fun KeyboardSettingsScreen(navigator: DestinationsNavigator) {
+fun KeyboardSettingsScreen(
+    navigator: DestinationsNavigator,
+) {
     val context = LocalContext.current
+    val pC = PreferencesConstants
+
     val viewModel = viewModel<AppViewModel>(
+        key = "AppViewModel",
         factory = object : ViewModelProvider.Factory {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
                 return AppViewModel(context) as T
@@ -47,29 +54,26 @@ fun KeyboardSettingsScreen(navigator: DestinationsNavigator) {
         }
     )
 
-    val locale = viewModel.locale.observeAsState().value
-
-    val autoCapitalizeFistWord = viewModel.autoCapitalizeFirstWord.observeAsState().value
-
-    val fontType = viewModel.fontType.observeAsState().value
-
-    val soundOnKeyPress = viewModel.soundOnKeyPress.observeAsState().value
-
-    val vibrateOnKeyPress = viewModel.vibrateOnKeyPress.observeAsState().value
-
-    val showSuggestions = viewModel.showSuggestions.observeAsState().value
-
-    val showEmojiSearchBar = viewModel.showEmojiSearchBar.observeAsState().value
-
-    val autoCapitalizeI = viewModel.autoCapitalizeI.observeAsState().value
-
-    val autoCapitalize = viewModel.autoCapitalize.observeAsState().value
-
-    val autoCorrect = viewModel.autoCorrect.observeAsState().value
-
-    val autoCheckSpelling = viewModel.autoCheckSpelling.observeAsState().value
-
-    val doubleSpacePeriod = viewModel.doubleSpacePeriod.observeAsState().value
+    val locale = viewModel.preferences.getFlowPreference(pC.LOCALE_KEY, "ENGLISH")
+        .collectAsStateWithLifecycle("ENGLISH")
+    val fontType = viewModel.preferences.getFlowPreference(pC.FONT_TYPE_KEY, "Regular")
+        .collectAsStateWithLifecycle("Regular")
+    val soundOn = viewModel.preferences.getFlowPreference(pC.SOUND_ON_KEY_PRESS_KEY, false)
+        .collectAsStateWithLifecycle(false)
+    val vibrateOn = viewModel.preferences.getFlowPreference(pC.VIBRATE_ON_KEY_PRESS_KEY, false)
+        .collectAsStateWithLifecycle(false)
+    val autoCapitalize = viewModel.preferences.getFlowPreference(pC.AUTO_CAPITALIZE_KEY, false)
+        .collectAsStateWithLifecycle(false)
+    val autoCorrect = viewModel.preferences.getFlowPreference(pC.AUTO_CORRECT_KEY, false)
+        .collectAsStateWithLifecycle(false)
+    val doubleSpacePeriod = viewModel.preferences.getFlowPreference(pC.DOUBLE_SPACE_PERIOD_KEY, false)
+        .collectAsStateWithLifecycle(false)
+    val autoCapitalizeI = viewModel.preferences.getFlowPreference(pC.AUTO_CAPITALIZE_I_KEY, false)
+        .collectAsStateWithLifecycle(false)
+    val showSuggestions = viewModel.preferences.getFlowPreference(pC.SHOW_SUGGESTIONS_KEY, false)
+        .collectAsStateWithLifecycle(false)
+    val autoCheckSpelling = viewModel.preferences.getFlowPreference(pC.AUTO_CHECK_SPELLING_KEY, false)
+        .collectAsStateWithLifecycle(false)
 
     CupertinoScaffold(
         topBar = { KeyboardSettingsTopBar(navigator) },
@@ -86,76 +90,64 @@ fun KeyboardSettingsScreen(navigator: DestinationsNavigator) {
             Column {
                 Spacer(Modifier.height(60.dp))
 
-                val languages = listOf("en", "es", "pt", "fr")
-                StringListTile("Keyboard Language", locale?:"", languages) {
-                    viewModel.updateStringColumn("locale", it)
+                val languages = KeyboardLanguage.entries.map { it.name }
+                StringListTile("Keyboard Language", locale.value, languages) {
+                    viewModel.updateLocale(it)
                 }
 
                 CupertinoDivider()
 
-                val fonts = listOf("regular", "medium", "bold")
-                StringListTile("Keyboard Font Type", fontType?:"", fonts) {
-                    viewModel.updateStringColumn("fontType", it)
+                val fonts = KeyboardFontType.entries.map { it.name }
+                StringListTile("Keyboard Font Type", fontType.value, fonts) {
+                    viewModel.updateFontType(it)
                 }
 
                 CupertinoDivider()
 
-                BooleanListTile(vibrateOnKeyPress ?: false, "Vibrate On Key Press") {
-                    viewModel.updateBooleanColumn("vibrateOnKeyPress", it)
+                BooleanListTile(vibrateOn.value, "Vibrate On Key Press") {
+                    viewModel.updateVibrateOnKeyPress(it)
                 }
 
                 CupertinoDivider()
 
-                BooleanListTile(soundOnKeyPress ?: false, "Sound On Key Press") {
-                    viewModel.updateBooleanColumn("soundOnKeyPress", it)
+                BooleanListTile(soundOn.value, "Sound On Key Press") {
+                    viewModel.updateSoundOnKeyPress(it)
                 }
 
                 CupertinoDivider()
 
-                BooleanListTile(showEmojiSearchBar ?: false, "Show Emoji Search Bar") {
-                    viewModel.updateBooleanColumn("showEmojiSearchBar", it)
+                BooleanListTile(doubleSpacePeriod.value, "Double Space Period") {
+                    viewModel.updateDoubleSpacePeriod(it)
                 }
 
                 CupertinoDivider()
 
-                BooleanListTile(doubleSpacePeriod ?: false, "Double Space Period") {
-                    viewModel.updateBooleanColumn("doubleSpacePeriod", it)
+                BooleanListTile(autoCapitalize.value, "Auto-Capitalization") {
+                    viewModel.updateAutoCapitalize(it)
                 }
 
                 CupertinoDivider()
 
-                BooleanListTile(autoCapitalize ?: false, "Auto-Capitalization") {
-                    viewModel.updateBooleanColumn("autoCapitalize", it)
+                BooleanListTile(showSuggestions.value, "Show Suggestions") {
+                    viewModel.updateShowSuggestions(it)
                 }
 
                 CupertinoDivider()
 
-                BooleanListTile(showSuggestions ?: false, "Show Suggestions") {
-                    viewModel.updateBooleanColumn("showSuggestions", it)
+                BooleanListTile(autoCheckSpelling.value, "Auto Check Spelling") {
+                    viewModel.updateAutoCheckSpelling(it)
                 }
 
                 CupertinoDivider()
 
-                BooleanListTile(autoCheckSpelling ?: false, "Auto Check Spelling") {
-                    viewModel.updateBooleanColumn("autoCheckSpelling", it)
+                BooleanListTile(autoCorrect.value, "Auto-Correction") {
+                    viewModel.updateAutoCorrect(it)
                 }
 
                 CupertinoDivider()
 
-                BooleanListTile(autoCorrect ?: false, "Auto-Correction") {
-                    viewModel.updateBooleanColumn("autoCorrect", it)
-                }
-
-                CupertinoDivider()
-
-                BooleanListTile(autoCapitalizeFistWord ?: false, "Auto-Capitalize First Word") {
-                    viewModel.updateBooleanColumn("autoCapitalizeFirstWord", it)
-                }
-
-                CupertinoDivider()
-
-                BooleanListTile(autoCapitalizeI ?: false, "Auto Capitalize `I`") {
-                    viewModel.updateBooleanColumn("autoCapitalizeI", it)
+                BooleanListTile(autoCapitalizeI.value, "Auto Capitalize `I`") {
+                    viewModel.updateAutoCapitalizeI(it)
                 }
             }
         }

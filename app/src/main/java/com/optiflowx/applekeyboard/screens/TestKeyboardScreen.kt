@@ -34,6 +34,10 @@ fun KeyboardTestScreen(navigator: DestinationsNavigator) {
     val (text, setValue) = remember { mutableStateOf(TextFieldValue("")) }
     val (text2, setValue2) = remember { mutableStateOf(TextFieldValue("")) }
     val (text3, setValue3) = remember { mutableStateOf(TextFieldValue("")) }
+    val (text4, setValue4) = remember { mutableStateOf(TextFieldValue("")) }
+    val (text5, setValue5) = remember { mutableStateOf(TextFieldValue("")) }
+    val (text6, setValue6) = remember { mutableStateOf(TextFieldValue("")) }
+    val (text7, setValue7) = remember { mutableStateOf(TextFieldValue("")) }
 
     CupertinoScaffold(
         topBar = { TestScreenTopBar(navigator) },
@@ -49,9 +53,13 @@ fun KeyboardTestScreen(navigator: DestinationsNavigator) {
         ) {
             Column {
                 Spacer(Modifier.height(40.dp))
+                TextFieldView("General", text4, setValue4)
                 TextFieldView("Text", text, setValue)
                 TextFieldView("Number", text2, setValue2)
                 TextFieldView("Phone", text3, setValue3)
+                TextFieldView("URL", text5, setValue5)
+                TextFieldView("Search", text6, setValue6)
+                TextFieldView("Next", text7, setValue7)
             }
         }
     }

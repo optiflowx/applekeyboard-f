@@ -1,13 +1,15 @@
 plugins {
+//    kotlin("plugin.serialization")
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
 //    id ("dagger.hilt.android.plugin")
-//    kotlin("plugin.serialization")
+//    id("kotlin-parcelize")
     id("com.google.devtools.ksp")
 }
 
-val composeVersion = "1.5.3"
-val lifecycleVersion = "2.6.2"
+val hiltVersion = "2.48"
+val composeVersion = "1.5.7"
+val lifecycleVersion = "2.7.0"
 val archVersion = "2.2.0"
 val roomVersion = "2.6.1"
 
@@ -32,7 +34,7 @@ android {
         release {
             isMinifyEnabled = true
             isShrinkResources = true
-//            isProfileable = true
+            isProfileable = false
 //            isDebuggable = true
 //            isJniDebuggable = true
 
@@ -67,28 +69,24 @@ dependencies {
 //    implementation ("com.github.dcendents:android-maven-gradle-plugin:2.1")
     androidTestImplementation("androidx.test:runner:1.5.2")
 
-    //Hoko Blur
-//    implementation("io.github.hokofly:hoko-blur:1.5.3")
-//    implementation("jp.wasabeef:blurry:4.0.1")
+    //Blur
+//    implementation ("com.github.x3rocode:xblur-compose:1.0.1")
+//    implementation("dev.chrisbanes.haze:haze-jetpack-compose:0.4.1")
 
-    //Realtime BlurView
-//    implementation (project(":library"))
-//    implementation("com.github.Dimezis:BlurView:version-2.0.4")
+    //Hilt
+//    implementation("com.google.dagger:hilt-android:$hiltVersion")
+//    ksp ("com.google.dagger:hilt-android-compiler:$hiltVersion")
+//    implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
 
-    //Blur Kit
-//    implementation("io.alterac.blurkit:blurkit:1.1.1")
-
-//    implementation ("androidx.navigation:navigation-compose:2.7.6")
     //Destinations
     implementation ("io.github.raamcosta.compose-destinations:core:1.1.2-beta")
     ksp ("io.github.raamcosta.compose-destinations:ksp:1.1.2-beta")
 
-    implementation ("org.jetbrains.kotlin:kotlin-stdlib:1.9.21")
+    implementation ("org.jetbrains.kotlin:kotlin-stdlib:1.9.22")
     implementation ("androidx.appcompat:appcompat:1.6.1")
 
     //Compose Dependencies
     implementation ("androidx.compose.ui:ui:$composeVersion")
-//    implementation ("androidx.compose.material3:material3:$composeVersion")
     implementation ("androidx.compose.ui:ui-tooling:$composeVersion")
     implementation ("androidx.compose.material3:material3:1.1.2")
     implementation ("androidx.compose.foundation:foundation:$composeVersion")
@@ -98,7 +96,6 @@ dependencies {
     implementation ("androidx.activity:activity-compose:1.8.2")
 
     implementation ("androidx.core:core-ktx:1.12.0")
-    //    implementation("io.coil-kt:coil-compose:2.5.0")
 
     //Simplify the UI
     implementation ("com.louiscad.splitties:splitties-systemservices:3.0.0")
@@ -115,11 +112,11 @@ dependencies {
     implementation("androidx.constraintlayout:constraintlayout:2.2.0-alpha13")
     implementation("androidx.constraintlayout:constraintlayout-compose:1.1.0-alpha13")
 
-
-    // ViewModel
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
+    //Saved State Key Provider To Pass SaveStateHandle on [ComposeDestinations]
+//    implementation ("androidx.navigation:navigation-compose:2.7.6")
 
     // Lifecycle Dependencies
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion")
     implementation ("androidx.lifecycle:lifecycle-service:$lifecycleVersion")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:$lifecycleVersion")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:$lifecycleVersion")
@@ -133,25 +130,16 @@ dependencies {
     implementation("io.github.alexzhirkevich:cupertino-icons-extended:0.1.0-alpha02")
 
     //Local Storage
-    implementation("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.7")
+//    implementation("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.7")
+    implementation("androidx.datastore:datastore-preferences:1.1.0-beta01")
 //    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2")
-
-    //Gson
-    implementation ("com.google.code.gson:gson:2.10.1")
 
     //Room database
     implementation("androidx.room:room-runtime:$roomVersion")
-//    annotationProcessor("androidx.room:room-compiler:$roomVersion")
-    // To use Kotlin annotation processing tool (kapt)
-//    kapt("androidx.room:room-compiler:$roomVersion")
+
     // To use Kotlin Symbol Processing (KSP)
     ksp("androidx.room:room-compiler:$roomVersion")
 
     // optional - Kotlin Extensions and Coroutines support for Room
     implementation("androidx.room:room-ktx:$roomVersion")
-
-    // Dagger Hilt
-//    implementation ("com.google.dagger:hilt-android:2.48")
-//    ksp("com.google.dagger:hilt-android-compiler:2.48")
-//    implementation ("androidx.hilt:hilt-navigation-compose:1.1.0")
 }

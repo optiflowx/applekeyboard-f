@@ -26,10 +26,8 @@ import io.github.alexzhirkevich.cupertino.theme.CupertinoColors
 import io.github.alexzhirkevich.cupertino.theme.systemGray
 
 @Composable
-fun StringListTile(text: String, data: String, list: List<String>, onClick: (String) -> Unit) {
+fun StringListTile(text: String, data: String?, entries: List<String>, onClick: (String) -> Unit) {
     Surface(
-        onClick = {
-        },
         color = Color.Transparent, modifier = Modifier
             .fillMaxWidth()
             .wrapContentSize()
@@ -50,17 +48,18 @@ fun StringListTile(text: String, data: String, list: List<String>, onClick: (Str
                 )
 
                 CupertinoText(
-                    text = data,
+                    text = "$data",
                     fontFamily = regular,
                     color = CupertinoColors.systemGray(isSystemInDarkTheme()),
                     fontSize = TextUnit(16f, TextUnitType.Sp)
                 )
             }
+
             Spacer(Modifier.height(10.dp))
 
             //Selections
             LazyRow {
-                for(value in list) {
+                for(value in entries) {
                     item (value) {
                         Surface(
                             color = if(data == value) cupertinoBlue1 else Color.DarkGray,

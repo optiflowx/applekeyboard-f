@@ -1,7 +1,6 @@
 package com.optiflowx.applekeyboard.viewmodels
 
 import android.content.Context
-import android.content.SharedPreferences
 import android.media.AudioAttributes
 import android.media.AudioAttributes.CONTENT_TYPE_SONIFICATION
 import android.media.SoundPool
@@ -9,13 +8,10 @@ import android.os.Build
 import android.os.VibrationEffect
 import android.view.inputmethod.InputConnection
 import android.view.inputmethod.InputConnection.GET_TEXT_WITH_STYLES
-import androidx.compose.material3.ColorScheme
 import androidx.compose.runtime.Stable
-import androidx.compose.ui.unit.IntOffset
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asFlow
 import androidx.lifecycle.viewModelScope
 import com.optiflowx.applekeyboard.databases.dao.FrequentlyUsedEmojiDatabaseDAO
 import com.optiflowx.applekeyboard.databases.dbs.FrequentlyUsedDatabase
@@ -38,44 +34,28 @@ import com.optiflowx.applekeyboard.languages.spanish.spListC
 import com.optiflowx.applekeyboard.languages.spanish.spListD
 import com.optiflowx.applekeyboard.models.Key
 import com.optiflowx.applekeyboard.services.IMEService
+import com.optiflowx.applekeyboard.storage.PreferencesConstants
+import com.optiflowx.applekeyboard.storage.PreferencesHelper
+import com.optiflowx.applekeyboard.utils.KeyboardLanguage
+import com.optiflowx.applekeyboard.utils.KeyboardLocale
 import com.optiflowx.applekeyboard.utils.KeyboardType
-import com.optiflowx.applekeyboard.utils.booleanLiveData
-import com.optiflowx.applekeyboard.utils.intLiveData
-import com.optiflowx.applekeyboard.utils.stringLiveData
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import splitties.systemservices.vibrator
 import java.util.Locale
 
 @Stable
-class KeyboardViewModel(screenWidth: Int, colorScheme: ColorScheme, context: Context) :
-    ViewModel() {
-    //AppViewModel
-    private val prefsFileName = "com.optiflowx.applekeyboard"
-    private val prefsMode = Context.MODE_PRIVATE
-    private val prefs: SharedPreferences = context.getSharedPreferences(prefsFileName, prefsMode)
-
+class KeyboardViewModel(context: Context) : ViewModel() {
     //UI
     val isAllCaps = MutableLiveData(false)
     val keyboardType = MutableLiveData(KeyboardType.Normal)
     val isNumberSymbol = MutableLiveData(false)
-    val actionButtonText = MutableLiveData("return")
-    val actionButtonColor = MutableLiveData(colorScheme.background)
-    val actionTextColor = MutableLiveData(colorScheme.inversePrimary)
     val isCapsLock = MutableLiveData(false)
-    val keyboardSize = MutableLiveData(IntOffset(screenWidth, 275 + 50))
-
     val isPhoneSymbol = MutableLiveData(false)
     val isEmojiSearch = MutableLiveData(false)
-    var soundPool: SoundPool? = null
 
-    //Actions
-    val actionDone = MutableLiveData("done")
-    val actionSearch = MutableLiveData("search")
-    val actionGo = MutableLiveData("go")
-    val actionNext = MutableLiveData("next")
-    val actionSend = MutableLiveData("send")
-    val actionDefault = MutableLiveData("return")
+    var soundPool: SoundPool? = null
 
     //Dictionaries
     val wordsDictionary = MutableLiveData(listOf<String>())
@@ -95,21 +75,12 @@ class KeyboardViewModel(screenWidth: Int, colorScheme: ColorScheme, context: Con
     //Database Utils
     var frequentlyUsedEmojis: LiveData<List<FrequentlyUsedEmoji>>
 
-    //App Data
-    val locale = prefs.stringLiveData("locale", "en").asFlow()
-    val fontType = prefs.stringLiveData("fontType", "regular").asFlow()
-    val fontSize = prefs.intLiveData("fontSize", 18).asFlow()
-    private val vibrateOnKeyPress = prefs.booleanLiveData("vibrateOnKeyPress", true).asFlow()
-    private val soundOnKeyPress = prefs.booleanLiveData("soundOnKeyPress", true).asFlow()
-    private val autoCapitalize = prefs.booleanLiveData("autoCapitalize", true).asFlow()
-    private val autoCorrect = prefs.booleanLiveData("autoCorrect", false).asFlow()
-    private val doubleSpacePeriod = prefs.booleanLiveData("doubleSpacePeriod", true).asFlow()
-    private val autoCapitalizeFirstWord =
-        prefs.booleanLiveData("autoCapitalizeFirstWord", false).asFlow()
-    private val autoCapitalizeI = prefs.booleanLiveData("autoCapitalizeI", true).asFlow()
-    private val showSuggestions = prefs.booleanLiveData("showSuggestions", true).asFlow()
-    private val showEmojiSearchBar = prefs.booleanLiveData("showEmojiSearchBar", true).asFlow()
-    private val autoCheckSpelling = prefs.booleanLiveData("autoCheckSpelling", false).asFlow()
+    //UI Locale
+    private val keyboardLocale = KeyboardLocale()
+
+    //DataStore
+    val preferences = PreferencesHelper(context)
+    private val pC = PreferencesConstants
 
     init {
         //Init Sound Pool
@@ -118,7 +89,7 @@ class KeyboardViewModel(screenWidth: Int, colorScheme: ColorScheme, context: Con
                 AudioAttributes.Builder().setContentType(CONTENT_TYPE_SONIFICATION)
                     .setUsage(AudioAttributes.USAGE_ASSISTANCE_SONIFICATION).build()
             soundPool =
-                SoundPool.Builder().setAudioAttributes(audioAttributes).setMaxStreams(128).build()
+                SoundPool.Builder().setAudioAttributes(audioAttributes).setMaxStreams(196).build()
         }
 
         //Init Databases
@@ -133,111 +104,91 @@ class KeyboardViewModel(screenWidth: Int, colorScheme: ColorScheme, context: Con
 
     override fun onCleared() {
         super.onCleared()
-
         soundPool?.release()
         soundPool = null
     }
 
-    private fun playSound(soundID: Int?) {
-        viewModelScope.launch {
-            soundOnKeyPress.collectLatest {
-                if (it) soundPool?.play(soundID!!, 1f, 1f, 1, 0, 1.5f)
-            }
+    fun playSound(soundID: Int?) = viewModelScope.launch(Dispatchers.IO) {
+        val value: Boolean = preferences.getStaticPreference(pC.SOUND_ON_KEY_PRESS_KEY, true)
+        if (value) {
+            soundPool?.play(soundID!!, 0.3f, 0.3f, 1, 0, 1.25f)
         }
-
     }
 
     @Suppress("DEPRECATION")
-    private fun vibrate() {
-        viewModelScope.launch {
-            vibrateOnKeyPress.collectLatest {
-                if (it) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        vibrator.vibrate(VibrationEffect.createOneShot(50, -1))
-                    } else vibrator.vibrate(50)
-                }
-            }
+    fun vibrate() = viewModelScope.launch(Dispatchers.IO) {
+        val value: Boolean = preferences.getStaticPreference(pC.VIBRATE_ON_KEY_PRESS_KEY, true)
+        if (value) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                vibrator.vibrate(VibrationEffect.createOneShot(50, -1))
+            } else vibrator.vibrate(50)
         }
-
     }
 
     private fun checkSpelling(context: Context) {
         viewModelScope.launch {
-            autoCheckSpelling.collectLatest {
-                if (it) {
-                    val connection = (context as IMEService).currentInputConnection
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                        connection.performSpellCheck()
+            val value: Boolean = preferences.getLastPreference(pC.AUTO_CHECK_SPELLING_KEY, true)
+            if (value) {
+                val connection = (context as IMEService).currentInputConnection
+                val text = connection.getTextBeforeCursor(1, GET_TEXT_WITH_STYLES)
+                if (!text.isNullOrEmpty()) {
+                    val lastChar = text.last()
+                    if (lastChar == ' ') {
+                        val textBeforeCursor =
+                            connection.getTextBeforeCursor(24, GET_TEXT_WITH_STYLES)
+                        if (textBeforeCursor != null) {
+                            val filterText = textBeforeCursor.split(" ").last()
+                            val isCorrect = when (preferences.getLastPreference(
+                                pC.LOCALE_KEY,
+                                KeyboardLanguage.ENGLISH.name
+                            )) {
+                                KeyboardLanguage.ENGLISH.name -> englishWords.contains(filterText)
+                                KeyboardLanguage.SPANISH.name -> spanishWords.contains(filterText)
+                                KeyboardLanguage.FRENCH.name -> frenchWords.contains(filterText)
+                                KeyboardLanguage.PORTUGUESE.name -> ptWords.contains(filterText)
+                                else -> englishWords.contains(filterText)
+                            }
+                            if (!isCorrect) {
+                                connection.deleteSurroundingText(filterText.length, 0)
+                            }
+                        }
                     }
                 }
             }
         }
-
     }
 
-    private fun handleCapsLock() {
-        viewModelScope.launch {
-            autoCapitalize.collectLatest {
-                if (it) {
-                    if (isAllCaps.value == true && isCapsLock.value == false) {
-                        isAllCaps.value = false
-                    }
-                }
-            }
+    private fun handleCapsLock() = viewModelScope.launch {
+        if (isAllCaps.value == true && isCapsLock.value == false) {
+            isAllCaps.value = false
         }
     }
 
-    private fun updateCapsLock() {
-        viewModelScope.launch {
-            autoCapitalize.collectLatest {
-                if (it) {
-                    isCapsLock.value = false
-                    isAllCaps.value = true
-                }
-            }
-        }
-    }
-
-    private fun handleAutoCorrect() {
-        viewModelScope.launch {
-            autoCorrect.collectLatest {
-//                if (it) { }
-            }
-        }
-    }
-
-    private fun handleAutoCapitalizeFirstWord(connection: InputConnection) {
-        viewModelScope.launch {
-            autoCapitalizeFirstWord.collectLatest {
-                if (it) {
-                    val text = connection.getTextBeforeCursor(2, GET_TEXT_WITH_STYLES)
-                    if(text.isNullOrEmpty()) updateCapsLock()
-                }
-            }
+    private suspend fun updateCapsLock() {
+        val value: Boolean = preferences.getLastPreference(pC.AUTO_CAPITALIZE_KEY, true)
+        if (value) {
+            isAllCaps.value = true
+            isCapsLock.value = false
         }
     }
 
     private fun handleDoubleSpacePeriod(connection: InputConnection) {
         viewModelScope.launch {
-            doubleSpacePeriod.collectLatest {
-                if (it) {
-                    connection.deleteSurroundingText(1, 0).let {
-                        connection.commitText(". ", ". ".length)
-                    }
-                    updateCapsLock()
+            val value: Boolean = preferences.getLastPreference(pC.DOUBLE_SPACE_PERIOD_KEY, true)
+            if (value) {
+                connection.deleteSurroundingText(1, 0).let {
+                    connection.commitText(". ", ". ".length)
                 }
+                updateCapsLock()
             }
         }
     }
 
-    private fun handleAutoCapitalizeI(connection: InputConnection) {
-        viewModelScope.launch {
-            autoCapitalizeI.collectLatest {
-                if (it) {
-                    connection.deleteSurroundingText(1, 0).let {
-                        connection.commitText(" I ", " I ".length)
-                    }
-                }
+    private fun handleAutoCapitalizeI(connection: InputConnection) = viewModelScope.launch {
+        val value: Boolean = preferences.getLastPreference(pC.AUTO_CAPITALIZE_I_KEY, true)
+        if (value) {
+            connection.deleteSurroundingText(2, 0).let {
+                connection.commitText(" I ", " I ".length)
             }
         }
     }
@@ -247,201 +198,164 @@ class KeyboardViewModel(screenWidth: Int, colorScheme: ColorScheme, context: Con
         if (charSequence != null) {
             val filterText = charSequence.split(" ").last()
             viewModelScope.launch {
-                locale.collectLatest { language ->
-                    wordsDictionary.value = when (language) {
-                        "pt" -> ptWords.filter {
-                            it.startsWith(filterText.lowercase())
-                        }
+                preferences.getFlowPreference(pC.LOCALE_KEY, KeyboardLanguage.ENGLISH.name)
+                    .collectLatest { language ->
+                        wordsDictionary.value = when (language) {
+                            KeyboardLanguage.PORTUGUESE.name -> ptWords.filter {
+                                it.startsWith(filterText.lowercase())
+                            }
 
-                        "es" -> spanishWords.filter {
-                            it.startsWith(filterText.lowercase())
-                        }
+                            KeyboardLanguage.SPANISH.name -> spanishWords.filter {
+                                it.startsWith(filterText.lowercase())
+                            }
 
-                        "fr" -> frenchWords.filter {
-                            it.startsWith(filterText.lowercase())
-                        }
-                        ///[DEFAULT IS ENGLISH]
-                        else -> englishWords.filter {
-                            it.startsWith(filterText.lowercase())
+                            KeyboardLanguage.FRENCH.name -> frenchWords.filter {
+                                it.startsWith(filterText.lowercase())
+                            }
+                            ///[DEFAULT IS ENGLISH]
+                            else -> englishWords.filter {
+                                it.startsWith(filterText.lowercase())
+                            }
                         }
                     }
-                }
-            }
-        }
-    }
-
-    private fun handleShowSuggestions(connection: InputConnection) {
-        viewModelScope.launch {
-            showSuggestions.collectLatest {
-                if (it) getNextSuggestions(connection)
             }
         }
     }
 
     fun onSuggestionClick(suggestion: String, context: Context) {
-        viewModelScope.launch {
-            val connection = (context as IMEService).currentInputConnection
-            val charSequence = connection.getTextBeforeCursor(24, GET_TEXT_WITH_STYLES)
+        val connection = (context as IMEService).currentInputConnection
+        val charSequence = connection.getTextBeforeCursor(24, GET_TEXT_WITH_STYLES)
 
-            if (charSequence != null) {
-                val textToReplace = charSequence.split(" ").last()
-                connection.deleteSurroundingText(textToReplace.length, 0).let {
-                    if (it) connection.commitText("$suggestion ", suggestion.length + 1)
-                }
+        if (charSequence != null) {
+            val textToReplace = charSequence.split(" ").last()
+            connection.deleteSurroundingText(textToReplace.length, 0).let {
+                if (it) connection.commitText("$suggestion ", suggestion.length + 1)
             }
         }
     }
 
     fun onEmojiClick(context: Context, emoji: String, title: String) {
-        viewModelScope.launch {
-            val connection = (context as IMEService).currentInputConnection
-            connection.commitText(emoji, emoji.length)
+        val connection = (context as IMEService).currentInputConnection
+        connection.commitText(emoji, emoji.length)
 
+        viewModelScope.launch(Dispatchers.IO) {
             if (!title.lowercase().contains("frequently")) {
                 val id = emoji.codePointAt(0)
                 val data = fuEmojiDbDAO.getEmojisById(id)
                 val all = fuEmojiDbDAO.getAllEmojis().value
 
-                if (data != null && data.emoji != emoji) {
-//                    fuEmojiDbDAO.delete(data).let { fuEmojiDbDAO.insert(data) }
-                    fuEmojiDbDAO.insert(FrequentlyUsedEmoji(id = id, emoji = emoji))
+                if (data != null && data.emoji == emoji) {
+                    fuEmojiDbDAO.delete(data).let { fuEmojiDbDAO.insert(data) }
                 } else if (data != null && all != null && all.size == 18) {
                     val last: FrequentlyUsedEmoji = all.last()
                     fuEmojiDbDAO.delete(last).let {
                         fuEmojiDbDAO.insert(FrequentlyUsedEmoji(id = id, emoji = emoji))
                     }
-                }
+                } else fuEmojiDbDAO.insert(FrequentlyUsedEmoji(id = id, emoji = emoji))
             }
         }
     }
 
-    fun onTKeyClick(key: Key, context: Context, soundID: Int?) {
-        viewModelScope.launch {
-            val connection = (context as IMEService).currentInputConnection
-            when (key.id) {
-                "ABC" -> {
-                    keyboardType.value = KeyboardType.Normal
-                    keyboardSize.value = keyboardSize.value!!.copy(
-                        y = keyboardSize.value!!.y + 48
-                    )
-                }
+    fun onTKeyClick(key: Key, context: Context, action: String = "return") {
+        val connection = (context as IMEService).currentInputConnection
 
-                "123" -> {
-                    keyboardType.value = KeyboardType.Symbol
-                    keyboardSize.value = keyboardSize.value!!.copy(
-                        x = keyboardSize.value!!.x, y = keyboardSize.value!!.y - 48
-                    )
-                }
+        when (key.id) {
+            "ABC" -> keyboardType.value = KeyboardType.Normal
 
-                "action" -> context.sendDefaultEditorAction(false)
+            "123" -> keyboardType.value = KeyboardType.Symbol
 
-                "space" -> {
-                    val textBeforeCursor = connection.getTextBeforeCursor(1, GET_TEXT_WITH_STYLES)
-                    if (textBeforeCursor.toString() == " ") {
-                        handleDoubleSpacePeriod(connection)
-                    } else if (textBeforeCursor.toString() == " i") {
-                        handleAutoCapitalizeI(connection)
-                    } else connection.commitText(
-                        " ",
-                        " ".length
-                    )
-                }
-
-                else -> {
-                    connection.commitText(
-                        (if (isAllCaps.value as Boolean) {
-                            key.value.uppercase(Locale.getDefault())
-                        } else key.value.lowercase(Locale.getDefault())), key.value.length
-                    )
-
-                    handleShowSuggestions(connection)
-                    checkSpelling(context)
-                    handleCapsLock()
-                }
+            "action" -> {
+                if (action == "return") {
+                    connection.commitText("\n", "\n".length)
+                } else context.sendDefaultEditorAction(false)
             }
-        }
-        playSound(soundID)
-        vibrate()
-    }
 
-    fun onNumKeyClick(key: Key, context: Context, soundID: Int?) {
-        viewModelScope.launch {
-            val connection = (context as IMEService).currentInputConnection
-            when (key.value) {
-                "*" -> connection.commitText(key.value, key.value.length)
-                "#" -> connection.commitText(key.value, key.value.length)
-                "+" -> connection.commitText(key.value, key.value.length)
-                "wait" -> connection.commitText(";", ";".length)
-                "pause" -> connection.commitText(".", ".".length)
-                else -> connection.commitText(key.id, key.id.length)
+            "space" -> {
+                val textBeforeCursorA =
+                    connection.getTextBeforeCursor(1, GET_TEXT_WITH_STYLES)
+
+                val textBeforeCursorB =
+                    connection.getTextBeforeCursor(2, GET_TEXT_WITH_STYLES)
+
+                if (textBeforeCursorA.toString() == " ") {
+                    handleDoubleSpacePeriod(connection)
+                } else if (textBeforeCursorB.toString() == " i") {
+                    handleAutoCapitalizeI(connection)
+                } else connection.commitText(" ", " ".length)
             }
-        }
-        playSound(soundID)
-        vibrate()
-    }
 
-    fun onIKeyClick(key: Key, context: Context, soundID: Int?) {
-        viewModelScope.launch {
-            val connection = (context as IMEService).currentInputConnection
-            val text = connection.getTextBeforeCursor(16, 0)?.split(" ")?.last()
-            val selectedText = connection.getSelectedText(GET_TEXT_WITH_STYLES)
-
-            when (key.id) {
-                "erase" -> {
-                    if (selectedText != null) {
-                        connection.commitText("", "".length)
-                    } else if (text?.codePoints() != null && text.codePoints().toArray()
-                            .isNotEmpty()
-                    ) {
-                        connection.deleteSurroundingTextInCodePoints(1, 0)
-                    } else connection.deleteSurroundingText(1, 0)
-                    getNextSuggestions(connection)
-                    checkSpelling(context)
-                }
-
-                "shift" -> {
-                    if (isCapsLock.value == true) {
-                        isCapsLock.value = false
-                        isAllCaps.value = false
-                    } else if (isAllCaps.value!! && !(isCapsLock.value!!)) {
-                        isCapsLock.value = true //isAllCaps is already true.
-                    } else isAllCaps.value = !(isAllCaps.value!!)
-
-                }
-
-                "symbol" -> isNumberSymbol.value = !(isNumberSymbol.value!!)
-            }
-        }
-        playSound(soundID)
-        vibrate()
-    }
-
-    fun onABCTap() {
-        viewModelScope.launch {
-            keyboardSize.value = keyboardSize.value!!.copy(
-                y = keyboardSize.value?.y!! - 30
-            )
-            keyboardType.value = KeyboardType.Normal
-        }
-    }
-
-    fun onEmojiTap() {
-        viewModelScope.launch {
-            if (keyboardType.value == KeyboardType.Symbol) {
-                val oldValue = 48
-                keyboardSize.value = keyboardSize.value!!.copy(
-                    y = keyboardSize.value?.y!! + oldValue + 30
+            else -> {
+                connection.commitText(
+                    (if (isAllCaps.value as Boolean) {
+                        key.value.uppercase(Locale.getDefault())
+                    } else key.value.lowercase(Locale.getDefault())), key.value.length
                 )
-            } else keyboardSize.value = keyboardSize.value!!.copy(
-                y = keyboardSize.value?.y!! + 30
-            )
-            keyboardType.value = KeyboardType.Emoji
+                getNextSuggestions(connection)
+                checkSpelling(context)
+                handleCapsLock()
+            }
         }
     }
 
-    fun onPhoneSymbol() {
+    fun onNumKeyClick(key: Key, context: Context) {
+        val connection = (context as IMEService).currentInputConnection
         viewModelScope.launch {
-            isPhoneSymbol.value = !(isPhoneSymbol.value!!)
+            preferences.getFlowPreference(pC.LOCALE_KEY, KeyboardLanguage.ENGLISH.name)
+                .collectLatest {
+                    when (key.value) {
+                        "*" -> connection.commitText(key.value, key.value.length)
+                        "#" -> connection.commitText(key.value, key.value.length)
+                        "+" -> connection.commitText(key.value, key.value.length)
+                        keyboardLocale.wait(it) -> connection.commitText(";", ";".length)
+                        keyboardLocale.pause(it) -> connection.commitText(".", ".".length)
+                        else -> connection.commitText(key.id, key.id.length)
+                    }
+                }
         }
+    }
+
+    fun onIKeyClick(key: Key, context: Context) {
+        val connection = (context as IMEService).currentInputConnection
+        val text = connection.getTextBeforeCursor(16, 0)?.split(" ")?.last()
+        val selectedText = connection.getSelectedText(GET_TEXT_WITH_STYLES)
+
+        when (key.id) {
+            "erase" -> {
+                if (selectedText != null) {
+                    connection.commitText("", "".length)
+                } else if (text?.codePoints() != null && text.codePoints().toArray()
+                        .isNotEmpty()
+                ) {
+                    connection.deleteSurroundingTextInCodePoints(1, 0)
+                } else connection.deleteSurroundingText(1, 0)
+
+                getNextSuggestions(connection)
+                checkSpelling(context)
+                handleCapsLock()
+            }
+
+            "shift" -> {
+                if (isCapsLock.value == true) {
+                    isCapsLock.value = false
+                    isAllCaps.value = false
+                } else if (isAllCaps.value!! && !(isCapsLock.value!!)) {
+                    isCapsLock.value = true //isAllCaps is already true.
+                } else isAllCaps.value = !(isAllCaps.value!!)
+            }
+
+            "symbol" -> isNumberSymbol.value = !(isNumberSymbol.value!!)
+        }
+    }
+
+    fun onABCTap() = viewModelScope.launch {
+        keyboardType.value = KeyboardType.Normal
+    }
+
+    fun onEmojiTap() = viewModelScope.launch {
+        keyboardType.value = KeyboardType.Emoji
+    }
+
+    fun onPhoneSymbol() = viewModelScope.launch {
+        isPhoneSymbol.value = !(isPhoneSymbol.value!!)
     }
 }

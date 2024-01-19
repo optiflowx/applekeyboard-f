@@ -12,12 +12,16 @@ import androidx.compose.ui.graphics.Color
 private val Dark = darkColorScheme(
     primary = Color.White, //Text Color on Text Key
     inversePrimary = Color.White, //Text Color on Action Key
-    secondary = Color(0xff6B6B6B), //TKey Background Color
-    secondaryContainer = Color(0xff464646), //Icon Key Background Color
-    background = Color(0xff2B2B2B), //Keyboard Color
-    surface = Color.White, //Shift Key Background Color
+    secondary = Color(0xff6c6c6c), //TKey Background Color
+    secondaryContainer = Color(0xff474747), //Icon Key Background Color
+    background = Color(0xff2c2c2c), //Keyboard Color
+    surface = Color(0xffd4d4d4), //Shift Key Background Color
     onSurface = Color(0xFF007AFF), //Text Action Key Background Color
     onBackground = Color.White,
+    scrim = Color.White, //Bottom Icons color
+    onPrimary = Color(0xFF404040), //Suggestion Div Color
+    tertiaryContainer = Color(0xff1c1c1c), //Key Shadow Color
+    onSurfaceVariant = Color(0xff6c6c6c), //Disabled Color
 )
 
 
@@ -26,15 +30,22 @@ private val Light = lightColorScheme(
     primary = Color.Black, //Text Color on Text Key
     inversePrimary = Color.White, //Text Color on Action Key
     secondary = Color.White, //TKey Background Color
-    secondaryContainer = Color(0xffAEB3BE), //Special Key Background Color
-    background = Color(0xffD4D6DC), //Keyboard Color
-    surface = Color(0xCCFFFFFF), //Shift Key Background Color
+    secondaryContainer = Color(0xffabafb8), //Special Key Background Color
+    background = Color(0xffd2d3d8), //Keyboard Color
+    surface = Color(0xFFFFFFFF), //Shift Key Background Color
     onSurface = Color(0xFF007AFF), //Text Action Key Background Color
     onBackground = Color.Black,
+    scrim = Color(0xFF52555A), //Bottom Icons color
+    onPrimary = Color(0xFFbcbdc0), //Suggestion Div Color
+    tertiaryContainer = Color(0xff919095), //Key Shadow Color
+    onSurfaceVariant = Color(0xff6c6c6c), //Disabled Color
 )
 
 @Composable
-fun AppleKeyboardIMETheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable() () -> Unit) {
+fun AppleKeyboardIMETheme(
+    darkTheme: Boolean = isSystemInDarkTheme(),
+    content: @Composable() () -> Unit
+) {
     MaterialTheme(
         colorScheme = if (darkTheme) Dark else Light,
         typography = typography,

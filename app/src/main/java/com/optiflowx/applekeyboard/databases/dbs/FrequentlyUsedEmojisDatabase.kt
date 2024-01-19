@@ -4,13 +4,13 @@ import android.content.Context
 import androidx.compose.runtime.Immutable
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import androidx.room.TypeConverters
+//import androidx.room.TypeConverters
 import com.optiflowx.applekeyboard.databases.dao.FrequentlyUsedEmojiDatabaseDAO
 import com.optiflowx.applekeyboard.databases.entities.FrequentlyUsedEmoji
-import com.optiflowx.applekeyboard.utils.Converters
+//import com.optiflowx.applekeyboard.utils.Converters
 
 @Immutable
-@TypeConverters(Converters::class)
+//@TypeConverters(Converters::class)
 @Database(entities = [FrequentlyUsedEmoji::class], version = 1, exportSchema = false)
 abstract class FrequentlyUsedDatabase : RoomDatabase() {
     abstract fun fUsedEmojiDatabaseDAO(): FrequentlyUsedEmojiDatabaseDAO

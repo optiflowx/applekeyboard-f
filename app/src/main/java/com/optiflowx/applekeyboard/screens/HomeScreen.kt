@@ -28,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
@@ -43,6 +44,7 @@ import com.optiflowx.applekeyboard.ui.regular
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import io.github.alexzhirkevich.cupertino.CupertinoButton
+import io.github.alexzhirkevich.cupertino.CupertinoButtonDefaults
 import io.github.alexzhirkevich.cupertino.CupertinoButtonSize
 import io.github.alexzhirkevich.cupertino.CupertinoScaffold
 import io.github.alexzhirkevich.cupertino.CupertinoTopAppBar
@@ -57,6 +59,7 @@ import splitties.systemservices.inputMethodManager
 @Composable
 fun HomeScreen(navigator: DestinationsNavigator) {
     val context = LocalContext.current
+    val uriHandler = LocalUriHandler.current
 
     CupertinoScaffold(
         containerColor = Color.Black,
@@ -89,9 +92,7 @@ fun HomeScreen(navigator: DestinationsNavigator) {
                         CupertinoButton(
                             size = CupertinoButtonSize.Small,
                             modifier = Modifier.fillMaxWidth(),
-                            onClick = {
-                                inputMethodManager.showInputMethodPicker()
-                            },
+                            onClick = { inputMethodManager.showInputMethodPicker() },
                         ) { Text(text = "Change IME Service") }
                         Spacer(modifier = Modifier.height(8.dp))
                         CupertinoButton(
@@ -109,6 +110,18 @@ fun HomeScreen(navigator: DestinationsNavigator) {
                                 navigator.navigate(KeyboardSettingsScreenDestination)
                             },
                         ) { Text(text = "Keyboard Settings") }
+                        Spacer(modifier = Modifier.height(8.dp))
+                        CupertinoButton(
+                            size = CupertinoButtonSize.Small,
+                            modifier = Modifier.fillMaxWidth(),
+                            colors = CupertinoButtonDefaults.borderlessButtonColors(
+                                contentColor = Color.White,
+                                containerColor = Color.Red.copy(alpha = 0.7f),
+                            ),
+                            onClick = {
+                                uriHandler.openUri("https://t.me/optiflowxparadise/")
+                            },
+                        ) { Text(text = "Join For Updates") }
                     }
                 }
             }

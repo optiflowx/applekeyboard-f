@@ -28,9 +28,8 @@ fun ImportantNotice() {
             .border(BorderStroke(1.dp, Color.Gray), RoundedCornerShape(radius))
     ) {
         Text(
-            "IMPORTANT MESSAGE: I would like to reassure you that I do not collect any personal information from any user. " +
-                    "This application is a PAID product because it is developed solely by OptiFlowX. Your purchase is a valuable " +
-                    "expression of support for the dedication and effort put into creating and maintaining this app.\n" +
+            "IMPORTANT MESSAGE: This application is developed solely by OptiFlowX. Any donation is a valuable " +
+                    "expression of your support for the dedication and effort put into creating and maintaining this app.\n" +
                     "\n" +
                     "CAUTION: Acquiring this application for free from unofficial sources may expose " +
                     "you to potential malware threats. Thus, I strongly advise against accepting or using any " +
