@@ -85,7 +85,7 @@ fun SymbolAKeyboardView(viewModel: KeyboardViewModel) {
             ) {
                 KeyboardKey(Key("symbol", ""), keyWidthSE, viewModel)
                 for (key in symbolRowKeys.row3Keys) KeyboardKey(key, keyWidthR3, viewModel)
-                KeyboardKey(Key("erase", ""), keyWidthSE, viewModel)
+                KeyboardKey(Key("delete", ""), keyWidthSE, viewModel)
             }
         }
         Box(Modifier.layoutId('4')) {

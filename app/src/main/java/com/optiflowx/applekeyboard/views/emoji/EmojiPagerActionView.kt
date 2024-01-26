@@ -115,14 +115,9 @@ fun EmojiPagerActionView(pagerState: PagerState, viewModel: KeyboardViewModel) {
                         interactionSource = iS,
                         role = Role.Button,
                     ) {
-                        viewModel.onIKeyClick(
-                            Key("erase", "erase"),
-                            context
-                        )
-
-//                        viewModel.playSound(
-//                            viewModel.soundPool.load(context, R.raw.delete, 1)
-//                        )
+                        val key = Key("delete", "delete")
+                        viewModel.onIKeyClick(key, context)
+                        viewModel.playSound(key)
                         viewModel.vibrate()
                     },
             )

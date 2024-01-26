@@ -176,7 +176,7 @@ class PhoneConstraintsSet {
     val fourthRowConstraints = ConstraintSet {
         val switch = createRefFor("switch")
         val zero = createRefFor("0")
-        val erase = createRefFor("erase")
+        val delete = createRefFor("delete")
 
         constrain(switch) {
             start.linkTo(parent.start)
@@ -186,11 +186,11 @@ class PhoneConstraintsSet {
 
         constrain(zero) {
             start.linkTo(switch.end)
-            end.linkTo(erase.start)
+            end.linkTo(delete.start)
             height = Dimension.value(keyHeight)
         }
 
-        constrain(erase) {
+        constrain(delete) {
             start.linkTo(zero.end)
             end.linkTo(parent.end)
             height = Dimension.value(keyHeight)

@@ -175,7 +175,7 @@ class NumberConstraintsSet {
     val fourthRowConstraints = ConstraintSet {
         val period = createRefFor(".")
         val zero = createRefFor('0')
-        val erase = createRefFor("erase")
+        val delete = createRefFor("delete")
 
         constrain(period) {
             start.linkTo(parent.start)
@@ -185,11 +185,11 @@ class NumberConstraintsSet {
 
         constrain(zero) {
             start.linkTo(period.end)
-            end.linkTo(erase.start)
+            end.linkTo(delete.start)
             height = Dimension.value(keyHeight)
         }
 
-        constrain(erase) {
+        constrain(delete) {
             start.linkTo(zero.end)
             end.linkTo(parent.end)
             height = Dimension.value(keyHeight)

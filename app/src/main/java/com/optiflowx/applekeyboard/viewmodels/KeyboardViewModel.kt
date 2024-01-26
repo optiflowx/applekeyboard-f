@@ -45,6 +45,7 @@ import com.optiflowx.applekeyboard.languages.spanish.spListB
 import com.optiflowx.applekeyboard.languages.spanish.spListC
 import com.optiflowx.applekeyboard.languages.spanish.spListD
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import splitties.systemservices.vibrator
@@ -60,6 +61,11 @@ class KeyboardViewModel(context: Context) : ViewModel() {
     val isPhoneSymbol = MutableLiveData(false)
     val isEmojiSearch = MutableLiveData(false)
     val isShowOptions = MutableLiveData(false)
+    val isPoolLoaded = MutableLiveData(false)
+    val soundIDT = MutableStateFlow(0)
+    val soundIDD = MutableStateFlow(0)
+    val soundIDS = MutableStateFlow(0)
+    val soundIDR = MutableStateFlow(0)
 
     //Dictionaries
     val wordsDictionary = MutableLiveData(listOf<String>())
@@ -117,7 +123,6 @@ class KeyboardViewModel(context: Context) : ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             clipboardManager.addPrimaryClipChangedListener {
                 val clipData = clipboardManager.primaryClip?.getItemAt(0)?.text
-                Log.d("KeyboardViewModel", "Clipboard: $clipData")
                 viewModelScope.launch(Dispatchers.IO) {
                     if (!clipData.isNullOrEmpty()) {
                         val text = clipData.toString()
@@ -155,12 +160,16 @@ class KeyboardViewModel(context: Context) : ViewModel() {
     }
 
     @Stable
-    fun playSound(soundID: Int) = viewModelScope.launch(Dispatchers.IO) {
-//        val value: Boolean = preferences.getPreference(pC.SOUND_ON_KEY_PRESS_KEY, true)
-//        if (value) {
-//            soundPool.play(soundID!!, 0.3f, 0.3f, 1, 0, 1.25f)
-//        }
-        soundPool.play(soundID, 0.3f, 0.3f, 1, 0, 1.25f)
+    fun playSound(key: Key) = viewModelScope.launch(Dispatchers.IO) {
+        val value: Boolean = preferences.getPreference(pC.SOUND_ON_KEY_PRESS_KEY, true)
+        if (value && isPoolLoaded.value != null && isPoolLoaded.value!!) {
+            when (key.id) {
+                "delete" -> soundPool.play(soundIDD.value, 1f, 1f, 0, 0, 1f)
+                "return" -> soundPool.play(soundIDR.value, 1f, 1f, 0, 0, 1f)
+                "space" -> soundPool.play(soundIDS.value, 1f, 1f, 0, 0, 1f)
+                else -> soundPool.play(soundIDT.value, 1f, 1f, 0, 0, 1f)
+            }
+        }
     }
 
     private fun initSoundPool() {
@@ -355,7 +364,7 @@ class KeyboardViewModel(context: Context) : ViewModel() {
         when (key.id) {
             "emoji" -> onEmoji()
 
-            "erase" -> onErase(context)
+            "delete" -> onErase(context)
 
             "shift" -> onShift()
 

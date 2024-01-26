@@ -39,6 +39,6 @@ class FrenchRowKeys {
         Key("b", "b"),
         Key("n", "n"),
         Key("m", "m"),
-        Key("erase", "")
+        Key("delete", "")
     )
 }

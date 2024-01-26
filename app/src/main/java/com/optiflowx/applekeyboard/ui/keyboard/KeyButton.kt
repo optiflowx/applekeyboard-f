@@ -49,7 +49,7 @@ fun KeyButton(
     val currentClickListener by rememberUpdatedState(onRepeatableClick)
     val currentSingleClickListener by rememberUpdatedState(onSingleClick)
 
-    val isIgnoreElevation = (id == "shift" || id == "erase" || id == "space"
+    val isIgnoreElevation = (id == "shift" || id == "delete" || id == "space"
             || id == "return" || id == "emoji" || id == "symbol"
             || id == "switch" || id == ".")
 
@@ -57,7 +57,7 @@ fun KeyButton(
 //    val indication = LocalIndication.current
 
     LaunchedEffect(pressed, enabled) {
-        if (id == "erase") {
+        if (id == "delete") {
             while (enabled && pressed) {
                 if (pressedCount < 1) {
                     pressedCount = +1

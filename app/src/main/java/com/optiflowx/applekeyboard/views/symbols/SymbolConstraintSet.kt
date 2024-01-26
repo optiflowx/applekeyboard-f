@@ -219,7 +219,7 @@ class SymbolConstraintSet {
         val c = createRefFor("?")
         val v = createRefFor("!")
         val b = createRefFor("'")
-        val erase = createRefFor("erase")
+        val delete = createRefFor("delete")
 
         constrain(symbol) {
             start.linkTo(parent.start)
@@ -253,11 +253,11 @@ class SymbolConstraintSet {
 
         constrain(b) {
             start.linkTo(v.end)
-            end.linkTo(erase.start)
+            end.linkTo(delete.start)
             height = Dimension.value(keyHeight)
         }
 
-        constrain(erase) {
+        constrain(delete) {
             start.linkTo(b.end)
             end.linkTo(parent.end)
             height = Dimension.value(keyHeight)
@@ -270,7 +270,7 @@ class SymbolConstraintSet {
             c,
             v,
             b,
-            erase,
+            delete,
             chainStyle = ChainStyle.SpreadInside
         )
     }

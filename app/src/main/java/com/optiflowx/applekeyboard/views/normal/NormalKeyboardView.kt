@@ -9,6 +9,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -23,7 +24,7 @@ import com.optiflowx.applekeyboard.views.normal.rowkeys.GlobalRowKeys
 
 @Composable
 fun NormalKeyboardView(viewModel: KeyboardViewModel) {
-
+    val context = LocalContext.current
     val screenWidth = LocalConfiguration.current.screenWidthDp.dp
     val keyboardLocale = KeyboardLocale()
     val constraintSets = GlobalConstraintSets()
@@ -31,8 +32,11 @@ fun NormalKeyboardView(viewModel: KeyboardViewModel) {
     val locale = viewModel.preferences.getFlowPreference(PreferencesConstants.LOCALE_KEY, "English")
         .collectAsStateWithLifecycle("English").value
 
-    ConstraintLayout(constraintSets.constraints, Modifier.width(screenWidth),
-        100, true) {
+
+    ConstraintLayout(
+        constraintSets.constraints, Modifier.width(screenWidth),
+        100, true
+    ) {
         val keyWidth = (screenWidth.value * 0.082).dp
         val keyWidthB = (screenWidth.value * 0.45).dp
         val keyWidthM = (screenWidth.value * 0.25).dp
@@ -62,7 +66,7 @@ fun NormalKeyboardView(viewModel: KeyboardViewModel) {
                             "Spanish" -> 4.dp
                             else -> 20.dp
                         }
-                    ),100, true
+                    ), 100, true
             ) {
 
                 for (key in nRowKeys.row2Keys) KeyboardKey(key, keyWidth, viewModel)
@@ -79,13 +83,11 @@ fun NormalKeyboardView(viewModel: KeyboardViewModel) {
                     .padding(horizontal = 4.dp),
                 100, true
             ) {
-
                 for (key in nRowKeys.row3Keys) {
-                    if (key.id == "shift" || key.id == "erase") {
+                    if (key.id == "shift" || key.id == "delete") {
                         KeyboardKey(key, keyWidthSE, viewModel)
                     } else KeyboardKey(key, keyWidth, viewModel)
                 }
-
             }
         }
         Box(Modifier.layoutId('4')) {
@@ -95,7 +97,7 @@ fun NormalKeyboardView(viewModel: KeyboardViewModel) {
                     .width(screenWidth)
                     .align(Alignment.Center)
                     .fillMaxWidth()
-                    .padding(horizontal = 4.dp),100, true
+                    .padding(horizontal = 4.dp), 100, true
             ) {
                 KeyboardKey(Key("123", stringResource(R.string.num)), keyWidthSE, viewModel)
                 KeyboardKey(Key("emoji", "emoji"), keyWidthSE, viewModel)

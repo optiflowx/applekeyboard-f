@@ -41,12 +41,12 @@ class PhoneRowKeys(locale: String?) {
     val row4Keys = listOf(
         Key("switch", ""),
         Key("0", ""),
-        Key("erase", ""),
+        Key("delete", ""),
     )
 
     val row4keysB = listOf(
         Key("switch", ""),
         Key("0", "+"),
-        Key("erase", ""),
+        Key("delete", ""),
     )
 }

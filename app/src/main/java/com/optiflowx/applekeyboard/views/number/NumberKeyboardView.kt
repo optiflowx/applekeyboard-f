@@ -52,7 +52,7 @@ fun NumberKeyboardView(viewModel: KeyboardViewModel) {
                     .padding(horizontal = 2.dp), 100, true
             ) {
                 for (key in numRowKeys.row3Keys) {
-                    if (key.id == "." || key.id == "erase") {
+                    if (key.id == "." || key.id == "delete") {
                         NumKeyboardKey(key, keyWidth, viewModel)
                     } else NumKeyboardKey(key, keyWidth, viewModel)
                 }

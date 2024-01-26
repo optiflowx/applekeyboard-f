@@ -32,22 +32,11 @@ fun NumKeyboardKey(key: Key, buttonWidth: Dp, viewModel: KeyboardViewModel) {
     val ctx = LocalContext.current
     val colorScheme = MaterialTheme.colorScheme
     val isPeriod: Boolean = key.id == "."
-    val isErase: Boolean = key.id == "erase"
+    val isErase: Boolean = key.id == "delete"
 
     val fontType =
         viewModel.preferences.getFlowPreference(PreferencesConstants.FONT_TYPE_KEY, "Regular")
             .collectAsStateWithLifecycle("Regular").value
-
-//    var soundID: Int? = null
-//
-//    LaunchedEffect(true) {
-//        this.launch(Dispatchers.IO) {
-//            soundID = when (key.id) {
-//                "erase" -> viewModel.soundPool.load(ctx, R.raw.delete, 1)
-//                else -> viewModel.soundPool.load(ctx, R.raw.standard, 1)
-//            }
-//        }
-//    }
 
     KeyButton(
         color = (if (isErase || isPeriod) Color.Transparent else colorScheme.secondary),
@@ -59,7 +48,7 @@ fun NumKeyboardKey(key: Key, buttonWidth: Dp, viewModel: KeyboardViewModel) {
             else viewModel.onNumKeyClick(key, ctx)
         },
         onSingleClick = {
-//            viewModel.playSound(soundID)
+            viewModel.playSound(key)
             viewModel.vibrate()
         }
     ) {

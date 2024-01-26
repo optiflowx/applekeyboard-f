@@ -34,7 +34,7 @@ fun PhoneNumKeyboardKey(key: Key, buttonWidth: Dp, viewModel: KeyboardViewModel)
     val ctx = LocalContext.current
     val colorScheme = MaterialTheme.colorScheme
     val isSwitch: Boolean = key.id == "switch"
-    val isErase: Boolean = key.id == "erase"
+    val isErase: Boolean = key.id == "delete"
 
     //Make it global
     val keyboardLocale = KeyboardLocale()
@@ -45,17 +45,6 @@ fun PhoneNumKeyboardKey(key: Key, buttonWidth: Dp, viewModel: KeyboardViewModel)
 
     val locale = viewModel.preferences.getFlowPreference(PreferencesConstants.LOCALE_KEY, "English").collectAsStateWithLifecycle(
         "English").value
-
-//    var soundID: Int? = null
-
-//    LaunchedEffect(true) {
-//        this.launch(Dispatchers.IO) {
-//            soundID = when (key.id) {
-//                "erase" -> viewModel.soundPool.load(ctx, R.raw.delete, 1)
-//                else -> viewModel.soundPool.load(ctx, R.raw.standard, 1)
-//            }
-//        }
-//    }
 
     //Erase and Switch Keys
     KeyButton(
@@ -69,7 +58,7 @@ fun PhoneNumKeyboardKey(key: Key, buttonWidth: Dp, viewModel: KeyboardViewModel)
             else viewModel.onNumKeyClick(key, ctx)
         },
         onSingleClick = {
-//            viewModel.playSound(soundID)
+            viewModel.playSound(key)
             viewModel.vibrate()
         },
     ) {

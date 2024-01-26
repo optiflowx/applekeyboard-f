@@ -220,7 +220,7 @@ class SpanishConstraintSets(keyHeight: Dp, rowHeight: Dp) {
         val b = createRefFor("b")
         val n = createRefFor("n")
         val m = createRefFor("m")
-        val erase = createRefFor("erase")
+        val delete = createRefFor("delete")
 
         constrain(shift) {
             start.linkTo(parent.start)
@@ -266,11 +266,11 @@ class SpanishConstraintSets(keyHeight: Dp, rowHeight: Dp) {
 
         constrain(m) {
             start.linkTo(n.end)
-            end.linkTo(erase.start)
+            end.linkTo(delete.start)
             height = Dimension.value(keyHeight)
         }
 
-        constrain(erase) {
+        constrain(delete) {
             start.linkTo(m.end)
             end.linkTo(parent.end)
             height = Dimension.value(keyHeight)
@@ -285,7 +285,7 @@ class SpanishConstraintSets(keyHeight: Dp, rowHeight: Dp) {
             b,
             n,
             m,
-            erase,
+            delete,
             chainStyle = ChainStyle.SpreadInside
         )
     }

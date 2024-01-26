@@ -47,11 +47,12 @@ fun KeyboardKey(key: Key, buttonWidth: Dp, viewModel: KeyboardViewModel) {
 
     val isSymbols = key.id == "symbol"
     val isShift = key.id == "shift"
-    val isErase = key.id == "erase"
+    val isErase = key.id == "delete"
     val isEmoji = key.id == "emoji"
     val isAllCaps = viewModel.isAllCaps.observeAsState(false).value
     val isNumberSymbol = viewModel.isNumberSymbol.observeAsState(false).value
     val isCapsLock = viewModel.isCapsLock.observeAsState(false).value
+    val isPoolLoaded = viewModel.isPoolLoaded.observeAsState(false).value
 
     val keyboardLocale = KeyboardLocale()
 
@@ -62,8 +63,8 @@ fun KeyboardKey(key: Key, buttonWidth: Dp, viewModel: KeyboardViewModel) {
     var actionText by rememberSaveable { mutableStateOf("return") }
 
     val fontType = viewModel.preferences
-            .getFlowPreference(PreferencesConstants.FONT_TYPE_KEY, "Regular")
-            .collectAsStateWithLifecycle("Regular").value
+        .getFlowPreference(PreferencesConstants.FONT_TYPE_KEY, "Regular")
+        .collectAsStateWithLifecycle("Regular").value
 
     val locale = viewModel.preferences
         .getFlowPreference(PreferencesConstants.LOCALE_KEY, "English")
@@ -125,22 +126,6 @@ fun KeyboardKey(key: Key, buttonWidth: Dp, viewModel: KeyboardViewModel) {
         }
     }
 
-//    var soundID by Delegates.notNull<Int>()
-//
-//    DisposableEffect(key.id) {
-//        Log.d("KeyboardKey", "DisposableEffect: ${key.id}")
-//        soundID = when (key.id) {
-//            "erase" -> viewModel.soundPool.load(ctx, R.raw.delete, 1)
-//            "action" -> viewModel.soundPool.load(ctx, R.raw.ret, 1)
-//            "space" -> viewModel.soundPool.load(ctx, R.raw.spacebar, 1)
-//            else -> viewModel.soundPool.load(ctx, R.raw.standard, 1)
-//        }
-//
-//        onDispose {
-//            viewModel.soundPool.unload(soundID)
-//        }
-//    }
-
     //Erase and Shift Keys
     if (isShift || isErase || isSymbols || isEmoji) {
         (if (isShift) {
@@ -166,7 +151,7 @@ fun KeyboardKey(key: Key, buttonWidth: Dp, viewModel: KeyboardViewModel) {
                 showPopup = false,
                 onRepeatableClick = { viewModel.onIKeyClick(key, ctx) },
                 onSingleClick = {
-//                    viewModel.playSound(soundID)
+                    viewModel.playSound(key)
                     viewModel.vibrate()
                 }
             ) {
@@ -193,7 +178,7 @@ fun KeyboardKey(key: Key, buttonWidth: Dp, viewModel: KeyboardViewModel) {
                 showPopup = !(key.id == "123" || key.id == "ABC" || key.id == "action" || key.id == "space"),
                 onRepeatableClick = { viewModel.onTKeyClick(key, ctx, actionText) },
                 onSingleClick = {
-//                    viewModel.playSound(soundID)
+                    viewModel.playSound(key)
                     viewModel.vibrate()
                 }
             ) {
