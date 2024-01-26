@@ -2,33 +2,25 @@ package com.optiflowx.applekeyboard
 
 import android.os.Bundle
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.isSystemInDarkTheme
 import com.optiflowx.applekeyboard.screens.NavGraphs
-import com.optiflowx.applekeyboard.ui.AppleKeyboardIMETheme
 import com.ramcosta.composedestinations.DestinationsNavHost
+import io.github.alexzhirkevich.cupertino.theme.CupertinoTheme
 
 class MainActivity : AppCompatActivity() {
-//    private var vm: AppViewModel? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContent {
-            AppleKeyboardIMETheme {
+            enableEdgeToEdge()
+
+            CupertinoTheme {
                 DestinationsNavHost(navGraph = NavGraphs.root)
                 isSystemInDarkTheme()
             }
         }
-    }
-
-    override fun onStart() {
-        super.onStart()
-//        if(vm == null) vm = AppViewModel(this)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-//        vm = null
     }
 }
