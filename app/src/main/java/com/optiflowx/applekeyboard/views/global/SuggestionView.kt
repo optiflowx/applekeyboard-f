@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -18,9 +17,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
-import com.optiflowx.applekeyboard.composables.keyboard.Div
-import com.optiflowx.applekeyboard.composables.keyboard.Suggestion
-import com.optiflowx.applekeyboard.storage.PreferencesConstants
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.optiflowx.applekeyboard.core.preferences.PreferencesConstants
+import com.optiflowx.applekeyboard.ui.keyboard.Div
+import com.optiflowx.applekeyboard.ui.keyboard.Suggestion
 import com.optiflowx.applekeyboard.viewmodels.KeyboardViewModel
 
 @Composable
@@ -41,7 +41,7 @@ fun SuggestionView(viewModel: KeyboardViewModel) {
         mutableStateOf(if (suggestions != null && suggestions.size >= 3) suggestions.elementAt(2) else "")
     }
 
-    val fontType = viewModel.preferences.getFlowPreference(PreferencesConstants.FONT_TYPE_KEY, "Regular").collectAsState(
+    val fontType = viewModel.preferences.getFlowPreference(PreferencesConstants.FONT_TYPE_KEY, "Regular").collectAsStateWithLifecycle(
         "Regular")
 
     val constraints = ConstraintSet {
@@ -111,8 +111,7 @@ fun SuggestionView(viewModel: KeyboardViewModel) {
             modifier = Modifier
                 .fillMaxWidth()
                 .fillMaxHeight()
-                .align(Alignment.Center),
-            100, true
+                .align(Alignment.Center), 100, true
         ) {
             Suggestion("sug1", suggestion1.value,fontType.value, onClick = {
                 viewModel.onSuggestionClick(
