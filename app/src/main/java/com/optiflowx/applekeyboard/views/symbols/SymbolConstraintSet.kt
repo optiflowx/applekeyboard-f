@@ -277,17 +277,24 @@ class SymbolConstraintSet {
 
     val fourthRowConstraints = ConstraintSet {
         val abc = createRefFor("ABC")
+        val emoji = createRefFor("emoji")
         val space = createRefFor("space")
         val action = createRefFor("action")
 
         constrain(abc) {
             start.linkTo(parent.start)
+            end.linkTo(emoji.start)
+            height = Dimension.value(keyHeight)
+        }
+
+        constrain(emoji) {
+            start.linkTo(abc.end)
             end.linkTo(space.start)
             height = Dimension.value(keyHeight)
         }
 
         constrain(space) {
-            start.linkTo(abc.end)
+            start.linkTo(emoji.end)
             end.linkTo(action.start)
             height = Dimension.value(keyHeight)
         }
@@ -299,7 +306,7 @@ class SymbolConstraintSet {
         }
 
         createHorizontalChain(
-            abc, space, action,
+            abc, emoji, space, action,
             chainStyle = ChainStyle.SpreadInside
         )
     }
