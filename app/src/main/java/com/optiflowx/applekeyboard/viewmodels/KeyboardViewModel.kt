@@ -299,17 +299,17 @@ class KeyboardViewModel(context: Context) : ViewModel() {
 
         viewModelScope.launch(Dispatchers.IO) {
             if (!title.lowercase().contains("frequently")) {
-                val id = emoji.codePointAt(0)
+                val id = emoji.hashCode()
                 val data = fuEmojiDbDAO.getEmojisById(id)
                 val all = fuEmojiDbDAO.getAllEmojis().value
 
                 if (data != null && data.emoji == emoji) {
-                    fuEmojiDbDAO.delete(data).let { fuEmojiDbDAO.insert(data) }
+                    fuEmojiDbDAO.deleteAndInsertEmoji(data, data)
                 } else if (data != null && all != null && all.size == 18) {
-                    val last: FrequentlyUsedEmoji = all.last()
-                    fuEmojiDbDAO.delete(last).let {
-                        fuEmojiDbDAO.insert(FrequentlyUsedEmoji(id = id, emoji = emoji))
-                    }
+                    val oldData = all.last()
+                    val newData = FrequentlyUsedEmoji(id, emoji)
+
+                    fuEmojiDbDAO.deleteAndInsertEmoji(newData, oldData)
                 } else fuEmojiDbDAO.insert(FrequentlyUsedEmoji(id = id, emoji = emoji))
             }
         }
