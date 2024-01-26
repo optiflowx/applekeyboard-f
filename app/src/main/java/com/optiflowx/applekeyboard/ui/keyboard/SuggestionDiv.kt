@@ -1,4 +1,4 @@
-package com.optiflowx.applekeyboard.composables.keyboard
+package com.optiflowx.applekeyboard.ui.keyboard
 
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.padding

@@ -34,7 +34,8 @@ android {
         release {
             isMinifyEnabled = true
             isShrinkResources = true
-            isProfileable = false
+            isProfileable = true //TO BE FALSE
+            isCrunchPngs = true
 //            isDebuggable = true
 //            isJniDebuggable = true
 
@@ -66,17 +67,7 @@ android {
 }
 
 dependencies {
-//    implementation ("com.github.dcendents:android-maven-gradle-plugin:2.1")
     androidTestImplementation("androidx.test:runner:1.5.2")
-
-    //Blur
-//    implementation ("com.github.x3rocode:xblur-compose:1.0.1")
-//    implementation("dev.chrisbanes.haze:haze-jetpack-compose:0.4.1")
-
-    //Hilt
-//    implementation("com.google.dagger:hilt-android:$hiltVersion")
-//    ksp ("com.google.dagger:hilt-android-compiler:$hiltVersion")
-//    implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
 
     //Destinations
     implementation ("io.github.raamcosta.compose-destinations:core:1.1.2-beta")
@@ -109,11 +100,7 @@ dependencies {
     implementation("androidx.compose.ui:ui-tooling-preview")
 
     //Constraint Layout
-    implementation("androidx.constraintlayout:constraintlayout:2.2.0-alpha13")
     implementation("androidx.constraintlayout:constraintlayout-compose:1.1.0-alpha13")
-
-    //Saved State Key Provider To Pass SaveStateHandle on [ComposeDestinations]
-//    implementation ("androidx.navigation:navigation-compose:2.7.6")
 
     // Lifecycle Dependencies
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion")
@@ -126,8 +113,8 @@ dependencies {
     implementation ("androidx.lifecycle:lifecycle-common-java8:$lifecycleVersion")
 
     //Cupertino
-    implementation("io.github.alexzhirkevich:cupertino:0.1.0-alpha02")
-    implementation("io.github.alexzhirkevich:cupertino-icons-extended:0.1.0-alpha02")
+    implementation("io.github.alexzhirkevich:cupertino:0.1.0-alpha03")
+    implementation("io.github.alexzhirkevich:cupertino-icons-extended:0.1.0-alpha03")
 
     //Local Storage
 //    implementation("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.7")

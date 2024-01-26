@@ -19,6 +19,7 @@ class PhoneConstraintsSet {
             val div1 = createRefFor("div1")
             val div2 = createRefFor("div2")
             val div3 = createRefFor("div3")
+            val div4 = createRefFor("div4")
 
 
             constrain(firstRow) {
@@ -77,6 +78,14 @@ class PhoneConstraintsSet {
                 width = Dimension.percent(100f)
             }
 
+            constrain(div4) {
+                top.linkTo(fourthRow.bottom)
+                start.linkTo(parent.start)
+                end.linkTo(parent.end)
+                height = Dimension.value(30.dp)
+                width = Dimension.percent(100f)
+            }
+
             createVerticalChain(
                 firstRow,
                 div1,
@@ -85,6 +94,7 @@ class PhoneConstraintsSet {
                 thirdRow,
                 div3,
                 fourthRow,
+                div4,
                 chainStyle = ChainStyle.Packed
             )
         }

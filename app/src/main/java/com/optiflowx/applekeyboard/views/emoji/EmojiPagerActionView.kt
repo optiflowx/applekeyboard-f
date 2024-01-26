@@ -1,7 +1,6 @@
 package com.optiflowx.applekeyboard.views.emoji
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -14,6 +13,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -21,12 +21,12 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import com.optiflowx.applekeyboard.R
-import com.optiflowx.applekeyboard.models.Key
+import com.optiflowx.applekeyboard.core.data.Key
 import com.optiflowx.applekeyboard.viewmodels.KeyboardViewModel
 import io.github.alexzhirkevich.cupertino.Surface
 import io.github.alexzhirkevich.cupertino.theme.CupertinoColors
@@ -37,6 +37,12 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun EmojiPagerActionView(pagerState: PagerState, viewModel: KeyboardViewModel) {
+    val context = LocalContext.current
+
+    val scope = rememberCoroutineScope()
+
+    val iS = remember { MutableInteractionSource() }
+
     val listProps: ArrayList<Int> = arrayListOf(
         R.drawable.recents,
         R.drawable.smileys_people,
@@ -46,15 +52,8 @@ fun EmojiPagerActionView(pagerState: PagerState, viewModel: KeyboardViewModel) {
         R.drawable.travel_places,
         R.drawable.objects,
         R.drawable.symbols,
-        R.drawable.flags,
-        R.drawable.ic_backspace
+        R.drawable.flags
     )
-
-    val interactionSource = remember { MutableInteractionSource() }
-
-    val context = LocalContext.current
-
-    val scope = rememberCoroutineScope()
 
     Surface(
         color = Color.Transparent,
@@ -68,44 +67,65 @@ fun EmojiPagerActionView(pagerState: PagerState, viewModel: KeyboardViewModel) {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceEvenly,
         ) {
+            Icon(
+                painter = painterResource(R.drawable.abc),
+                contentDescription = null,
+                tint = CupertinoColors.systemGray(isSystemInDarkTheme()),
+                modifier = Modifier
+                    .padding(3.dp)
+                    .size(25.dp)
+                    .clickable(
+                        indication = null,
+                        interactionSource = iS,
+                        role = Role.Button,
+                    ) { viewModel.onABCTap() },
+            )
             for (i in listProps.indices) {
                 val id = listProps[i]
-                Image(
+                Icon(
                     painter = painterResource(id),
                     contentDescription = null,
-                    colorFilter = ColorFilter.tint(CupertinoColors.systemGray(isSystemInDarkTheme())),
+                    tint = CupertinoColors.systemGray(isSystemInDarkTheme()),
                     modifier = Modifier
                         .background(
-                            (if (id != R.drawable.ic_backspace) {
-                                if (pagerState.currentPage == i) {
-                                    MaterialTheme.colorScheme.secondaryContainer
-                                } else Color.Transparent
-                            } else Color.Transparent),
+                            if (pagerState.currentPage == i) {
+                                MaterialTheme.colorScheme.secondaryContainer
+                            } else Color.Transparent,
                             RoundedCornerShape(20.dp),
                         )
-                        .padding(5.dp)
-                        .size(15.dp)
+                        .padding(6.dp)
+                        .size(16.dp)
                         .clickable(
                             indication = null,
-                            interactionSource = interactionSource,
-                            onClick = {
-                                if (id != R.drawable.ic_backspace) {
-                                    scope.launch { pagerState.scrollToPage(i) }
-                                } else {
-                                    viewModel.onIKeyClick(
-                                        Key("erase", "erase"),
-                                        context
-                                    )
-
-                                    viewModel.playSound(
-                                        viewModel.soundPool?.load(context, R.raw.delete, 1)
-                                    )
-                                    viewModel.vibrate()
-                                }
-                            },
-                        ),
+                            interactionSource = iS,
+                            role = Role.Button,
+                        ) { scope.launch { pagerState.scrollToPage(i) } },
                 )
             }
+
+            Icon(
+                painter = painterResource(R.drawable.deletebackward),
+                contentDescription = null,
+                tint = CupertinoColors.systemGray(isSystemInDarkTheme()),
+                modifier = Modifier
+                    .padding(4.dp)
+                    .size(18.dp)
+                    .clickable(
+                        indication = null,
+                        interactionSource = iS,
+                        role = Role.Button,
+                    ) {
+                        viewModel.onIKeyClick(
+                            Key("erase", "erase"),
+                            context
+                        )
+
+//                        viewModel.playSound(
+//                            viewModel.soundPool.load(context, R.raw.delete, 1)
+//                        )
+                        viewModel.vibrate()
+                    },
+            )
         }
     }
 }

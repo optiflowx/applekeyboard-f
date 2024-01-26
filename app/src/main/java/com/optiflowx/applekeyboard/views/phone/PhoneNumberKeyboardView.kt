@@ -5,34 +5,25 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
-import com.optiflowx.applekeyboard.storage.PreferencesConstants
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.optiflowx.applekeyboard.core.preferences.PreferencesConstants
 import com.optiflowx.applekeyboard.viewmodels.KeyboardViewModel
 
 @Composable
 fun PhoneNumberKeyboardView(viewModel: KeyboardViewModel) {
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp.dp
-
     val isPhoneSymbols = viewModel.isPhoneSymbol.observeAsState().value!!
-
-    var locale by rememberSaveable { mutableStateOf("ENGLISH") }
-
-    LaunchedEffect(viewModel.preferences) {
-        locale = viewModel.preferences.getStaticPreference(PreferencesConstants.LOCALE_KEY, "ENGLISH")
-    }
-
+    val locale = viewModel.preferences.getFlowPreference(
+        PreferencesConstants.LOCALE_KEY, "English"
+    ).collectAsStateWithLifecycle("English").value
     val phoneRowKeys = PhoneRowKeys(locale)
     val phoneConst = PhoneConstraintsSet()
 
@@ -59,8 +50,16 @@ fun PhoneNumberKeyboardView(viewModel: KeyboardViewModel) {
                     .padding(horizontal = 2.dp), 100, true
             ) {
                 if (isPhoneSymbols) {
-                    for (key in phoneRowKeys.row2KeysB) PhoneNumKeyboardKey(key, keyWidth, viewModel)
-                } else for (key in phoneRowKeys.row2Keys) PhoneNumKeyboardKey(key, keyWidth, viewModel)
+                    for (key in phoneRowKeys.row2KeysB) PhoneNumKeyboardKey(
+                        key,
+                        keyWidth,
+                        viewModel
+                    )
+                } else for (key in phoneRowKeys.row2Keys) PhoneNumKeyboardKey(
+                    key,
+                    keyWidth,
+                    viewModel
+                )
             }
         }
         Box(Modifier.layoutId('3')) {
@@ -69,12 +68,19 @@ fun PhoneNumberKeyboardView(viewModel: KeyboardViewModel) {
                 Modifier
                     .width(screenWidth)
                     .align(Alignment.Center)
-                    .padding(horizontal = 2.dp),
-                100, true
+                    .padding(horizontal = 2.dp), 100, true
             ) {
                 if (isPhoneSymbols) {
-                    for (key in phoneRowKeys.row3KeysB) PhoneNumKeyboardKey(key, keyWidth, viewModel)
-                } else for (key in phoneRowKeys.row3Keys) PhoneNumKeyboardKey(key, keyWidth, viewModel)
+                    for (key in phoneRowKeys.row3KeysB) PhoneNumKeyboardKey(
+                        key,
+                        keyWidth,
+                        viewModel
+                    )
+                } else for (key in phoneRowKeys.row3Keys) PhoneNumKeyboardKey(
+                    key,
+                    keyWidth,
+                    viewModel
+                )
             }
         }
         Box(Modifier.layoutId('4')) {
@@ -85,8 +91,16 @@ fun PhoneNumberKeyboardView(viewModel: KeyboardViewModel) {
                     .padding(horizontal = 2.dp), 100, true
             ) {
                 if (isPhoneSymbols) {
-                    for (key in phoneRowKeys.row4keysB) PhoneNumKeyboardKey(key, keyWidth, viewModel)
-                } else for (key in phoneRowKeys.row4Keys) PhoneNumKeyboardKey(key, keyWidth, viewModel)
+                    for (key in phoneRowKeys.row4keysB) PhoneNumKeyboardKey(
+                        key,
+                        keyWidth,
+                        viewModel
+                    )
+                } else for (key in phoneRowKeys.row4Keys) PhoneNumKeyboardKey(
+                    key,
+                    keyWidth,
+                    viewModel
+                )
             }
         }
     }

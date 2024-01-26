@@ -8,20 +8,22 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
-import com.optiflowx.applekeyboard.storage.PreferencesConstants
-import com.optiflowx.applekeyboard.utils.KeyboardLocale
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.optiflowx.applekeyboard.core.preferences.PreferencesConstants
+import com.optiflowx.applekeyboard.core.utils.KeyboardLocale
 import com.optiflowx.applekeyboard.utils.appFontType
+import com.optiflowx.applekeyboard.utils.nonScaledSp
 import com.optiflowx.applekeyboard.viewmodels.KeyboardViewModel
 import io.github.alexzhirkevich.cupertino.CupertinoIcon
 import io.github.alexzhirkevich.cupertino.CupertinoSearchTextField
@@ -41,11 +43,11 @@ fun EmojiSearchView(viewModel: KeyboardViewModel) {
     val state = rememberCupertinoSearchTextFieldState()
     val focusRequester = remember { FocusRequester() }
 
-    val fontType = viewModel.preferences.getFlowPreference(PreferencesConstants.FONT_TYPE_KEY, "Regular").collectAsState(
+    val fontType = viewModel.preferences.getFlowPreference(PreferencesConstants.FONT_TYPE_KEY, "Regular").collectAsStateWithLifecycle(
         "Regular").value
 
-    val locale = viewModel.preferences.getFlowPreference(PreferencesConstants.LOCALE_KEY, "ENGLISH").collectAsState(
-        "ENGLISH").value
+    val locale = viewModel.preferences.getFlowPreference(PreferencesConstants.LOCALE_KEY, "English").collectAsStateWithLifecycle(
+        "English").value
 
     LaunchedEffect(state.isFocused) {
         if (state.isFocused) {
@@ -70,15 +72,19 @@ fun EmojiSearchView(viewModel: KeyboardViewModel) {
         placeholder = {
             Text(
                 keyboardLocale.searchEmoji(locale),
-                color = CupertinoColors.systemGray(isSystemInDarkTheme()),
-                fontFamily = appFontType(fontType),
-                fontSize = TextUnit(17f, TextUnitType.Sp),
+                style = TextStyle(
+                    color = CupertinoColors.systemGray(isSystemInDarkTheme()),
+                    fontFamily = appFontType(fontType),
+                    fontSize = TextUnit(18f, TextUnitType.Sp).nonScaledSp,
+                    platformStyle = PlatformTextStyle(includeFontPadding = false),
+                )
             )
         },
         textStyle = TextStyle(
             color = MaterialTheme.colorScheme.primary,
             fontFamily = appFontType(fontType),
-            fontSize = TextUnit(17f, TextUnitType.Sp),
+            fontSize = TextUnit(18f, TextUnitType.Sp).nonScaledSp,
+            platformStyle = PlatformTextStyle(includeFontPadding = false),
         ),
         leadingIcon = {
             CupertinoIcon(

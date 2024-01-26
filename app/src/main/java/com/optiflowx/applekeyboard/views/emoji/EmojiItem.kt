@@ -6,22 +6,27 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.PlatformTextStyle
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import com.optiflowx.applekeyboard.ui.iosEmojiFontFamily
+import com.optiflowx.applekeyboard.utils.nonScaledSp
 import com.optiflowx.applekeyboard.viewmodels.KeyboardViewModel
 
 @Composable
 fun EmojiItem(emoji: String, viewModel: KeyboardViewModel, title: String) {
-    // context
     val context = LocalContext.current
 
     Text(
         emoji,
-        fontSize = TextUnit(24f, TextUnitType.Sp),
-        fontFamily = iosEmojiFontFamily,
+        style = TextStyle(
+            fontSize = TextUnit(27f, TextUnitType.Sp).nonScaledSp,
+            fontFamily = iosEmojiFontFamily,
+            platformStyle = PlatformTextStyle(includeFontPadding = false)
+        ),
         textAlign = TextAlign.Center,
         modifier = Modifier
             .padding(5.dp)

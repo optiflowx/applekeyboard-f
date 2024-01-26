@@ -1,4 +1,4 @@
-package com.optiflowx.applekeyboard.composables.home
+package com.optiflowx.applekeyboard.ui.home
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
@@ -12,20 +12,21 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
-import com.optiflowx.applekeyboard.ui.cupertinoBlue1
 import com.optiflowx.applekeyboard.ui.regular
 import io.github.alexzhirkevich.cupertino.Surface
+import io.github.alexzhirkevich.cupertino.theme.CupertinoColors
+import io.github.alexzhirkevich.cupertino.theme.systemBlue
 
 @Composable
 fun CopyrightView() {
     val radius = 12.dp
     Surface(
         shape = RoundedCornerShape(radius),
-        color = cupertinoBlue1.copy(alpha = 0.25f),
+        color = CupertinoColors.systemBlue.copy(alpha = 0.25f),
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 10.dp, horizontal = 5.dp)
-            .border(BorderStroke(1.dp, cupertinoBlue1), RoundedCornerShape(radius))
+            .border(BorderStroke(1.dp, CupertinoColors.systemBlue), RoundedCornerShape(radius))
     ) {
         Text(
             "The keyboard design and certain associated resources within this application, " +
@@ -43,7 +44,7 @@ fun CopyrightView() {
                     "2024 © OptiFlowX. All rights reserved. This application is not " +
                     "endorsed by or affiliated with Apple Inc.",
             style = TextStyle(
-                color = cupertinoBlue1,
+                color = CupertinoColors.systemBlue,
                 fontSize = TextUnit(14f, TextUnitType.Sp),
                 fontFamily = regular,
             ),

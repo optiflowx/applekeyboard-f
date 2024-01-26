@@ -1,8 +1,8 @@
 package com.optiflowx.applekeyboard.views.phone
 
 import androidx.compose.runtime.Immutable
-import com.optiflowx.applekeyboard.models.Key
-import com.optiflowx.applekeyboard.utils.KeyboardLocale
+import com.optiflowx.applekeyboard.core.data.Key
+import com.optiflowx.applekeyboard.core.utils.KeyboardLocale
 
 @Immutable
 class PhoneRowKeys(locale: String?) {
