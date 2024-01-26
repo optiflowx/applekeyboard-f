@@ -1,22 +1,30 @@
 package com.optiflowx.applekeyboard.viewmodels
 
 import android.content.Context
+import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.optiflowx.applekeyboard.storage.PreferencesConstants
-import com.optiflowx.applekeyboard.storage.PreferencesHelper
+import com.optiflowx.applekeyboard.core.preferences.PreferencesConstants
+import com.optiflowx.applekeyboard.core.preferences.PreferencesHelper
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 
-@Stable
+@Immutable
 class AppViewModel(context: Context) : ViewModel() {
+    @Stable
     val preferences = PreferencesHelper(context)
+
+    @Stable
     private val pC = PreferencesConstants
 
+    @Stable
+    private val dispatcher = Dispatchers.IO
+
     init {
-        viewModelScope.launch {
-            val isFirstRun = preferences.getStaticPreference(pC.FIRST_RUN_KEY, true)
+        viewModelScope.launch(dispatcher) {
+            val isFirstRun = preferences.getPreference(pC.FIRST_RUN_KEY, true)
 
             if (isFirstRun) {
                 preferences.putPreference(pC.FIRST_RUN_KEY, false)
@@ -24,43 +32,63 @@ class AppViewModel(context: Context) : ViewModel() {
         }
     }
 
-    fun updateLocale(value: String) = viewModelScope.launch {
+    @Stable
+    fun updateLocale(value: String) = viewModelScope.launch(dispatcher) {
         preferences.putPreference(pC.LOCALE_KEY, value)
     }
 
-    fun updateFontType(value: String) = viewModelScope.launch {
+    @Stable
+    fun updateFontType(value: String) = viewModelScope.launch(dispatcher) {
         preferences.putPreference(pC.FONT_TYPE_KEY, value)
     }
 
-    fun updateVibrateOnKeyPress(value: Boolean) = viewModelScope.launch {
+    @Stable
+    fun updateVibrateOnKeyPress(value: Boolean) = viewModelScope.launch(dispatcher) {
         preferences.putPreference(pC.VIBRATE_ON_KEY_PRESS_KEY, value)
     }
 
-    fun updateSoundOnKeyPress(value: Boolean) = viewModelScope.launch {
+    @Stable
+    fun updateSoundOnKeyPress(value: Boolean) = viewModelScope.launch(dispatcher) {
         preferences.putPreference(pC.SOUND_ON_KEY_PRESS_KEY, value)
     }
 
-    fun updateAutoCapitalize(value: Boolean) = viewModelScope.launch {
-        preferences.putPreference(pC.AUTO_CAPITALIZE_KEY, value)
+    @Stable
+    fun updateAutoCapitalisation(value: Boolean) = viewModelScope.launch(dispatcher) {
+        preferences.putPreference(pC.AUTO_CAPITALISATION_KEY, value)
     }
 
-    fun updateAutoCorrect(value: Boolean) = viewModelScope.launch {
-        preferences.putPreference(pC.AUTO_CORRECT_KEY, value)
+    @Stable
+    fun updateDotShortcut(value: Boolean) = viewModelScope.launch(dispatcher) {
+        preferences.putPreference(pC.DOT_SHORTCUT_KEY, value)
     }
 
-    fun updateDoubleSpacePeriod(value: Boolean) = viewModelScope.launch {
-        preferences.putPreference(pC.DOUBLE_SPACE_PERIOD_KEY, value)
+    @Stable
+    fun updateEnableCapsLock(value: Boolean) = viewModelScope.launch(dispatcher) {
+        preferences.putPreference(pC.ENABLE_CAPS_LOCK_KEY, value)
     }
 
-    fun updateAutoCapitalizeI(value: Boolean) = viewModelScope.launch {
-        preferences.putPreference(pC.AUTO_CAPITALIZE_I_KEY, value)
+    @Stable
+    fun updateCheckSpelling(value: Boolean) = viewModelScope.launch(dispatcher) {
+        preferences.putPreference(pC.CHECK_SPELLING_KEY, value)
     }
 
-    fun updateShowSuggestions(value: Boolean) = viewModelScope.launch {
-        preferences.putPreference(pC.SHOW_SUGGESTIONS_KEY, value)
+    @Stable
+    fun updateCharacterPreview(value: Boolean) = viewModelScope.launch(dispatcher) {
+        preferences.putPreference(pC.CHARACTER_PREVIEW_KEY, value)
     }
 
-    fun updateAutoCheckSpelling(value: Boolean) = viewModelScope.launch {
-        preferences.putPreference(pC.AUTO_CHECK_SPELLING_KEY, value)
+    @Stable
+    fun updateAutoCorrection(value: Boolean) = viewModelScope.launch(dispatcher) {
+        preferences.putPreference(pC.AUTO_CORRECTION_KEY, value)
+    }
+
+    @Stable
+    fun updateSmartPunctuation(value: Boolean) = viewModelScope.launch(dispatcher) {
+        preferences.putPreference(pC.SMART_PUNCTUATION_KEY, value)
+    }
+
+    @Stable
+    fun updatePredictive(value: Boolean) = viewModelScope.launch(dispatcher) {
+        preferences.putPreference(pC.PREDICTIVE_KEY, value)
     }
 }
