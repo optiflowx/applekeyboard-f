@@ -6,8 +6,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
 import androidx.compose.ui.graphics.Color
 
+@Stable
 @SuppressLint("ConflictingOnColor")
 private val Dark = darkColorScheme(
     primary = Color.White, //Text Color on Text Key
@@ -20,11 +22,12 @@ private val Dark = darkColorScheme(
     onBackground = Color.White,
     scrim = Color.White, //Bottom Icons color
     onPrimary = Color(0xFF404040), //Suggestion Div Color
-    tertiaryContainer = Color(0xff1c1c1c), //Key Shadow Color
-    onSurfaceVariant = Color(0xff6c6c6c), //Disabled Color
+    tertiaryContainer = Color(0xFF000000), //Key Shadow Color
+    onSurfaceVariant = Color(0xff6c6c6c), //Options View Background Color
 )
 
 
+@Stable
 @SuppressLint("ConflictingOnColor")
 private val Light = lightColorScheme(
     primary = Color.Black, //Text Color on Text Key
@@ -35,12 +38,13 @@ private val Light = lightColorScheme(
     surface = Color(0xFFFFFFFF), //Shift Key Background Color
     onSurface = Color(0xFF007AFF), //Text Action Key Background Color
     onBackground = Color.Black,
-    scrim = Color(0xFF52555A), //Bottom Icons color
+    scrim = Color(0xFF50555C), //Bottom Icons color
     onPrimary = Color(0xFFbcbdc0), //Suggestion Div Color
-    tertiaryContainer = Color(0xff919095), //Key Shadow Color
-    onSurfaceVariant = Color(0xff6c6c6c), //Disabled Color
+    tertiaryContainer = Color(0xFF292929), //Key Shadow Color
+    onSurfaceVariant = Color(0xFFFFFFFF), //Options View Background Color
 )
 
+@Stable
 @Composable
 fun AppleKeyboardIMETheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
@@ -49,7 +53,6 @@ fun AppleKeyboardIMETheme(
     MaterialTheme(
         colorScheme = if (darkTheme) Dark else Light,
         typography = typography,
-        shapes = shapes,
         content = content
     )
 }

@@ -1,6 +1,6 @@
 package com.optiflowx.applekeyboard.views.symbols
 
-import com.optiflowx.applekeyboard.models.Key
+import com.optiflowx.applekeyboard.core.data.Key
 
 class SymbolRowKeys {
     val row1Keys = arrayOf(

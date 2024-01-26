@@ -1,6 +1,7 @@
 package com.optiflowx.applekeyboard.ui
 
 import androidx.compose.material3.Typography
+import androidx.compose.runtime.Stable
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -9,11 +10,19 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.optiflowx.applekeyboard.R
 
+@Stable
 val bold = FontFamily(Font(R.font.bold, FontWeight.Bold))
+
+@Stable
 val medium = FontFamily(Font(R.font.medium, FontWeight.Medium))
+
+@Stable
 val regular = FontFamily(Font(R.font.regular, FontWeight.Normal))
+
+@Stable
 val iosEmojiFontFamily = FontFamily(Font(R.font.iosemojifont, loadingStrategy = FontLoadingStrategy.Async))
-// Set of Material typography styles to start with
+
+@Stable
 val typography = Typography(
     bodyLarge = TextStyle(
         fontWeight = FontWeight.Normal,
