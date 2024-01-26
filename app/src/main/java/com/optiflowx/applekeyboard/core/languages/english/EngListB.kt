@@ -2151,7 +2151,7 @@ val enListB = listOf<String>(
     "deficiencies",
     "curved",
     "milestone",
-    "erase",
+    "delete",
     "lien",
     "nip",
     "bites",
