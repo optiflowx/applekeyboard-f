@@ -45,8 +45,8 @@ import com.optiflowx.applekeyboard.core.preferences.PreferencesConstants
 import com.optiflowx.applekeyboard.screens.destinations.KeyboardFontsScreenDestination
 import com.optiflowx.applekeyboard.screens.destinations.KeyboardsScreenDestination
 import com.optiflowx.applekeyboard.screens.destinations.TextReplacementScreenDestination
-import com.optiflowx.applekeyboard.ui.home.CopyrightView
 import com.optiflowx.applekeyboard.ui.cupertino.CupertinoTile
+import com.optiflowx.applekeyboard.ui.home.CopyrightView
 import com.optiflowx.applekeyboard.ui.regular
 import com.optiflowx.applekeyboard.utils.nonScaledSp
 import com.optiflowx.applekeyboard.viewmodels.AppViewModel
@@ -65,7 +65,6 @@ import io.github.alexzhirkevich.cupertino.section.switch
 import io.github.alexzhirkevich.cupertino.theme.CupertinoColors
 import io.github.alexzhirkevich.cupertino.theme.systemBlue
 import io.github.alexzhirkevich.cupertino.theme.systemGreen
-import io.github.alexzhirkevich.cupertino.theme.systemOrange
 import io.github.alexzhirkevich.cupertino.theme.systemRed
 import io.github.alexzhirkevich.cupertino.theme.systemYellow
 import splitties.systemservices.inputMethodManager
@@ -149,7 +148,9 @@ fun HomeScreen(navigator: DestinationsNavigator) {
         }
     ) {
         LazyColumn(
-            modifier = Modifier.statusBarsPadding().absolutePadding(top = 40.dp),
+            modifier = Modifier
+                .statusBarsPadding()
+                .absolutePadding(top = 40.dp),
             userScrollEnabled = true
         ) {
             item("Message Section") {
@@ -275,23 +276,7 @@ fun HomeScreen(navigator: DestinationsNavigator) {
                         checked = isPredictive.value,
                         onCheckedChange = { viewModel.updatePredictive(it) }
                     )
-                    this.switch(
-                        title = {
-                            CupertinoText(
-                                text = "Sound On Key Press",
-                                color = CupertinoColors.systemOrange,
-                                style = tileTextStyle)
-                        },
-                        checked = isSound.value,
-                        onCheckedChange = { viewModel.updateSoundOnKeyPress(it) }
-                    )
-                    this.switch(
-                        title = {
-                            CupertinoText("Vibrate On Key Press", style = tileTextStyle)
-                        },
-                        checked = isVibrate.value,
-                        onCheckedChange = { viewModel.updateVibrateOnKeyPress(it) }
-                    )
+
                     this.switch(
                         title = {
                             CupertinoText(
@@ -309,6 +294,29 @@ fun HomeScreen(navigator: DestinationsNavigator) {
                         },
                         checked = isDotShortcut.value,
                         onCheckedChange = { viewModel.updateDotShortcut(it) }
+                    )
+                }
+            }
+
+            item("Interactions") {
+                CupertinoSection(
+                    title = { CupertinoText("INTERACTIONS", style = titleTextStyle) },
+                ) {
+                    this.switch(
+                        title = {
+                            CupertinoText(
+                                text = "Sound On Key Press",
+                                style = tileTextStyle)
+                        },
+                        checked = isSound.value,
+                        onCheckedChange = { viewModel.updateSoundOnKeyPress(it) }
+                    )
+                    this.switch(
+                        title = {
+                            CupertinoText("Vibrate On Key Press", style = tileTextStyle)
+                        },
+                        checked = isVibrate.value,
+                        onCheckedChange = { viewModel.updateVibrateOnKeyPress(it) }
                     )
                 }
             }
