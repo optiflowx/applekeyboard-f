@@ -4,36 +4,22 @@ package com.optiflowx.applekeyboard.screens
 
 import android.content.Intent
 import android.provider.Settings
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.absolutePadding
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.BottomSheetDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.Text
-import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
@@ -46,8 +32,8 @@ import com.optiflowx.applekeyboard.screens.destinations.KeyboardFontsScreenDesti
 import com.optiflowx.applekeyboard.screens.destinations.KeyboardsScreenDestination
 import com.optiflowx.applekeyboard.screens.destinations.TextReplacementScreenDestination
 import com.optiflowx.applekeyboard.ui.cupertino.CupertinoTile
-import com.optiflowx.applekeyboard.ui.home.CopyrightView
 import com.optiflowx.applekeyboard.ui.regular
+import com.optiflowx.applekeyboard.ui.sheets.CopyrightBottomSheet
 import com.optiflowx.applekeyboard.utils.nonScaledSp
 import com.optiflowx.applekeyboard.viewmodels.AppViewModel
 import com.ramcosta.composedestinations.annotation.Destination
@@ -55,6 +41,7 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import io.github.alexzhirkevich.cupertino.CupertinoIcon
 import io.github.alexzhirkevich.cupertino.CupertinoScaffold
 import io.github.alexzhirkevich.cupertino.CupertinoText
+import io.github.alexzhirkevich.cupertino.CupertinoTextField
 import io.github.alexzhirkevich.cupertino.CupertinoTopAppBar
 import io.github.alexzhirkevich.cupertino.ExperimentalCupertinoApi
 import io.github.alexzhirkevich.cupertino.icons.CupertinoIcons
@@ -108,10 +95,11 @@ fun HomeScreen(navigator: DestinationsNavigator) {
         .collectAsStateWithLifecycle(false)
     val isVibrate = viewModel.preferences.getFlowPreference(pC.VIBRATE_ON_KEY_PRESS_KEY, false)
         .collectAsStateWithLifecycle(false)
-    val isAutoCapitalisation = viewModel.preferences.getFlowPreference(pC.AUTO_CAPITALISATION_KEY, true)
+    val isAutoCapitalisation =
+        viewModel.preferences.getFlowPreference(pC.AUTO_CAPITALISATION_KEY, true)
             .collectAsStateWithLifecycle(true)
     val isDotShortcut = viewModel.preferences.getFlowPreference(pC.DOT_SHORTCUT_KEY, true)
-            .collectAsStateWithLifecycle(true)
+        .collectAsStateWithLifecycle(true)
     val isEnableCapsLock = viewModel.preferences.getFlowPreference(pC.ENABLE_CAPS_LOCK_KEY, true)
         .collectAsStateWithLifecycle(true)
     val isPredictive = viewModel.preferences.getFlowPreference(pC.PREDICTIVE_KEY, true)
@@ -120,12 +108,19 @@ fun HomeScreen(navigator: DestinationsNavigator) {
         .collectAsStateWithLifecycle(false)
     val isCheckSpelling = viewModel.preferences.getFlowPreference(pC.CHECK_SPELLING_KEY, false)
         .collectAsStateWithLifecycle(false)
-    val isCharacterPreview = viewModel.preferences.getFlowPreference(pC.CHARACTER_PREVIEW_KEY, false)
+    val isCharacterPreview =
+        viewModel.preferences.getFlowPreference(pC.CHARACTER_PREVIEW_KEY, false)
             .collectAsStateWithLifecycle(false)
 
-    var showSheet by remember { mutableStateOf(false) }
+    val (copyrightSheet, onCopyrightSheetChanged) = remember { mutableStateOf(false) }
 
-    if (showSheet) { BottomSheet { showSheet = false } }
+    val (value, onValueChange) = remember { mutableStateOf("") }
+
+    if (copyrightSheet) {
+        CopyrightBottomSheet { onCopyrightSheetChanged(false) }
+    }
+
+    val interactionSource = remember { MutableInteractionSource() }
 
     CupertinoScaffold(
         appBarsBlurAlpha = 0.65f,
@@ -196,6 +191,43 @@ fun HomeScreen(navigator: DestinationsNavigator) {
                         title = { CupertinoText("Change IME Service", style = tileTextStyle) },
                         onClick = { inputMethodManager.showInputMethodPicker() }
                     )
+                }
+            }
+
+            item("Test Keyboard") {
+                CupertinoSection(
+                    title = {
+                        CupertinoText("TEST KEYBOARD", style = titleTextStyle)
+                    },
+                    caption = {
+                        CupertinoText(
+                            text = "This section contains test keyboards for you to try out.",
+                            style = descTextStyle
+                        )
+                    }
+                ) {
+                    this.item {
+                        CupertinoTextField(
+                            value = value,
+                            enabled = true,
+                            onValueChange = onValueChange,
+                            modifier = Modifier.padding(it),
+                            interactionSource = interactionSource,
+                            keyboardOptions = KeyboardOptions(
+                                keyboardType = KeyboardType.Text,
+                            )
+//                            trailingIcon = {
+//                                CupertinoIcon(
+//                                    CupertinoIcons.Default.XmarkCircle,
+//                                    "arrow",
+//                                    tint = CupertinoColors.systemRed,
+//                                    modifier = Modifier.clickable {
+//                                        interactionSource.collectIsFocusedAsState().
+//                                    }
+//                                )
+//                            },
+                        )
+                    }
                 }
             }
 
@@ -306,7 +338,8 @@ fun HomeScreen(navigator: DestinationsNavigator) {
                         title = {
                             CupertinoText(
                                 text = "Sound On Key Press",
-                                style = tileTextStyle)
+                                style = tileTextStyle
+                            )
                         },
                         checked = isSound.value,
                         onCheckedChange = { viewModel.updateSoundOnKeyPress(it) }
@@ -367,7 +400,7 @@ fun HomeScreen(navigator: DestinationsNavigator) {
                                 style = tileTextStyle
                             )
                         },
-                        onClick = { showSheet = true }
+                        onClick = { onCopyrightSheetChanged(true) }
                     )
                     this.link(
                         title = {
@@ -385,31 +418,3 @@ fun HomeScreen(navigator: DestinationsNavigator) {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun BottomSheet(onDismiss: () -> Unit) {
-    val modalBottomSheetState = rememberModalBottomSheetState()
-
-    ModalBottomSheet(
-        onDismissRequest = { onDismiss() },
-        sheetState = modalBottomSheetState,
-        containerColor = Color.Black,
-        windowInsets = WindowInsets.safeDrawing,
-        dragHandle = { BottomSheetDefaults.DragHandle() },
-    ) {
-        Column {
-            Text(
-                "Copyright Notice",
-                textAlign = TextAlign.Center,
-                fontWeight = FontWeight.Black,
-                fontFamily = regular,
-                fontSize = TextUnit(19f, TextUnitType.Sp).nonScaledSp,
-                textDecoration = TextDecoration.Underline,
-                modifier = Modifier.fillMaxWidth(),
-            )
-            Spacer(Modifier.height(6.dp))
-            CopyrightView()
-            Spacer(Modifier.height(20.dp))
-        }
-    }
-}
