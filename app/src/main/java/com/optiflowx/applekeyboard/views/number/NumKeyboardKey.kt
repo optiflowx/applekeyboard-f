@@ -8,7 +8,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -20,10 +19,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.optiflowx.applekeyboard.R
-import com.optiflowx.applekeyboard.composables.keyboard.KeyButton
-import com.optiflowx.applekeyboard.models.Key
-import com.optiflowx.applekeyboard.storage.PreferencesConstants
+import com.optiflowx.applekeyboard.core.data.Key
+import com.optiflowx.applekeyboard.core.preferences.PreferencesConstants
+import com.optiflowx.applekeyboard.ui.keyboard.KeyButton
 import com.optiflowx.applekeyboard.utils.appFontType
 import com.optiflowx.applekeyboard.viewmodels.KeyboardViewModel
 
@@ -34,27 +34,34 @@ fun NumKeyboardKey(key: Key, buttonWidth: Dp, viewModel: KeyboardViewModel) {
     val isPeriod: Boolean = key.id == "."
     val isErase: Boolean = key.id == "erase"
 
-    val fontType = viewModel.preferences.getFlowPreference(PreferencesConstants.FONT_TYPE_KEY, "Regular").collectAsState(
-        "Regular").value
+    val fontType =
+        viewModel.preferences.getFlowPreference(PreferencesConstants.FONT_TYPE_KEY, "Regular")
+            .collectAsStateWithLifecycle("Regular").value
 
-    val soundID = when(key.id) {
-        "erase" -> viewModel.soundPool?.load(ctx, R.raw.delete, 1)
-        else -> viewModel.soundPool?.load(ctx, R.raw.standard, 1)
-    }
-
+//    var soundID: Int? = null
+//
+//    LaunchedEffect(true) {
+//        this.launch(Dispatchers.IO) {
+//            soundID = when (key.id) {
+//                "erase" -> viewModel.soundPool.load(ctx, R.raw.delete, 1)
+//                else -> viewModel.soundPool.load(ctx, R.raw.standard, 1)
+//            }
+//        }
+//    }
 
     KeyButton(
         color = (if (isErase || isPeriod) Color.Transparent else colorScheme.secondary),
         buttonWidth = buttonWidth,
         id = key.id,
-        pressState = {},
-        onClick = {
+        showPopup = false,
+        onRepeatableClick = {
             if (isErase) viewModel.onIKeyClick(key, ctx)
-            else viewModel.onNumKeyClick( key, ctx)
-
-            viewModel.playSound(soundID)
-            viewModel.vibrate()
+            else viewModel.onNumKeyClick(key, ctx)
         },
+        onSingleClick = {
+//            viewModel.playSound(soundID)
+            viewModel.vibrate()
+        }
     ) {
         if (isErase) {
             Icon(

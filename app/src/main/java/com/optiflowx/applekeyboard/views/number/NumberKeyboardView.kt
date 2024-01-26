@@ -20,7 +20,7 @@ fun NumberKeyboardView(viewModel: KeyboardViewModel) {
     val numConst = NumberConstraintsSet()
     val numRowKeys = NumberRowKeys()
 
-    ConstraintLayout(numConst.constraints, Modifier.width(screenWidth), 100, true) {
+    ConstraintLayout(numConst.constraints, Modifier.width(screenWidth),100, true) {
         val keyWidth = (screenWidth.value * 0.31).dp
 
         Box(Modifier.layoutId('1')) {
@@ -30,10 +30,8 @@ fun NumberKeyboardView(viewModel: KeyboardViewModel) {
                     .width(screenWidth)
                     .align(Alignment.Center)
                     .fillMaxWidth()
-                    .padding(horizontal = 2.dp), 100
-            ) {
-                for (key in numRowKeys.row1Keys) NumKeyboardKey(key, keyWidth, viewModel)
-            }
+                    .padding(horizontal = 2.dp), 100, true
+            ) { for (key in numRowKeys.row1Keys) NumKeyboardKey(key, keyWidth, viewModel) }
         }
         Box(Modifier.layoutId('2')) {
             ConstraintLayout(
@@ -43,9 +41,7 @@ fun NumberKeyboardView(viewModel: KeyboardViewModel) {
                     .align(Alignment.Center)
                     .fillMaxWidth()
                     .padding(horizontal = 2.dp), 100, true
-            ) {
-                for (key in numRowKeys.row2Keys) NumKeyboardKey(key, keyWidth, viewModel)
-            }
+            ) { for (key in numRowKeys.row2Keys) NumKeyboardKey(key, keyWidth, viewModel) }
         }
         Box(Modifier.layoutId('3')) {
             ConstraintLayout(
@@ -53,8 +49,7 @@ fun NumberKeyboardView(viewModel: KeyboardViewModel) {
                 Modifier
                     .width(screenWidth)
                     .align(Alignment.Center)
-                    .padding(horizontal = 2.dp),
-                100, true
+                    .padding(horizontal = 2.dp), 100, true
             ) {
                 for (key in numRowKeys.row3Keys) {
                     if (key.id == "." || key.id == "erase") {
@@ -66,12 +61,9 @@ fun NumberKeyboardView(viewModel: KeyboardViewModel) {
         Box(Modifier.layoutId('4')) {
             ConstraintLayout(
                 numConst.fourthRowConstraints,
-                Modifier
-                    .align(Alignment.Center)
-                    .padding(horizontal = 2.dp), 100, true
-            ) {
-                for(key in numRowKeys.row4Keys) NumKeyboardKey(key, keyWidth, viewModel)
-            }
+                Modifier.align(Alignment.Center).padding(horizontal = 2.dp),
+                100, true
+            ) { for(key in numRowKeys.row4Keys) NumKeyboardKey(key, keyWidth, viewModel) }
         }
     }
 }

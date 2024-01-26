@@ -1,7 +1,7 @@
 package com.optiflowx.applekeyboard.views.number
 
 import androidx.compose.runtime.Immutable
-import com.optiflowx.applekeyboard.models.Key
+import com.optiflowx.applekeyboard.core.data.Key
 
 
 @Immutable
