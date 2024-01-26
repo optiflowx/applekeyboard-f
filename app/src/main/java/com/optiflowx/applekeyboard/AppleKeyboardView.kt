@@ -11,6 +11,7 @@ import androidx.compose.material3.CardDefaults.cardColors
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.AbstractComposeView
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
@@ -26,7 +27,6 @@ class AppleKeyboardView(context: Context) : AbstractComposeView(context) {
     override fun Content() {
         //ViewModel and Context
         val context = LocalContext.current
-//        val navSize = WindowInsets.navigationBars.getBottom(LocalDensity.current)
 
         val viewModel = viewModel<KeyboardViewModel>(
             key = "KeyboardViewModel",
@@ -37,20 +37,8 @@ class AppleKeyboardView(context: Context) : AbstractComposeView(context) {
             }
         )
 
-        //Statics
-//        val width = LocalConfiguration.current.screenWidthDp
-
-        //States
-//        val keyboardHeight = viewModel.keyboardHeight.observeAsState().value!!
-//        val bottom = rememberSaveable(navSize) { mutableIntStateOf(navSize) }
-
         AppleKeyboardIMETheme {
-            Box(
-                modifier = Modifier.wrapContentSize()
-//                    .defaultMinSize(
-//                        minWidth = width.dp, minHeight = (keyboardHeight + bottom.intValue).dp
-//                    )
-            ) {
+            Box(Modifier.wrapContentSize()) {
 //                Image(
 //                    painter = painterResource(
 //                        if (isSystemInDarkTheme())
@@ -64,6 +52,7 @@ class AppleKeyboardView(context: Context) : AbstractComposeView(context) {
 //                    alpha = 0.94f
 //                )
                 Card(
+                    shape = RectangleShape,
                     colors = cardColors(
                         containerColor = MaterialTheme.colorScheme.background
 //                            .copy(
@@ -72,6 +61,7 @@ class AppleKeyboardView(context: Context) : AbstractComposeView(context) {
                     ),
                 ) { KeyboardView(viewModel) }
             }
+
             isSystemInDarkTheme()
         }
     }
