@@ -5,10 +5,11 @@ plugins {
 //    id ("dagger.hilt.android.plugin")
 //    id("kotlin-parcelize")
     id("com.google.devtools.ksp")
+    id("androidx.baselineprofile")
 }
 
 val hiltVersion = "2.48"
-val composeVersion = "1.5.7"
+val composeVersion = "1.6.0"
 val lifecycleVersion = "2.7.0"
 val archVersion = "2.2.0"
 val roomVersion = "2.6.1"
@@ -21,8 +22,8 @@ android {
         applicationId = "com.optiflowx.applekeyboard"
         minSdk = 24
         targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 3
+        versionName = "1.0.3"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -31,13 +32,11 @@ android {
     }
 
     buildTypes {
-        release {
+        getByName("release") {
             isMinifyEnabled = true
             isShrinkResources = true
             isProfileable = true //TO BE FALSE
             isCrunchPngs = true
-//            isDebuggable = true
-//            isJniDebuggable = true
 
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -45,20 +44,34 @@ android {
             )
             signingConfig = signingConfigs.getByName("debug")
         }
+
+        getByName("debug") {
+            isMinifyEnabled = false
+            isShrinkResources = false
+            isProfileable = true
+            isCrunchPngs = false
+            isDebuggable = true
+            isJniDebuggable = true
+        }
     }
+
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
     }
+
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = "1.8"
     }
+
     buildFeatures {
         compose = true
     }
+
     composeOptions {
-        kotlinCompilerExtensionVersion = composeVersion
+        kotlinCompilerExtensionVersion = "1.5.8"
     }
+
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
@@ -67,33 +80,35 @@ android {
 }
 
 dependencies {
+    implementation("androidx.profileinstaller:profileinstaller:1.3.1")
     androidTestImplementation("androidx.test:runner:1.5.2")
 
     //Destinations
-    implementation ("io.github.raamcosta.compose-destinations:core:1.1.2-beta")
-    ksp ("io.github.raamcosta.compose-destinations:ksp:1.1.2-beta")
+    implementation("io.github.raamcosta.compose-destinations:core:1.10.0")
+    "baselineProfile"(project(":baselineprofile"))
+    ksp("io.github.raamcosta.compose-destinations:ksp:1.10.0")
 
-    implementation ("org.jetbrains.kotlin:kotlin-stdlib:1.9.22")
-    implementation ("androidx.appcompat:appcompat:1.6.1")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.9.22")
+    implementation("androidx.appcompat:appcompat:1.6.1")
 
     //Compose Dependencies
-    implementation ("androidx.compose.ui:ui:$composeVersion")
-    implementation ("androidx.compose.ui:ui-tooling:$composeVersion")
-    implementation ("androidx.compose.material3:material3:1.1.2")
-    implementation ("androidx.compose.foundation:foundation:$composeVersion")
-    implementation ("androidx.compose.runtime:runtime-livedata:$composeVersion")
+    implementation("androidx.compose.ui:ui:$composeVersion")
+    implementation("androidx.compose.ui:ui-tooling:$composeVersion")
+    implementation("androidx.compose.material3:material3:1.1.2")
+    implementation("androidx.compose.foundation:foundation:$composeVersion")
+    implementation("androidx.compose.runtime:runtime-livedata:$composeVersion")
 
     //Activity Compose
-    implementation ("androidx.activity:activity-compose:1.8.2")
+    implementation("androidx.activity:activity-compose:1.8.2")
 
-    implementation ("androidx.core:core-ktx:1.12.0")
+    implementation("androidx.core:core-ktx:1.12.0")
 
     //Simplify the UI
-    implementation ("com.louiscad.splitties:splitties-systemservices:3.0.0")
-    implementation ("com.louiscad.splitties:splitties-views:3.0.0")
+    implementation("com.louiscad.splitties:splitties-systemservices:3.0.0")
+    implementation("com.louiscad.splitties:splitties-views:3.0.0")
 
     // Compose Preview
-    implementation(platform("androidx.compose:compose-bom:2023.10.01"))
+    implementation(platform("androidx.compose:compose-bom:2024.01.00"))
     implementation("androidx.test.ext:junit-ktx:1.1.5")
     implementation("androidx.test:monitor:1.6.1")
     debugImplementation("androidx.compose.ui:ui-tooling")
@@ -104,13 +119,13 @@ dependencies {
 
     // Lifecycle Dependencies
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion")
-    implementation ("androidx.lifecycle:lifecycle-service:$lifecycleVersion")
+    implementation("androidx.lifecycle:lifecycle-service:$lifecycleVersion")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:$lifecycleVersion")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:$lifecycleVersion")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:$lifecycleVersion")
     implementation("androidx.lifecycle:lifecycle-runtime-compose:$lifecycleVersion")
     implementation("androidx.lifecycle:lifecycle-viewmodel-savedstate:$lifecycleVersion")
-    implementation ("androidx.lifecycle:lifecycle-common-java8:$lifecycleVersion")
+    implementation("androidx.lifecycle:lifecycle-common-java8:$lifecycleVersion")
 
     //Cupertino
     implementation("io.github.alexzhirkevich:cupertino:0.1.0-alpha03")

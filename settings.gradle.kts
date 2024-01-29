@@ -15,3 +15,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "Apple Keyboard"
 include(":app")
+include(":baselineprofile")
