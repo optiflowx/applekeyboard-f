@@ -34,7 +34,7 @@ fun KeyboardBottomView(viewModel: KeyboardViewModel, locale: String, fontType: S
             .padding(horizontal = (keyboardWidth * 0.075).dp)
             .fillMaxWidth()
     ) {
-        KeyboardOptionsView(viewModel, locale, fontType)
+        KeyboardOptionsView(viewModel, locale, fontType, keyboardWidth.toDouble())
 
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,

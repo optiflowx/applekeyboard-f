@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -24,8 +25,7 @@ import com.optiflowx.applekeyboard.ui.keyboard.Suggestion
 import com.optiflowx.applekeyboard.viewmodels.KeyboardViewModel
 
 @Composable
-fun SuggestionView(viewModel: KeyboardViewModel) {
-    val viewWidth = LocalConfiguration.current.screenWidthDp.dp
+fun SuggestionView(viewModel: KeyboardViewModel, viewWidth: Double, textSize : Float) {
     val context = LocalContext.current
     val suggestions = viewModel.wordsDictionary.observeAsState().value
 
@@ -102,8 +102,8 @@ fun SuggestionView(viewModel: KeyboardViewModel) {
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier
-            .width(viewWidth)
-            .fillMaxSize()
+            .width(viewWidth.dp)
+            .fillMaxHeight()
 
     ) {
         ConstraintLayout(
@@ -113,21 +113,21 @@ fun SuggestionView(viewModel: KeyboardViewModel) {
                 .fillMaxHeight()
                 .align(Alignment.Center), 100, true
         ) {
-            Suggestion("sug1", suggestion1.value,fontType.value, onClick = {
+            Suggestion("sug1", suggestion1.value,fontType.value,textSize, onClick = {
                 viewModel.onSuggestionClick(
                     suggestion1.value,
                     context
                 )
             })
             Div("div1")
-            Suggestion("sug2", suggestion2.value,fontType.value,  onClick = {
+            Suggestion("sug2", suggestion2.value,fontType.value, textSize, onClick = {
                 viewModel.onSuggestionClick(
                     suggestion2.value,
                     context
                 )
             })
             Div("div2")
-            Suggestion("sug3", suggestion3.value,fontType.value,  onClick = {
+            Suggestion("sug3", suggestion3.value,fontType.value, textSize, onClick = {
                 viewModel.onSuggestionClick(
                     suggestion3.value,
                     context

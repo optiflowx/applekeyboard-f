@@ -30,7 +30,7 @@ import com.optiflowx.applekeyboard.utils.appFontType
 import com.optiflowx.applekeyboard.viewmodels.KeyboardViewModel
 
 @Composable
-fun PhoneNumKeyboardKey(key: Key, buttonWidth: Dp, viewModel: KeyboardViewModel) {
+fun PhoneNumKeyboardKey(key: Key, viewModel: KeyboardViewModel) {
     val ctx = LocalContext.current
     val colorScheme = MaterialTheme.colorScheme
     val isSwitch: Boolean = key.id == "switch"
@@ -49,7 +49,6 @@ fun PhoneNumKeyboardKey(key: Key, buttonWidth: Dp, viewModel: KeyboardViewModel)
     //Erase and Switch Keys
     KeyButton(
         color = (if (isErase || isSwitch) Color.Transparent else colorScheme.secondary),
-        buttonWidth = buttonWidth,
         id = key.id,
         showPopup = false,
         onRepeatableClick = {

@@ -31,7 +31,7 @@ fun NumberKeyboardView(viewModel: KeyboardViewModel) {
                     .align(Alignment.Center)
                     .fillMaxWidth()
                     .padding(horizontal = 2.dp), 100, true
-            ) { for (key in numRowKeys.row1Keys) NumKeyboardKey(key, keyWidth, viewModel) }
+            ) { for (key in numRowKeys.row1Keys) NumKeyboardKey(key, viewModel) }
         }
         Box(Modifier.layoutId('2')) {
             ConstraintLayout(
@@ -41,7 +41,7 @@ fun NumberKeyboardView(viewModel: KeyboardViewModel) {
                     .align(Alignment.Center)
                     .fillMaxWidth()
                     .padding(horizontal = 2.dp), 100, true
-            ) { for (key in numRowKeys.row2Keys) NumKeyboardKey(key, keyWidth, viewModel) }
+            ) { for (key in numRowKeys.row2Keys) NumKeyboardKey(key, viewModel) }
         }
         Box(Modifier.layoutId('3')) {
             ConstraintLayout(
@@ -53,8 +53,8 @@ fun NumberKeyboardView(viewModel: KeyboardViewModel) {
             ) {
                 for (key in numRowKeys.row3Keys) {
                     if (key.id == "." || key.id == "delete") {
-                        NumKeyboardKey(key, keyWidth, viewModel)
-                    } else NumKeyboardKey(key, keyWidth, viewModel)
+                        NumKeyboardKey(key, viewModel)
+                    } else NumKeyboardKey(key, viewModel)
                 }
             }
         }
@@ -63,7 +63,7 @@ fun NumberKeyboardView(viewModel: KeyboardViewModel) {
                 numConst.fourthRowConstraints,
                 Modifier.align(Alignment.Center).padding(horizontal = 2.dp),
                 100, true
-            ) { for(key in numRowKeys.row4Keys) NumKeyboardKey(key, keyWidth, viewModel) }
+            ) { for(key in numRowKeys.row4Keys) NumKeyboardKey(key, viewModel) }
         }
     }
 }

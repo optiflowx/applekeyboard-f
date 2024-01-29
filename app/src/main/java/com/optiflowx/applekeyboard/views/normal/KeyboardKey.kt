@@ -1,6 +1,7 @@
 package com.optiflowx.applekeyboard.views.normal
 
 import android.view.inputmethod.EditorInfo
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,6 +19,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
@@ -38,7 +41,7 @@ import com.optiflowx.applekeyboard.utils.nonScaledSp
 import com.optiflowx.applekeyboard.viewmodels.KeyboardViewModel
 
 @Composable
-fun KeyboardKey(key: Key, buttonWidth: Dp, viewModel: KeyboardViewModel) {
+fun KeyboardKey(key: Key, viewModel: KeyboardViewModel) {
     val ctx = LocalContext.current
     val view = LocalView.current
     var keyValue by rememberSaveable { mutableStateOf(key.value) }
@@ -52,7 +55,6 @@ fun KeyboardKey(key: Key, buttonWidth: Dp, viewModel: KeyboardViewModel) {
     val isAllCaps = viewModel.isAllCaps.observeAsState(false).value
     val isNumberSymbol = viewModel.isNumberSymbol.observeAsState(false).value
     val isCapsLock = viewModel.isCapsLock.observeAsState(false).value
-    val isPoolLoaded = viewModel.isPoolLoaded.observeAsState(false).value
 
     val keyboardLocale = KeyboardLocale()
 
@@ -146,7 +148,6 @@ fun KeyboardKey(key: Key, buttonWidth: Dp, viewModel: KeyboardViewModel) {
                 color = (if (isShift && isAllCaps!!) colorScheme.surface else colorScheme.secondaryContainer).copy(
                     alpha = 0.8f
                 ),
-                buttonWidth = buttonWidth,
                 id = key.id,
                 showPopup = false,
                 onRepeatableClick = { viewModel.onIKeyClick(key, ctx) },
@@ -158,10 +159,9 @@ fun KeyboardKey(key: Key, buttonWidth: Dp, viewModel: KeyboardViewModel) {
                 Icon(
                     painter = this,
                     contentDescription = "icon",
-                    modifier = Modifier
-                        .fillMaxWidth(0.55f)
-                        .fillMaxHeight(0.55f),
-                    tint = if (isAllCaps!! && !isErase && !isEmoji && !isSymbols) Color.Black else colorScheme.primary,
+                    modifier = Modifier.fillMaxHeight(0.54f).fillMaxWidth(0.54f),
+                    tint = if (isAllCaps!! && !isErase && !isEmoji && !isSymbols)
+                            Color.Black else colorScheme.primary,
                 )
             }
         }
@@ -172,7 +172,6 @@ fun KeyboardKey(key: Key, buttonWidth: Dp, viewModel: KeyboardViewModel) {
         } else colorScheme.secondary).apply {
             KeyButton(
                 color = this,
-                buttonWidth = buttonWidth,
                 id = key.id,
                 text = keyValue,
                 showPopup = !(key.id == "123" || key.id == "ABC" || key.id == "action" || key.id == "space"),

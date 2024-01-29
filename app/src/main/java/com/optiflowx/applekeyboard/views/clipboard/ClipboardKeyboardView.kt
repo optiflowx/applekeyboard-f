@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -26,6 +27,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
@@ -40,8 +42,16 @@ import io.github.alexzhirkevich.cupertino.theme.CupertinoColors
 import io.github.alexzhirkevich.cupertino.theme.systemGray
 
 @Composable
-fun ClipboardKeyboardView(viewModel: KeyboardViewModel) {
+fun ClipboardKeyboardView(
+    viewModel: KeyboardViewModel,
+    viewWidth: Dp,
+    viewHeight: Int = 200,
+) {
     val context = LocalContext.current
+
+    val keyboardLocale = KeyboardLocale()
+
+    val clipDataList = viewModel.clipData.observeAsState().value?.reversed()
 
     val fontType = viewModel.preferences.getFlowPreference(
         PreferencesConstants.FONT_TYPE_KEY, "Regular"
@@ -51,19 +61,15 @@ fun ClipboardKeyboardView(viewModel: KeyboardViewModel) {
         PreferencesConstants.LOCALE_KEY, "English"
     ).collectAsStateWithLifecycle("English").value
 
-    val keyboardLocale = KeyboardLocale()
-
-    val clipDataList = viewModel.clipData.observeAsState().value?.reversed()
-
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier
-            .height(200.dp)
-            .fillMaxWidth()
+            .height(viewHeight.dp)
+            .width(viewWidth)
     ) {
         if (!clipDataList.isNullOrEmpty()) {
             LazyVerticalStaggeredGrid(
-                columns = StaggeredGridCells.Adaptive(100.dp),
+                columns = StaggeredGridCells.Fixed(3),
                 contentPadding = PaddingValues(8.dp),
                 horizontalArrangement = Arrangement.spacedBy(5.dp),
                 verticalItemSpacing = 5.dp,

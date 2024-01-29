@@ -179,7 +179,7 @@ class KeyboardViewModel(context: Context) : ViewModel() {
             .build()
 
         soundPool = SoundPool.Builder()
-            .setMaxStreams(42)
+            .setMaxStreams(4)
             .setAudioAttributes(audioAttributes)
             .build()
     }
@@ -206,8 +206,8 @@ class KeyboardViewModel(context: Context) : ViewModel() {
             if (value) {
                 @Suppress("DEPRECATION")
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    vibrator.vibrate(VibrationEffect.createOneShot(50, -1))
-                } else vibrator.vibrate(50)
+                    vibrator.vibrate(VibrationEffect.createOneShot(45, -1))
+                } else vibrator.vibrate(45)
             }
         }
     }

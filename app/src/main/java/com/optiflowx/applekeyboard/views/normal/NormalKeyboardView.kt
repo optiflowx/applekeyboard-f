@@ -11,6 +11,8 @@ import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -23,61 +25,51 @@ import com.optiflowx.applekeyboard.views.normal.constraintsets.GlobalConstraintS
 import com.optiflowx.applekeyboard.views.normal.rowkeys.GlobalRowKeys
 
 @Composable
-fun NormalKeyboardView(viewModel: KeyboardViewModel) {
-    val context = LocalContext.current
-    val screenWidth = LocalConfiguration.current.screenWidthDp.dp
+fun NormalKeyboardView(
+    viewModel: KeyboardViewModel,
+    viewWidth: Dp,
+    keyHeight: Dp = 44.dp,
+    rowHeight: Dp = 56.dp,
+) {
     val keyboardLocale = KeyboardLocale()
-    val constraintSets = GlobalConstraintSets()
+    val constraintSets = GlobalConstraintSets(keyHeight, rowHeight)
     val nRowKeys = GlobalRowKeys()
     val locale = viewModel.preferences.getFlowPreference(PreferencesConstants.LOCALE_KEY, "English")
         .collectAsStateWithLifecycle("English").value
 
-
     ConstraintLayout(
-        constraintSets.constraints, Modifier.width(screenWidth),
+        constraintSets.constraints, Modifier.width(viewWidth),
         100, true
     ) {
-        val keyWidth = (screenWidth.value * 0.082).dp
-        val keyWidthB = (screenWidth.value * 0.45).dp
-        val keyWidthM = (screenWidth.value * 0.25).dp
-        val keyWidthSE = (screenWidth.value * 0.11).dp
-
         Box(Modifier.layoutId('1')) {
             ConstraintLayout(
                 constraintSets.firstRowConstraints,
                 Modifier
-                    .width(screenWidth)
+                    .width(viewWidth)
                     .align(Alignment.Center)
                     .fillMaxWidth()
                     .padding(horizontal = 4.dp), 100, true
             ) {
-                for (key in nRowKeys.row1Keys) KeyboardKey(key, keyWidth, viewModel)
+                for (key in nRowKeys.row1Keys) KeyboardKey(key, viewModel)
             }
         }
         Box(Modifier.layoutId('2')) {
             ConstraintLayout(
                 constraintSets.secondRowConstraints,
                 Modifier
-                    .width(screenWidth)
+                    .width(viewWidth)
                     .align(Alignment.Center)
                     .fillMaxWidth()
-                    .padding(
-                        horizontal = when (locale) {
-                            "Spanish" -> 4.dp
-                            else -> 20.dp
-                        }
-                    ), 100, true
+                    .padding(horizontal = 4.dp), 100, true
             ) {
-
-                for (key in nRowKeys.row2Keys) KeyboardKey(key, keyWidth, viewModel)
-
+                for (key in nRowKeys.row2Keys) KeyboardKey(key, viewModel)
             }
         }
         Box(Modifier.layoutId('3')) {
             ConstraintLayout(
                 constraintSets.thirdRowConstraints,
                 Modifier
-                    .width(screenWidth)
+                    .width(viewWidth)
                     .align(Alignment.Center)
                     .fillMaxWidth()
                     .padding(horizontal = 4.dp),
@@ -85,8 +77,8 @@ fun NormalKeyboardView(viewModel: KeyboardViewModel) {
             ) {
                 for (key in nRowKeys.row3Keys) {
                     if (key.id == "shift" || key.id == "delete") {
-                        KeyboardKey(key, keyWidthSE, viewModel)
-                    } else KeyboardKey(key, keyWidth, viewModel)
+                        KeyboardKey(key, viewModel)
+                    } else KeyboardKey(key, viewModel)
                 }
             }
         }
@@ -94,17 +86,16 @@ fun NormalKeyboardView(viewModel: KeyboardViewModel) {
             ConstraintLayout(
                 constraintSets.fourthRowConstraints,
                 Modifier
-                    .width(screenWidth)
+                    .width(viewWidth)
                     .align(Alignment.Center)
                     .fillMaxWidth()
                     .padding(horizontal = 4.dp), 100, true
             ) {
-                KeyboardKey(Key("123", stringResource(R.string.num)), keyWidthSE, viewModel)
-                KeyboardKey(Key("emoji", "emoji"), keyWidthSE, viewModel)
-                KeyboardKey(Key("space", keyboardLocale.space(locale)), keyWidthB, viewModel)
+                KeyboardKey(Key("123", stringResource(R.string.num)), viewModel)
+                KeyboardKey(Key("emoji", "emoji"), viewModel)
+                KeyboardKey(Key("space", keyboardLocale.space(locale)), viewModel)
                 KeyboardKey(
                     Key("action", keyboardLocale.action("return", locale)),
-                    keyWidthM,
                     viewModel
                 )
             }

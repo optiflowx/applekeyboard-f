@@ -38,7 +38,7 @@ fun PhoneNumberKeyboardView(viewModel: KeyboardViewModel) {
                     .align(Alignment.Center)
                     .fillMaxWidth()
                     .padding(horizontal = 2.dp), 100, true
-            ) { for (key in phoneRowKeys.row1Keys) PhoneNumKeyboardKey(key, keyWidth, viewModel) }
+            ) { for (key in phoneRowKeys.row1Keys) PhoneNumKeyboardKey(key, viewModel) }
         }
         Box(Modifier.layoutId('2')) {
             ConstraintLayout(
@@ -52,12 +52,10 @@ fun PhoneNumberKeyboardView(viewModel: KeyboardViewModel) {
                 if (isPhoneSymbols) {
                     for (key in phoneRowKeys.row2KeysB) PhoneNumKeyboardKey(
                         key,
-                        keyWidth,
                         viewModel
                     )
                 } else for (key in phoneRowKeys.row2Keys) PhoneNumKeyboardKey(
                     key,
-                    keyWidth,
                     viewModel
                 )
             }
@@ -73,12 +71,10 @@ fun PhoneNumberKeyboardView(viewModel: KeyboardViewModel) {
                 if (isPhoneSymbols) {
                     for (key in phoneRowKeys.row3KeysB) PhoneNumKeyboardKey(
                         key,
-                        keyWidth,
                         viewModel
                     )
                 } else for (key in phoneRowKeys.row3Keys) PhoneNumKeyboardKey(
                     key,
-                    keyWidth,
                     viewModel
                 )
             }
@@ -93,12 +89,10 @@ fun PhoneNumberKeyboardView(viewModel: KeyboardViewModel) {
                 if (isPhoneSymbols) {
                     for (key in phoneRowKeys.row4keysB) PhoneNumKeyboardKey(
                         key,
-                        keyWidth,
                         viewModel
                     )
                 } else for (key in phoneRowKeys.row4Keys) PhoneNumKeyboardKey(
                     key,
-                    keyWidth,
                     viewModel
                 )
             }

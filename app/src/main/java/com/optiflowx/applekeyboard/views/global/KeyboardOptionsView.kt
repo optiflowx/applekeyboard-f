@@ -47,9 +47,11 @@ import io.github.alexzhirkevich.cupertino.theme.systemBlue
 fun KeyboardOptionsView(
     viewModel: KeyboardViewModel,
     locale: String,
-    fontType: String
+    fontType: String,
+    width: Double,
+    itemHeight: Int = 45,
+    itemTextSize: Int = 16,
 ) {
-    val width = LocalConfiguration.current.screenWidthDp
     val showOptions = viewModel.isShowOptions.observeAsState(false).value
     val options = listOf("Keyboard Settings", "Language", "Clipboard")
     val context = LocalContext.current
@@ -94,7 +96,7 @@ fun KeyboardOptionsView(
                                     else Color.Transparent
                                 })
                                 .fillMaxWidth()
-                                .height(45.dp)
+                                .height(itemHeight.dp)
                                 .clickable(
                                     indication = LocalIndication.current,
                                     interactionSource = remember { MutableInteractionSource() },
@@ -124,7 +126,7 @@ fun KeyboardOptionsView(
                                 text = if (title == "Language") locale else title,
                                 textAlign = TextAlign.Center,
                                 style = TextStyle(
-                                    fontSize = 16.sp.nonScaledSp,
+                                    fontSize = itemTextSize.sp.nonScaledSp,
                                     fontFamily = appFontType(fontType),
                                     color = (if (title == "Language") Color.White
                                     else MaterialTheme.colorScheme.onBackground),

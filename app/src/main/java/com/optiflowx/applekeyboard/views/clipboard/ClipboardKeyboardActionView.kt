@@ -5,7 +5,9 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.Text
@@ -31,7 +33,7 @@ import io.github.alexzhirkevich.cupertino.theme.systemGray
 import io.github.alexzhirkevich.cupertino.theme.systemRed
 
 @Composable
-fun ClipboardKeyboardActionView(viewModel: KeyboardViewModel) {
+fun ClipboardKeyboardActionView(viewModel: KeyboardViewModel, topViewHeight: Int) {
     val keyboardLocale = KeyboardLocale()
     val locale = viewModel.preferences.getFlowPreference(
         PreferencesConstants.LOCALE_KEY, "English"
@@ -43,9 +45,8 @@ fun ClipboardKeyboardActionView(viewModel: KeyboardViewModel) {
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
-            .fillMaxHeight()
-            .fillMaxWidth()
-            .padding(horizontal = 12.dp)
+            .fillMaxSize()
+            .padding(horizontal = 10.dp)
     ) {
         Text(
             keyboardLocale.clipboard(locale),

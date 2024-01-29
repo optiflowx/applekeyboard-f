@@ -33,7 +33,7 @@ import com.optiflowx.applekeyboard.utils.appFontType
 import com.optiflowx.applekeyboard.utils.nonScaledSp
 
 @Composable
-fun Suggestion(id: String, suggestion: String, fontType: String?, onClick: () -> Unit) {
+fun Suggestion(id: String, suggestion: String, fontType: String?,textSize: Float, onClick: () -> Unit) {
     val keyboardWidth = LocalConfiguration.current.screenWidthDp
     val width: Dp = (keyboardWidth * 0.31).dp
 
@@ -68,7 +68,7 @@ fun Suggestion(id: String, suggestion: String, fontType: String?, onClick: () ->
                     style = TextStyle(
                         platformStyle = PlatformTextStyle(includeFontPadding = false),
                         color = MaterialTheme.colorScheme.primary.copy(alpha = 0.85f),
-                        fontSize = TextUnit(18f, TextUnitType.Sp).nonScaledSp,
+                        fontSize = TextUnit(textSize, TextUnitType.Sp).nonScaledSp,
                         fontFamily = appFontType(fontType),
                     ),
                 )

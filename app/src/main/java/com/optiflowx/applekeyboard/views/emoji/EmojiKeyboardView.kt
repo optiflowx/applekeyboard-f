@@ -5,6 +5,7 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.pager.HorizontalPager
@@ -19,6 +20,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
@@ -35,10 +37,14 @@ import io.github.alexzhirkevich.cupertino.theme.systemGray
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun EmojiKeyboardView(viewModel: KeyboardViewModel) {
-    val screenWidth = LocalConfiguration.current.screenWidthDp
-    val defaultViewPort = (screenWidth).dp
-    val freqViewPort = (screenWidth * 0.76f).dp
+fun EmojiKeyboardView(
+    viewModel: KeyboardViewModel,
+    viewWidth: Dp,
+    viewportHeight: Dp = 230.dp,
+    cellCount: Int = 6,
+) {
+    val defaultViewPort = (viewWidth)
+    val freqViewPort = (viewWidth * 0.76f)
     val isESearch = viewModel.isEmojiSearch.observeAsState()
     val frequentEmojis = viewModel.frequentlyUsedEmojis.observeAsState().value?.reversed()
 
@@ -63,14 +69,16 @@ fun EmojiKeyboardView(viewModel: KeyboardViewModel) {
     val pagerState = rememberPagerState(pageCount = { emojiViewPager.size }, initialPage = 0)
 
 
-    if (isESearch.value!!) NormalKeyboardView(viewModel)
+    if (isESearch.value!!) NormalKeyboardView(viewModel, viewWidth)
     else {
-        Column {
+        Column(
+            Modifier.width(viewWidth)
+        ) {
             HorizontalPager(
                 state = pagerState,
                 pageSpacing = 10.dp,
                 pageSize = PageSize.Fixed(if (pagerState.currentPage == 0) freqViewPort else defaultViewPort),
-                modifier = Modifier.height(230.dp),
+                modifier = Modifier.height(viewportHeight),
             ) { page ->
                 emojiViewPager[page].forEach { (title, emojis) ->
                     Column {
@@ -86,10 +94,11 @@ fun EmojiKeyboardView(viewModel: KeyboardViewModel) {
                         )
 
                         Surface(
-                            modifier = Modifier.height(210.dp),
+                            modifier = Modifier.height(
+                                (viewportHeight.value - 20).dp),
                             color = Color.Transparent
                         ) {
-                            LazyVerticalGrid(columns = GridCells.Fixed(6)) {
+                            LazyVerticalGrid(columns = GridCells.Fixed(cellCount)) {
                                 if (page == 0 && frequentEmojis != null) {
                                     frequentEmojis.forEach { data ->
                                         item("Key:$data") {

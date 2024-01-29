@@ -3,6 +3,7 @@ package com.optiflowx.applekeyboard.views.emoji
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -37,7 +38,7 @@ import io.github.alexzhirkevich.cupertino.theme.systemGray
 //@Preview
 @OptIn(ExperimentalCupertinoApi::class)
 @Composable
-fun EmojiSearchView(viewModel: KeyboardViewModel) {
+fun EmojiSearchView(viewModel: KeyboardViewModel, textSize: Float, searchIconSize: Int) {
 
     val text = remember { mutableStateOf("") }
     val state = rememberCupertinoSearchTextFieldState()
@@ -63,7 +64,7 @@ fun EmojiSearchView(viewModel: KeyboardViewModel) {
         value = text.value,
         state = state,
         modifier = Modifier
-            .height(45.dp)
+            .padding(vertical = 2.5.dp)
             .fillMaxHeight()
             .focusRequester(focusRequester)
             .onFocusChanged { focusState ->
@@ -75,7 +76,7 @@ fun EmojiSearchView(viewModel: KeyboardViewModel) {
                 style = TextStyle(
                     color = CupertinoColors.systemGray(isSystemInDarkTheme()),
                     fontFamily = appFontType(fontType),
-                    fontSize = TextUnit(18f, TextUnitType.Sp).nonScaledSp,
+                    fontSize = TextUnit(textSize, TextUnitType.Sp).nonScaledSp,
                     platformStyle = PlatformTextStyle(includeFontPadding = false),
                 )
             )
@@ -83,7 +84,7 @@ fun EmojiSearchView(viewModel: KeyboardViewModel) {
         textStyle = TextStyle(
             color = MaterialTheme.colorScheme.primary,
             fontFamily = appFontType(fontType),
-            fontSize = TextUnit(18f, TextUnitType.Sp).nonScaledSp,
+            fontSize = TextUnit(textSize, TextUnitType.Sp).nonScaledSp,
             platformStyle = PlatformTextStyle(includeFontPadding = false),
         ),
         leadingIcon = {
@@ -91,7 +92,7 @@ fun EmojiSearchView(viewModel: KeyboardViewModel) {
                 CupertinoIcons.Outlined.MagnifyingGlass,
                 contentDescription = "icon",
                 tint = CupertinoColors.systemGray(isSystemInDarkTheme()),
-                modifier = Modifier.height(20.dp)
+                modifier = Modifier.height(searchIconSize.dp)
             )
         },
         onValueChange = { text.value = it },

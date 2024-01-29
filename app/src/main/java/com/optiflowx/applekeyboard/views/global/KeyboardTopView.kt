@@ -17,22 +17,28 @@ import com.optiflowx.applekeyboard.views.emoji.EmojiSearchView
 import com.optiflowx.applekeyboard.views.number.NumberKeyboardActionView
 
 @Composable
-fun KeyboardTopView(viewModel: KeyboardViewModel, locale: String, keyboardType: State<KeyboardType?>) {
-    val screenWidth = LocalConfiguration.current.screenWidthDp
-
+fun KeyboardTopView(
+    viewModel: KeyboardViewModel,
+    locale: String,
+    keyboardType: State<KeyboardType?>,
+    topViewHeight: Int = 48,
+    searchIconSize : Int = 20,
+    viewWidth: Double,
+    textSize: Float = 16f,
+) {
     Box(
-        Modifier
-            .width(screenWidth.dp)
-            .height(48.dp)
+        modifier = Modifier
+            .width(viewWidth.dp)
+            .height(topViewHeight.dp)
             .fillMaxWidth()
     ) {
         AnimatedContent(keyboardType.value, label = "KeyboardTopView") {
             when (it) {
-                KeyboardType.Emoji -> EmojiSearchView(viewModel)
+                KeyboardType.Emoji -> EmojiSearchView(viewModel, textSize, searchIconSize)
                 KeyboardType.Number -> NumberKeyboardActionView(locale)
                 KeyboardType.Phone -> NumberKeyboardActionView(locale)
-                KeyboardType.Clipboard -> ClipboardKeyboardActionView(viewModel)
-                else -> SuggestionView(viewModel)
+                KeyboardType.Clipboard -> ClipboardKeyboardActionView(viewModel, topViewHeight)
+                else -> SuggestionView(viewModel, viewWidth, textSize)
             }
         }
     }

@@ -4,6 +4,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -32,7 +33,7 @@ import io.github.alexzhirkevich.cupertino.theme.CupertinoColors
 import io.github.alexzhirkevich.cupertino.theme.systemBlue
 
 @Composable
-fun NumberKeyboardActionView(locale: String) {
+fun NumberKeyboardActionView(locale: String ) {
     val imeService = LocalContext.current as IMEService
     val keyboardLocale = KeyboardLocale()
 
@@ -40,8 +41,7 @@ fun NumberKeyboardActionView(locale: String) {
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
-            .height(40.dp)
-            .fillMaxWidth()
+            .fillMaxSize()
             .padding(horizontal = 12.dp)
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {

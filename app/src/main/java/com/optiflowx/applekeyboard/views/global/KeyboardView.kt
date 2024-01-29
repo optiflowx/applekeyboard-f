@@ -1,13 +1,18 @@
 package com.optiflowx.applekeyboard.views.global
 
+import android.content.res.Configuration.ORIENTATION_PORTRAIT
 import android.view.inputmethod.EditorInfo
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.mandatorySystemGesturesPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.optiflowx.applekeyboard.core.enums.KeyboardType
@@ -19,7 +24,7 @@ import com.optiflowx.applekeyboard.views.emoji.EmojiKeyboardView
 import com.optiflowx.applekeyboard.views.normal.NormalKeyboardView
 import com.optiflowx.applekeyboard.views.number.NumberKeyboardView
 import com.optiflowx.applekeyboard.views.phone.PhoneNumberKeyboardView
-import com.optiflowx.applekeyboard.views.symbols.SymbolAKeyboardView
+import com.optiflowx.applekeyboard.views.symbols.SymbolsKeyboardView
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.yield
 import splitties.experimental.ExperimentalSplittiesApi
@@ -31,21 +36,13 @@ import splitties.views.InputType
 @OptIn(ExperimentalSplittiesApi::class)
 fun KeyboardView(viewModel: KeyboardViewModel) {
     val context = LocalContext.current
+    val config = LocalConfiguration.current
 
     val keyboardType = viewModel.keyboardType.observeAsState()
 
-    val showTopView = (keyboardType.value != KeyboardType.Symbol)
-
-    val showBottomView = (keyboardType.value != KeyboardType.Number
-            && keyboardType.value != KeyboardType.Phone)
-
-    val locale = viewModel.preferences.getFlowPreference(
-        PreferencesConstants.LOCALE_KEY, "English"
-    ).collectAsStateWithLifecycle("English").value
-
-    val fontType = viewModel.preferences.getFlowPreference(
-        PreferencesConstants.FONT_TYPE_KEY, "Regular"
-    ).collectAsStateWithLifecycle("Regular").value
+    val orientation = rememberSaveable(config.orientation) {
+        mutableIntStateOf(config.orientation)
+    }
 
     LaunchedEffect(Unit) {
         while (true) {
@@ -67,39 +64,14 @@ fun KeyboardView(viewModel: KeyboardViewModel) {
                     }
                 }
             }
-            yield()
-            delay(1000)
-        }
-    }
-
-    Box(
-        Modifier
-            .mandatorySystemGesturesPadding()
-    ) {
-        Column {
-            if (showTopView) KeyboardTopView(viewModel, locale, keyboardType)
-
-//            AnimatedContent(
-//                keyboardType.value,
-//                label = "KeyboardView",
-//                transitionSpec = { (fadeIn()).togetherWith(fadeOut()) },
-//            ) { type ->
-            when (keyboardType.value!!) {
-                KeyboardType.Normal -> NormalKeyboardView(viewModel)
-
-                KeyboardType.Symbol -> SymbolAKeyboardView(viewModel)
-
-                KeyboardType.Number -> NumberKeyboardView(viewModel)
-
-                KeyboardType.Phone -> PhoneNumberKeyboardView(viewModel)
-
-                KeyboardType.Emoji -> EmojiKeyboardView(viewModel)
-
-                KeyboardType.Clipboard -> ClipboardKeyboardView(viewModel)
+            this.run {
+                yield()
+                delay(2500)
             }
-//            }
-
-            if (showBottomView) KeyboardBottomView(viewModel, locale, fontType)
         }
     }
+
+    if (orientation.intValue == ORIENTATION_PORTRAIT) {
+        PortraitKeyboard(keyboardType, viewModel)
+    } else LandscapeKeyboard(keyboardType, viewModel)
 }

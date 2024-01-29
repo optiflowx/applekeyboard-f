@@ -2,6 +2,8 @@ package com.optiflowx.applekeyboard.ui.keyboard
 
 import android.view.MotionEvent
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Surface
@@ -36,7 +38,7 @@ fun KeyButton(
     enabled: Boolean = true,
     text: String = "",
     color: Color,
-    buttonWidth: Dp,
+//    buttonWidth: Dp,
     id: String,
     showPopup: Boolean,
     onSingleClick: () -> Unit,
@@ -79,7 +81,8 @@ fun KeyButton(
         shape = RoundedCornerShape((5.5).dp),
         modifier = modifier
             .layoutId(id)
-            .width(buttonWidth)
+//            .width(buttonWidth)
+            .fillMaxSize()
             .semantics(
                 properties = {
                     if (showPopup) this.popup()

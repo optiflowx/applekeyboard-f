@@ -28,7 +28,7 @@ import com.optiflowx.applekeyboard.utils.appFontType
 import com.optiflowx.applekeyboard.viewmodels.KeyboardViewModel
 
 @Composable
-fun NumKeyboardKey(key: Key, buttonWidth: Dp, viewModel: KeyboardViewModel) {
+fun NumKeyboardKey(key: Key, viewModel: KeyboardViewModel) {
     val ctx = LocalContext.current
     val colorScheme = MaterialTheme.colorScheme
     val isPeriod: Boolean = key.id == "."
@@ -40,7 +40,6 @@ fun NumKeyboardKey(key: Key, buttonWidth: Dp, viewModel: KeyboardViewModel) {
 
     KeyButton(
         color = (if (isErase || isPeriod) Color.Transparent else colorScheme.secondary),
-        buttonWidth = buttonWidth,
         id = key.id,
         showPopup = false,
         onRepeatableClick = {
