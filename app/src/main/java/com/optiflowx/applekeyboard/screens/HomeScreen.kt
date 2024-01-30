@@ -4,12 +4,16 @@ package com.optiflowx.applekeyboard.screens
 
 import android.content.Intent
 import android.provider.Settings
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.gestures.FlingBehavior
+import androidx.compose.foundation.gestures.ScrollableDefaults
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.absolutePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.overscroll
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -57,7 +61,7 @@ import io.github.alexzhirkevich.cupertino.theme.systemYellow
 import splitties.systemservices.inputMethodManager
 
 @Suppress("UNCHECKED_CAST")
-@OptIn(ExperimentalCupertinoApi::class)
+@OptIn(ExperimentalCupertinoApi::class, ExperimentalFoundationApi::class)
 @Destination(start = true)
 @Composable
 fun HomeScreen(navigator: DestinationsNavigator) {
@@ -143,9 +147,13 @@ fun HomeScreen(navigator: DestinationsNavigator) {
         }
     ) {
         LazyColumn(
+//            Modifier = ScrollableDefaults.overscrollEffect(),
             modifier = Modifier
                 .statusBarsPadding()
-                .absolutePadding(top = 40.dp),
+                .absolutePadding(top = 40.dp)
+                .overscroll(
+                    ScrollableDefaults.overscrollEffect()
+                ),
             userScrollEnabled = true
         ) {
             item("Message Section") {
@@ -213,19 +221,12 @@ fun HomeScreen(navigator: DestinationsNavigator) {
                             onValueChange = onValueChange,
                             modifier = Modifier.padding(it),
                             interactionSource = interactionSource,
+                            placeholder = {
+                                CupertinoText("Input Testing")
+                            },
                             keyboardOptions = KeyboardOptions(
-                                keyboardType = KeyboardType.Text,
-                            )
-//                            trailingIcon = {
-//                                CupertinoIcon(
-//                                    CupertinoIcons.Default.XmarkCircle,
-//                                    "arrow",
-//                                    tint = CupertinoColors.systemRed,
-//                                    modifier = Modifier.clickable {
-//                                        interactionSource.collectIsFocusedAsState().
-//                                    }
-//                                )
-//                            },
+                                keyboardType = KeyboardType.Phone,
+                            ),
                         )
                     }
                 }

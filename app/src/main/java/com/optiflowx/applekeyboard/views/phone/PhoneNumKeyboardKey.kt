@@ -123,14 +123,14 @@ fun PhoneNumKeyboardKey(key: Key, viewModel: KeyboardViewModel) {
                             fontWeight = FontWeight.Light,
                             textAlign = TextAlign.Center,
                             fontFamily = appFontType(fontType),
-                            style = TextStyle(this, 26.sp.nonScaledSp),
+                            style = TextStyle(this, 28.sp.nonScaledSp),
                         )
                         Text(
                             text = key.value,
                             fontWeight = FontWeight.Light,
                             textAlign = TextAlign.Center,
                             fontFamily = appFontType(fontType),
-                            style = TextStyle(this, 26.sp.nonScaledSp),
+                            style = TextStyle(this, 12.sp.nonScaledSp),
                         )
                     }
                 }

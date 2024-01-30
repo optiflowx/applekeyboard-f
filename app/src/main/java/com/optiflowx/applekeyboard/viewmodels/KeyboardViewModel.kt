@@ -215,8 +215,8 @@ class KeyboardViewModel(context: Context) : ViewModel() {
     @Stable
     private fun checkSpelling(connection: InputConnection) {
         viewModelScope.launch(Dispatchers.IO) {
-            val checkSpelling: Boolean = preferences.getPreference(pC.CHECK_SPELLING_KEY, true)
-            val autoCorrect = preferences.getPreference(pC.AUTO_CORRECTION_KEY, true)
+            val checkSpelling: Boolean = preferences.getPreference(pC.CHECK_SPELLING_KEY, false)
+            val autoCorrect = preferences.getPreference(pC.AUTO_CORRECTION_KEY, false)
             //Remove the space first
             if (checkSpelling && autoCorrect) {
                 connection.deleteSurroundingText(1, 0).let {
@@ -353,7 +353,10 @@ class KeyboardViewModel(context: Context) : ViewModel() {
                         "+" -> connection.commitText(key.value, key.value.length)
                         keyboardLocale.wait(it) -> connection.commitText(";", ";".length)
                         keyboardLocale.pause(it) -> connection.commitText(".", ".".length)
-                        else -> connection.commitText(key.id, key.id.length)
+                        else -> {
+                            if(key.id == "period") connection.commitText(".", ".".length)
+                            else connection.commitText(key.id, key.id.length)
+                        }
                     }
                 }
         }

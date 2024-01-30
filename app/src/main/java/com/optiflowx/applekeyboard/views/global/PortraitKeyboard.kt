@@ -63,15 +63,14 @@ fun PortraitKeyboard(
 
                 KeyboardType.Symbol -> SymbolsKeyboardView(viewModel, viewWidth)
 
-                KeyboardType.Number -> NumberKeyboardView(viewModel)
+                KeyboardType.Number -> NumberKeyboardView(viewModel, viewWidth)
 
-                KeyboardType.Phone -> PhoneNumberKeyboardView(viewModel)
+                KeyboardType.Phone -> PhoneNumberKeyboardView(viewModel, viewWidth)
 
                 KeyboardType.Emoji -> EmojiKeyboardView(viewModel, viewWidth)
 
                 KeyboardType.Clipboard -> ClipboardKeyboardView(viewModel, viewWidth)
             }
-
 
             if (showBottomView) KeyboardBottomView(viewModel, locale, fontType)
         }

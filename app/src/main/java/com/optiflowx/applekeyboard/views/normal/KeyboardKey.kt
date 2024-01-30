@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
@@ -29,6 +30,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.optiflowx.applekeyboard.R
 import com.optiflowx.applekeyboard.core.data.Key
@@ -128,6 +130,10 @@ fun KeyboardKey(key: Key, viewModel: KeyboardViewModel) {
         }
     }
 
+    val width = LocalConfiguration.current.screenWidthDp
+    val widthFactor = 0.086f
+    val popupWidth = width * widthFactor
+
     //Erase and Shift Keys
     if (isShift || isErase || isSymbols || isEmoji) {
         (if (isShift) {
@@ -159,9 +165,11 @@ fun KeyboardKey(key: Key, viewModel: KeyboardViewModel) {
                 Icon(
                     painter = this,
                     contentDescription = "icon",
-                    modifier = Modifier.fillMaxHeight(0.54f).fillMaxWidth(0.54f),
+                    modifier = Modifier
+                        .fillMaxHeight(0.54f)
+                        .fillMaxWidth(0.54f),
                     tint = if (isAllCaps!! && !isErase && !isEmoji && !isSymbols)
-                            Color.Black else colorScheme.primary,
+                        Color.Black else colorScheme.primary,
                 )
             }
         }
@@ -174,6 +182,7 @@ fun KeyboardKey(key: Key, viewModel: KeyboardViewModel) {
                 color = this,
                 id = key.id,
                 text = keyValue,
+                popupWidth = popupWidth,
                 showPopup = !(key.id == "123" || key.id == "ABC" || key.id == "action" || key.id == "space"),
                 onRepeatableClick = { viewModel.onTKeyClick(key, ctx, actionText) },
                 onSingleClick = {
@@ -189,11 +198,8 @@ fun KeyboardKey(key: Key, viewModel: KeyboardViewModel) {
                     maxLines = 1,
                     style = TextStyle(
                         fontFamily = appFontType(fontType),
-                        fontSize = TextUnit(
-                            (if (key.id == "123" || key.id == "ABC" || key.id == "action" || key.id == "space") {
-                                15f
-                            } else 22.5f), TextUnitType.Sp
-                        ).nonScaledSp,
+                        fontSize = (if (key.id == "123" || key.id == "ABC" || key.id == "action" || key.id == "space")
+                            15.sp else 22.5.sp).nonScaledSp,
                         platformStyle = PlatformTextStyle(includeFontPadding = false)
                     ),
                     color = if (key.id == "action") actionTextColor else colorScheme.primary,

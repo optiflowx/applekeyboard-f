@@ -52,6 +52,8 @@ android {
             isCrunchPngs = false
             isDebuggable = true
             isJniDebuggable = true
+
+            signingConfig = signingConfigs.getByName("debug")
         }
     }
 
