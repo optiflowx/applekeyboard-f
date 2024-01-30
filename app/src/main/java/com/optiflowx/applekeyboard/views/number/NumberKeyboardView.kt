@@ -9,61 +9,57 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.optiflowx.applekeyboard.viewmodels.KeyboardViewModel
 
 @Composable
-fun NumberKeyboardView(viewModel: KeyboardViewModel) {
-    val configuration = LocalConfiguration.current
-    val screenWidth = configuration.screenWidthDp.dp
-    val numConst = NumberConstraintsSet()
+fun NumberKeyboardView(
+    viewModel: KeyboardViewModel, viewWidth: Dp, rowHeight: Int = 55,
+    bottomDivHeight: Int = 30,
+) {
+    val numConst = NumberConstraintsSet(rowHeight, bottomDivHeight)
     val numRowKeys = NumberRowKeys()
 
-    ConstraintLayout(numConst.constraints, Modifier.width(screenWidth),100, true) {
-        val keyWidth = (screenWidth.value * 0.31).dp
+    ConstraintLayout(numConst.constraints, Modifier.width(viewWidth), 100, true) {
 
         Box(Modifier.layoutId('1')) {
             ConstraintLayout(
                 numConst.firstRowConstraints,
-                Modifier
-                    .width(screenWidth)
+                modifier = Modifier
+                    .width(viewWidth)
                     .align(Alignment.Center)
-                    .fillMaxWidth()
-                    .padding(horizontal = 2.dp), 100, true
+                    .padding(horizontal = 4.dp), 100, true
             ) { for (key in numRowKeys.row1Keys) NumKeyboardKey(key, viewModel) }
         }
         Box(Modifier.layoutId('2')) {
             ConstraintLayout(
                 numConst.secondRowConstraints,
-                Modifier
-                    .width(screenWidth)
+                modifier = Modifier
+                    .width(viewWidth)
                     .align(Alignment.Center)
-                    .fillMaxWidth()
-                    .padding(horizontal = 2.dp), 100, true
+                    .padding(horizontal = 4.dp), 100, true
             ) { for (key in numRowKeys.row2Keys) NumKeyboardKey(key, viewModel) }
         }
         Box(Modifier.layoutId('3')) {
             ConstraintLayout(
                 numConst.thirdRowConstraints,
-                Modifier
-                    .width(screenWidth)
+                modifier = Modifier
+                    .width(viewWidth)
                     .align(Alignment.Center)
-                    .padding(horizontal = 2.dp), 100, true
-            ) {
-                for (key in numRowKeys.row3Keys) {
-                    if (key.id == "." || key.id == "delete") {
-                        NumKeyboardKey(key, viewModel)
-                    } else NumKeyboardKey(key, viewModel)
-                }
-            }
+                    .padding(horizontal = 4.dp), 100, true
+            ) { for (key in numRowKeys.row3Keys) NumKeyboardKey(key, viewModel) }
         }
         Box(Modifier.layoutId('4')) {
             ConstraintLayout(
                 numConst.fourthRowConstraints,
-                Modifier.align(Alignment.Center).padding(horizontal = 2.dp),
+                modifier = Modifier
+                    .width(viewWidth)
+                    .align(Alignment.Center)
+                    .padding(horizontal = 4.dp),
                 100, true
-            ) { for(key in numRowKeys.row4Keys) NumKeyboardKey(key, viewModel) }
+            ) { for (key in numRowKeys.row4Keys) NumKeyboardKey(key, viewModel) }
         }
     }
 }

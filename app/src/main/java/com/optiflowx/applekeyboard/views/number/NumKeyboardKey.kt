@@ -31,7 +31,7 @@ import com.optiflowx.applekeyboard.viewmodels.KeyboardViewModel
 fun NumKeyboardKey(key: Key, viewModel: KeyboardViewModel) {
     val ctx = LocalContext.current
     val colorScheme = MaterialTheme.colorScheme
-    val isPeriod: Boolean = key.id == "."
+    val isPeriod: Boolean = key.id == "period"
     val isErase: Boolean = key.id == "delete"
 
     val fontType =
@@ -66,7 +66,7 @@ fun NumKeyboardKey(key: Key, viewModel: KeyboardViewModel) {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = key.id,
+                    text = if(isPeriod) "." else key.id,
                     fontWeight = FontWeight.Light,
                     textAlign = TextAlign.Center,
                     fontFamily = appFontType(fontType),

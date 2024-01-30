@@ -244,7 +244,7 @@ class GlobalConstraintSets(
             o,
             gap9,
             p,
-            chainStyle = ChainStyle.Packed
+            chainStyle = ChainStyle.SpreadInside
         )
     }
 

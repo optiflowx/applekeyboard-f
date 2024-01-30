@@ -88,25 +88,26 @@ fun LandscapeKeyboard(
                 modifier = Modifier.padding(vertical = 2.dp)
             ) {
 
-
                 Box(
                     contentAlignment = Alignment.BottomCenter,
                     modifier = Modifier
                         .width(sideWidth.dp)
                         .padding(bottom = 2.dp)
                 ) {
-                    Icon(
-                        painter = painterResource(R.drawable.globe_outline),
-                        contentDescription = "globe",
-                        tint = MaterialTheme.colorScheme.scrim,
-                        modifier = Modifier
-                            .size(28.dp)
-                            .clickable(
-                                indication = null,
-                                interactionSource = remember { MutableInteractionSource() },
-                                role = Role.Button,
-                            ) { viewModel.isShowOptions.value = true }
-                    )
+                    if(showSideViews) {
+                        Icon(
+                            painter = painterResource(R.drawable.globe_outline),
+                            contentDescription = "globe",
+                            tint = MaterialTheme.colorScheme.scrim,
+                            modifier = Modifier
+                                .size(28.dp)
+                                .clickable(
+                                    indication = null,
+                                    interactionSource = remember { MutableInteractionSource() },
+                                    role = Role.Button,
+                                ) { viewModel.isShowOptions.value = true }
+                        )
+                    }
                 }
 
                 when (keyboardType.value!!) {
@@ -124,9 +125,9 @@ fun LandscapeKeyboard(
                         36.dp
                     )
 
-                    KeyboardType.Number -> NumberKeyboardView(viewModel)
+                    KeyboardType.Number -> NumberKeyboardView(viewModel, viewWidth.dp, 36, 8)
 
-                    KeyboardType.Phone -> PhoneNumberKeyboardView(viewModel)
+                    KeyboardType.Phone -> PhoneNumberKeyboardView(viewModel, viewWidth.dp, 36, 8)
 
                     KeyboardType.Emoji -> EmojiKeyboardView(viewModel, viewWidth.dp, 150.dp, 9)
 
@@ -144,20 +145,23 @@ fun LandscapeKeyboard(
                         .width(sideWidth.dp)
                         .padding(bottom = 2.dp)
                 ) {
-                    Icon(
-                        painter = painterResource(
-                            if (isSystemInDarkTheme()) R.drawable.mic_fill else R.drawable.mic_outline
-                        ),
-                        contentDescription = "microphone",
-                        tint = MaterialTheme.colorScheme.scrim,
-                        modifier = Modifier
-                            .size(28.dp)
-                            .clickable(
-                                indication = null,
-                                interactionSource = remember { MutableInteractionSource() },
-                                role = Role.Button,
-                            ) { }
-                    )
+                    if (showSideViews) {
+                        Icon(
+                            painter = painterResource(
+                                if (isSystemInDarkTheme()) R.drawable.mic_fill else R.drawable.mic_outline
+                            ),
+                            contentDescription = "microphone",
+                            tint = MaterialTheme.colorScheme.scrim,
+                            modifier = Modifier
+                                .size(28.dp)
+                                .clickable(
+                                    indication = null,
+                                    interactionSource = remember { MutableInteractionSource() },
+                                    role = Role.Button,
+                                ) { }
+                        )
+                    }
+
                 }
             }
         }

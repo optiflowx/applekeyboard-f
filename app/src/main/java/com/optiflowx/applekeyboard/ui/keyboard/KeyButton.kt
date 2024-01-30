@@ -3,8 +3,6 @@ package com.optiflowx.applekeyboard.ui.keyboard
 import android.view.MotionEvent
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -26,8 +24,9 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.popup
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Popup
+import androidx.compose.ui.window.PopupProperties
 import com.optiflowx.applekeyboard.ui.keyShape
 import kotlinx.coroutines.delay
 
@@ -38,13 +37,14 @@ fun KeyButton(
     enabled: Boolean = true,
     text: String = "",
     color: Color,
-//    buttonWidth: Dp,
     id: String,
+    popupWidth: Float = 0f,
     showPopup: Boolean,
     onSingleClick: () -> Unit,
     onRepeatableClick: () -> Unit,
     content: @Composable () -> Unit,
 ) {
+
     val delayMillis = 120L
     var pressed by remember { mutableStateOf(false) }
     var pressedCount by remember { mutableIntStateOf(0) }
@@ -53,7 +53,7 @@ fun KeyButton(
 
     val isIgnoreElevation = (id == "shift" || id == "delete" || id == "space"
             || id == "return" || id == "emoji" || id == "symbol"
-            || id == "switch" || id == ".")
+            || id == "switch" || id == "period")
 
 //    val interactionSource = remember { MutableInteractionSource() }
 //    val indication = LocalIndication.current
@@ -62,7 +62,7 @@ fun KeyButton(
         if (id == "delete") {
             while (enabled && pressed) {
                 if (pressedCount < 1) {
-                    pressedCount = +1
+                    pressedCount.inc()
                     currentSingleClickListener()
                 } else {
                     currentClickListener()
@@ -76,16 +76,17 @@ fun KeyButton(
         }
     }
 
+    val isPop = showPopup && id != "delete" && id != "erase"
+
     Surface(
         color = color,
         shape = RoundedCornerShape((5.5).dp),
         modifier = modifier
             .layoutId(id)
-//            .width(buttonWidth)
             .fillMaxSize()
             .semantics(
                 properties = {
-                    if (showPopup) this.popup()
+                    if (isPop) this.popup()
                     else this.role = Role.Button
                 }
             )
@@ -104,21 +105,22 @@ fun KeyButton(
             )
     ) {
         Box(contentAlignment = Alignment.Center) {
-//            if (showPopup) {
-//                Popup(
-//                    alignment = Alignment.BottomCenter,
+            if (isPop) {
+                Popup(
+                    alignment = Alignment.Center,
 //                    offset = IntOffset(0, 0),
-//                    properties = PopupProperties(
-//                        focusable = false,
-//                        dismissOnBackPress = false,
-//                        dismissOnClickOutside = false,
-//                        clippingEnabled = false,
-//                        usePlatformDefaultWidth = false,
-//                    ),
-//                ) {
-//                    if (pressed) KeyButtonPopup(width = buttonWidth, text = text)
-//                }
-//            }
+                    properties = PopupProperties(
+                        focusable = true,
+                        dismissOnBackPress = false,
+                        excludeFromSystemGesture = false,
+                        dismissOnClickOutside = false,
+                        clippingEnabled = true,
+                        usePlatformDefaultWidth = true,
+                    ),
+                ) {
+                    if (pressed) KeyButtonPopup(popupWidth.dp, text)
+                }
+            }
             content()
         }
     }

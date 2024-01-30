@@ -47,7 +47,6 @@ fun NormalKeyboardView(
                 Modifier
                     .width(viewWidth)
                     .align(Alignment.Center)
-                    .fillMaxWidth()
                     .padding(horizontal = 4.dp), 100, true
             ) {
                 for (key in nRowKeys.row1Keys) KeyboardKey(key, viewModel)
@@ -59,7 +58,6 @@ fun NormalKeyboardView(
                 Modifier
                     .width(viewWidth)
                     .align(Alignment.Center)
-                    .fillMaxWidth()
                     .padding(horizontal = 4.dp), 100, true
             ) {
                 for (key in nRowKeys.row2Keys) KeyboardKey(key, viewModel)
@@ -71,7 +69,6 @@ fun NormalKeyboardView(
                 Modifier
                     .width(viewWidth)
                     .align(Alignment.Center)
-                    .fillMaxWidth()
                     .padding(horizontal = 4.dp),
                 100, true
             ) {
@@ -88,7 +85,6 @@ fun NormalKeyboardView(
                 Modifier
                     .width(viewWidth)
                     .align(Alignment.Center)
-                    .fillMaxWidth()
                     .padding(horizontal = 4.dp), 100, true
             ) {
                 KeyboardKey(Key("123", stringResource(R.string.num)), viewModel)

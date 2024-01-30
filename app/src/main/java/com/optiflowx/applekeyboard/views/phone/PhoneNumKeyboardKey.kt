@@ -1,5 +1,7 @@
 package com.optiflowx.applekeyboard.views.phone
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -20,6 +22,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.optiflowx.applekeyboard.R
 import com.optiflowx.applekeyboard.core.data.Key
@@ -27,7 +30,10 @@ import com.optiflowx.applekeyboard.core.preferences.PreferencesConstants
 import com.optiflowx.applekeyboard.core.utils.KeyboardLocale
 import com.optiflowx.applekeyboard.ui.keyboard.KeyButton
 import com.optiflowx.applekeyboard.utils.appFontType
+import com.optiflowx.applekeyboard.utils.nonScaledSp
 import com.optiflowx.applekeyboard.viewmodels.KeyboardViewModel
+import io.github.alexzhirkevich.cupertino.theme.CupertinoColors
+import io.github.alexzhirkevich.cupertino.theme.systemGray
 
 @Composable
 fun PhoneNumKeyboardKey(key: Key, viewModel: KeyboardViewModel) {
@@ -40,15 +46,26 @@ fun PhoneNumKeyboardKey(key: Key, viewModel: KeyboardViewModel) {
     val keyboardLocale = KeyboardLocale()
     val isPhoneSymbols = viewModel.isPhoneSymbol.observeAsState().value!!
 
-    val fontType = viewModel.preferences.getFlowPreference(PreferencesConstants.FONT_TYPE_KEY, "Regular").collectAsStateWithLifecycle(
-        "Regular").value
+    val fontType =
+        viewModel.preferences.getFlowPreference(PreferencesConstants.FONT_TYPE_KEY, "Regular")
+            .collectAsStateWithLifecycle(
+                "Regular"
+            ).value
 
-    val locale = viewModel.preferences.getFlowPreference(PreferencesConstants.LOCALE_KEY, "English").collectAsStateWithLifecycle(
-        "English").value
+    val locale = viewModel.preferences.getFlowPreference(PreferencesConstants.LOCALE_KEY, "English")
+        .collectAsStateWithLifecycle(
+            "English"
+        ).value
+
+    val keysToDisable = (key.id == "1" || key.id == "2"
+            || key.id == "3" || key.id == "5"
+            || key.id == "8")
 
     //Erase and Switch Keys
     KeyButton(
-        color = (if (isErase || isSwitch) Color.Transparent else colorScheme.secondary),
+        color = (if (isErase || isSwitch) Color.Transparent
+        else if (keysToDisable && isPhoneSymbols) colorScheme.outline
+        else colorScheme.secondary),
         id = key.id,
         showPopup = false,
         onRepeatableClick = {
@@ -98,26 +115,24 @@ fun PhoneNumKeyboardKey(key: Key, viewModel: KeyboardViewModel) {
                         ),
                     )
                 } else {
-                    Text(
-                        text = key.id,
-                        fontWeight = FontWeight.Light,
-                        textAlign = TextAlign.Center,
-                        fontFamily = appFontType(fontType),
-                        style = TextStyle(
-                            MaterialTheme.colorScheme.primary,
-                            TextUnit(26f, TextUnitType.Sp)
-                        ),
-                    )
-                    Text(
-                        text = key.value,
-                        fontWeight = FontWeight.Light,
-                        textAlign = TextAlign.Center,
-                        fontFamily = appFontType(fontType),
-                        style = TextStyle(
-                            MaterialTheme.colorScheme.primary,
-                            TextUnit(12f, TextUnitType.Sp)
-                        ),
-                    )
+                    (if(isPhoneSymbols) {
+                        CupertinoColors.systemGray(isSystemInDarkTheme())
+                    } else MaterialTheme.colorScheme.primary).apply {
+                        Text(
+                            text = key.id,
+                            fontWeight = FontWeight.Light,
+                            textAlign = TextAlign.Center,
+                            fontFamily = appFontType(fontType),
+                            style = TextStyle(this, 26.sp.nonScaledSp),
+                        )
+                        Text(
+                            text = key.value,
+                            fontWeight = FontWeight.Light,
+                            textAlign = TextAlign.Center,
+                            fontFamily = appFontType(fontType),
+                            style = TextStyle(this, 26.sp.nonScaledSp),
+                        )
+                    }
                 }
             }
         }

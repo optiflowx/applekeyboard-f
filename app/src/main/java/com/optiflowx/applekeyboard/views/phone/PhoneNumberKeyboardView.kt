@@ -10,6 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -17,44 +18,40 @@ import com.optiflowx.applekeyboard.core.preferences.PreferencesConstants
 import com.optiflowx.applekeyboard.viewmodels.KeyboardViewModel
 
 @Composable
-fun PhoneNumberKeyboardView(viewModel: KeyboardViewModel) {
-    val configuration = LocalConfiguration.current
-    val screenWidth = configuration.screenWidthDp.dp
+fun PhoneNumberKeyboardView(
+    viewModel: KeyboardViewModel, viewWidth: Dp, rowHeight: Int = 55,
+    bottomDivHeight: Int = 30,
+) {
     val isPhoneSymbols = viewModel.isPhoneSymbol.observeAsState().value!!
     val locale = viewModel.preferences.getFlowPreference(
         PreferencesConstants.LOCALE_KEY, "English"
     ).collectAsStateWithLifecycle("English").value
     val phoneRowKeys = PhoneRowKeys(locale)
-    val phoneConst = PhoneConstraintsSet()
+    val phoneConst = PhoneConstraintsSet(rowHeight, bottomDivHeight)
 
-    ConstraintLayout(phoneConst.constraints, Modifier.width(screenWidth), 100, true) {
-        val keyWidth = (screenWidth.value * 0.31).dp
+    ConstraintLayout(phoneConst.constraints, Modifier.width(viewWidth), 100, true) {
 
         Box(Modifier.layoutId('1')) {
             ConstraintLayout(
                 phoneConst.firstRowConstraints,
                 Modifier
-                    .width(screenWidth)
+                    .width(viewWidth)
                     .align(Alignment.Center)
-                    .fillMaxWidth()
-                    .padding(horizontal = 2.dp), 100, true
+                    .padding(horizontal = 4.dp), 100, true
             ) { for (key in phoneRowKeys.row1Keys) PhoneNumKeyboardKey(key, viewModel) }
         }
         Box(Modifier.layoutId('2')) {
             ConstraintLayout(
                 phoneConst.secondRowConstraints,
                 Modifier
-                    .width(screenWidth)
+                    .width(viewWidth)
                     .align(Alignment.Center)
-                    .fillMaxWidth()
-                    .padding(horizontal = 2.dp), 100, true
+                    .padding(horizontal = 4.dp), 100, true
             ) {
-                if (isPhoneSymbols) {
-                    for (key in phoneRowKeys.row2KeysB) PhoneNumKeyboardKey(
-                        key,
-                        viewModel
-                    )
-                } else for (key in phoneRowKeys.row2Keys) PhoneNumKeyboardKey(
+                if (isPhoneSymbols) for (key in phoneRowKeys.row2KeysB) PhoneNumKeyboardKey(
+                    key,
+                    viewModel
+                ) else for (key in phoneRowKeys.row2Keys) PhoneNumKeyboardKey(
                     key,
                     viewModel
                 )
@@ -64,16 +61,14 @@ fun PhoneNumberKeyboardView(viewModel: KeyboardViewModel) {
             ConstraintLayout(
                 phoneConst.thirdRowConstraints,
                 Modifier
-                    .width(screenWidth)
+                    .width(viewWidth)
                     .align(Alignment.Center)
-                    .padding(horizontal = 2.dp), 100, true
+                    .padding(horizontal = 4.dp), 100, true
             ) {
-                if (isPhoneSymbols) {
-                    for (key in phoneRowKeys.row3KeysB) PhoneNumKeyboardKey(
-                        key,
-                        viewModel
-                    )
-                } else for (key in phoneRowKeys.row3Keys) PhoneNumKeyboardKey(
+                if (isPhoneSymbols) for (key in phoneRowKeys.row3KeysB) PhoneNumKeyboardKey(
+                    key,
+                    viewModel
+                ) else for (key in phoneRowKeys.row3Keys) PhoneNumKeyboardKey(
                     key,
                     viewModel
                 )
@@ -83,15 +78,14 @@ fun PhoneNumberKeyboardView(viewModel: KeyboardViewModel) {
             ConstraintLayout(
                 phoneConst.fourthRowConstraints,
                 Modifier
+                    .width(viewWidth)
                     .align(Alignment.Center)
-                    .padding(horizontal = 2.dp), 100, true
+                    .padding(horizontal = 4.dp), 100, true
             ) {
-                if (isPhoneSymbols) {
-                    for (key in phoneRowKeys.row4keysB) PhoneNumKeyboardKey(
-                        key,
-                        viewModel
-                    )
-                } else for (key in phoneRowKeys.row4Keys) PhoneNumKeyboardKey(
+                if (isPhoneSymbols) for (key in phoneRowKeys.row4keysB) PhoneNumKeyboardKey(
+                    key,
+                    viewModel
+                ) else for (key in phoneRowKeys.row4Keys) PhoneNumKeyboardKey(
                     key,
                     viewModel
                 )

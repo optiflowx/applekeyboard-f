@@ -25,7 +25,7 @@ class NumberRowKeys {
     )
 
     val row4Keys = listOf(
-        Key(".", ""),
+        Key("period", ""),
         Key("0", ""),
         Key("delete", ""),
     )
