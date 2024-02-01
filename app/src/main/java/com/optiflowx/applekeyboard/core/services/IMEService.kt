@@ -4,6 +4,7 @@ import android.os.Build
 import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
+import androidx.annotation.CallSuper
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.core.view.ViewCompat
@@ -18,14 +19,40 @@ import androidx.savedstate.SavedStateRegistry
 import androidx.savedstate.SavedStateRegistryController
 import androidx.savedstate.SavedStateRegistryOwner
 import androidx.savedstate.setViewTreeSavedStateRegistryOwner
-import com.optiflowx.applekeyboard.AppleKeyboardView
-import com.optiflowx.applekeyboard.core.enums.KeyboardType
-import com.optiflowx.applekeyboard.viewmodels.KeyboardViewModel
+import com.optiflowx.applekeyboard.DefaultKeyboardView
+import com.optiflowx.applekeyboard.views.number.DefaultNumberKeyboardView
+import com.optiflowx.applekeyboard.views.phone.DefaultPhoneKeyboardView
 import splitties.experimental.ExperimentalSplittiesApi
 import splitties.views.InputType
 
 @Suppress("DEPRECATION")
 class IMEService : LifecycleInputMethodService(), ViewModelStoreOwner, SavedStateRegistryOwner {
+
+
+
+
+    override val viewModelStore: ViewModelStore
+        get() = store
+    override val lifecycle: Lifecycle
+        get() = dispatcher.lifecycle
+
+//    private lateinit var vm : KeyboardViewModel
+
+    //ViewModelStore Methods
+    private val store = ViewModelStore()
+
+    //SaveStateRegistry Methods
+    private val savedStateRegistryController = SavedStateRegistryController.create(this)
+
+    override val savedStateRegistry: SavedStateRegistry get() = savedStateRegistryController.savedStateRegistry
+
+//    init {
+//        vm = KeyboardViewModel(this)
+//
+//        vm.initSoundIDs(this)
+//    }
+
+
 
     /**
      * This is the main entry point of the IME. This is called every time the user starts inputting
@@ -35,50 +62,37 @@ class IMEService : LifecycleInputMethodService(), ViewModelStoreOwner, SavedStat
      * to tailor the UI to the text field.
      * @param restarting Whether this is a restart of a previously running session.
      **/
-
-
     @OptIn(ExperimentalSplittiesApi::class)
+    @CallSuper
     override fun onStartInputView(editorInfo: EditorInfo?, restarting: Boolean) {
-        //Get the input type of the editor
-        val vm = KeyboardViewModel(this)
-        val action = editorInfo?.imeOptions?.and(EditorInfo.IME_MASK_ACTION)
-        val noEnterAction = editorInfo?.imeOptions?.and(EditorInfo.IME_FLAG_NO_ENTER_ACTION)
+        val inputType = editorInfo?.inputType?.and(EditorInfo.IME_MASK_ACTION)
 
+        when (inputType) {
+            InputType.number.value -> this.setInputView(DefaultNumberKeyboardView(this))
 
-        when (editorInfo?.inputType?.and(EditorInfo.IME_MASK_ACTION)) {
-            InputType.number.value -> vm.onUpdateKeyboardType(KeyboardType.Number)
-            InputType.phone.value -> vm.onUpdateKeyboardType(KeyboardType.Phone)
+            InputType.phone.value -> this.setInputView(DefaultPhoneKeyboardView(this))
 
-            else -> {
-                val newType = when (vm.keyboardType.value) {
-                    KeyboardType.Emoji, KeyboardType.Symbol, KeyboardType.Clipboard -> vm.keyboardType.value
-                    else -> KeyboardType.Normal
-                }
-                vm.onUpdateKeyboardType(newType)
-//                vm.keyboardType.value = when (keyboardType.value) {
-//                    KeyboardType.Emoji, KeyboardType.Symbol, KeyboardType.Clipboard -> keyboardType.value
-//                    else -> KeyboardType.Normal
-//                }
-
-            }
+            else -> this.setInputView(DefaultKeyboardView(this))
         }
 
         super.onStartInputView(editorInfo, restarting)
     }
 
+    @CallSuper
     override fun onFinishInputView(finishingInput: Boolean) {
-        Log.d("IMEService", "onFinishInputView: $finishingInput")
+        Log.v("KEYBOARD INFO", "IMEService: onFinishInputView: $finishingInput")
         super.onFinishInputView(finishingInput)
     }
 
     override fun onDestroy() {
+//        vm.onDisposeSoundIDs()
         store.clear()
         super.onDestroy()
     }
 
-
     override fun onCreateInputView(): View {
-        val view = AppleKeyboardView(this)
+        val view = DefaultKeyboardView(this)
+
 
         window?.window?.decorView?.let { decorView ->
             decorView.setViewTreeLifecycleOwner(this)
@@ -135,20 +149,5 @@ class IMEService : LifecycleInputMethodService(), ViewModelStoreOwner, SavedStat
     override fun onCreate() {
         super.onCreate()
         savedStateRegistryController.performRestore(null)
-
     }
-
-    override val viewModelStore: ViewModelStore
-        get() = store
-    override val lifecycle: Lifecycle
-        get() = dispatcher.lifecycle
-
-
-    //ViewModelStore Methods
-    private val store = ViewModelStore()
-
-    //SaveStateRegistry Methods
-    private val savedStateRegistryController = SavedStateRegistryController.create(this)
-
-    override val savedStateRegistry: SavedStateRegistry get() = savedStateRegistryController.savedStateRegistry
 }

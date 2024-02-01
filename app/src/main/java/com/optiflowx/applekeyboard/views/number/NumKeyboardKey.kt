@@ -19,7 +19,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.optiflowx.applekeyboard.R
 import com.optiflowx.applekeyboard.core.data.Key
 import com.optiflowx.applekeyboard.core.preferences.PrefsConstants

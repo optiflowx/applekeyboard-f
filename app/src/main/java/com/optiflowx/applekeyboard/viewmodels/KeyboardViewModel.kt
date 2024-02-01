@@ -50,7 +50,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import splitties.systemservices.vibrator
-import java.util.Locale
 
 @Stable
 class KeyboardViewModel(context: Context) : ViewModel() {
@@ -78,7 +77,6 @@ class KeyboardViewModel(context: Context) : ViewModel() {
 
     //Sound
     private val _isPoolLoaded = MutableStateFlow(false)
-    val isPoolLoaded = _isPoolLoaded.asStateFlow()
     private val _soundIDT = MutableStateFlow(0)
     private val _soundIDD = MutableStateFlow(0)
     private val _soundIDS = MutableStateFlow(0)
@@ -185,6 +183,12 @@ class KeyboardViewModel(context: Context) : ViewModel() {
         clipboardManager.removePrimaryClipChangedListener {}
     }
 
+    fun updateIsAllCaps(value: Boolean) {
+        viewModelScope.launch {
+            _isAllCaps.value = value
+        }
+    }
+
     fun updateIsEmojiSearch(value: Boolean) {
         viewModelScope.launch {
             _isEmojiSearch.value = value
@@ -206,6 +210,18 @@ class KeyboardViewModel(context: Context) : ViewModel() {
         }
     }
 
+    private fun initSoundPool() = viewModelScope.launch(Dispatchers.IO) {
+        val audioAttributes = AudioAttributes.Builder()
+            .setUsage(AudioAttributes.USAGE_ASSISTANCE_SONIFICATION)
+            .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+            .build()
+
+        _soundPool = SoundPool.Builder()
+            .setMaxStreams(1)
+            .setAudioAttributes(audioAttributes)
+            .build()
+    }
+
     @Stable
     fun initSoundIDs(context: Context) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -223,37 +239,31 @@ class KeyboardViewModel(context: Context) : ViewModel() {
     @Stable
     fun onDisposeSoundIDs() {
         viewModelScope.launch {
-            _soundPool.release().also {
+            viewModelScope.launch {
+                _soundPool.unload(_soundIDT.value)
+                _soundPool.unload(_soundIDD.value)
+                _soundPool.unload(_soundIDS.value)
+                _soundPool.unload(_soundIDR.value)
+            }.invokeOnCompletion {
+                _isPoolLoaded.value = false
                 _soundIDT.value = 0
                 _soundIDD.value = 0
                 _soundIDS.value = 0
                 _soundIDR.value = 0
-                _isPoolLoaded.value = false
             }
         }
     }
 
-    private fun initSoundPool() = viewModelScope.launch(Dispatchers.IO) {
-        val audioAttributes = AudioAttributes.Builder()
-            .setUsage(AudioAttributes.USAGE_ASSISTANCE_SONIFICATION)
-            .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-            .build()
-
-        _soundPool = SoundPool.Builder()
-            .setMaxStreams(4)
-            .setAudioAttributes(audioAttributes)
-            .build()
-    }
 
     @Stable
     fun playSound(key: Key) = viewModelScope.launch(Dispatchers.IO) {
         val value: Boolean = preferences.getPreference(pC.SOUND_ON_KEY_PRESS_KEY, true)
-        if (value && isPoolLoaded.value) {
+        if (value && _isPoolLoaded.value) {
             when (key.id) {
-                "delete" -> _soundPool.play(_soundIDD.value, 1f, 1f, 0, 0, 1f)
-                "return" -> _soundPool.play(_soundIDR.value, 1f, 1f, 0, 0, 1f)
-                "space" -> _soundPool.play(_soundIDS.value, 1f, 1f, 0, 0, 1f)
-                else -> _soundPool.play(_soundIDT.value, 1f, 1f, 0, 0, 1f)
+                "delete" -> _soundPool.play(_soundIDD.value, 1f, 1f, 0, 0, 1.05f)
+                "return" -> _soundPool.play(_soundIDR.value, 1f, 1f, 0, 0, 1.05f)
+                "space" -> _soundPool.play(_soundIDS.value, 1f, 1f, 0, 0, 1.05f)
+                else -> _soundPool.play(_soundIDT.value, 1f, 1f, 0, 0, 1.05f)
             }
         }
     }
@@ -527,6 +537,8 @@ class KeyboardViewModel(context: Context) : ViewModel() {
 
     @Stable
     private fun onNumSymbol() {
-        _isNumberSymbol.value = !(_isNumberSymbol.value)
+        viewModelScope.launch {
+            _isNumberSymbol.value = !(_isNumberSymbol.value)
+        }
     }
 }

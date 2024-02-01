@@ -12,13 +12,12 @@ import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.optiflowx.applekeyboard.core.preferences.PrefsConstants
 import com.optiflowx.applekeyboard.core.preferences.rememberPreference
 import com.optiflowx.applekeyboard.viewmodels.KeyboardViewModel
 
 @Composable
-fun PhoneNumberKeyboardView(
+fun PhoneKeyboardView(
     viewModel: KeyboardViewModel, viewWidth: Dp, rowHeight: Int = 55,
     bottomDivHeight: Int = 30,
 ) {

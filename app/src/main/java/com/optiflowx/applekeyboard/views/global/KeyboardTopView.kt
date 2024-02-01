@@ -13,12 +13,10 @@ import com.optiflowx.applekeyboard.core.enums.KeyboardType
 import com.optiflowx.applekeyboard.viewmodels.KeyboardViewModel
 import com.optiflowx.applekeyboard.views.clipboard.ClipboardKeyboardActionView
 import com.optiflowx.applekeyboard.views.emoji.EmojiSearchView
-import com.optiflowx.applekeyboard.views.number.NumberKeyboardActionView
 
 @Composable
 fun KeyboardTopView(
     viewModel: KeyboardViewModel,
-    locale: String,
     keyboardType: State<KeyboardType?>,
     topViewHeight: Int = 48,
     searchIconSize : Int = 20,
@@ -34,8 +32,8 @@ fun KeyboardTopView(
         AnimatedContent(keyboardType.value, label = "KeyboardTopView") {
             when (it) {
                 KeyboardType.Emoji -> EmojiSearchView(viewModel, textSize, searchIconSize)
-                KeyboardType.Number -> NumberKeyboardActionView(locale)
-                KeyboardType.Phone -> NumberKeyboardActionView(locale)
+//                KeyboardType.Number -> NumberKeyboardActionView(locale)
+//                KeyboardType.Phone -> NumberKeyboardActionView(locale)
                 KeyboardType.Clipboard -> ClipboardKeyboardActionView(viewModel, topViewHeight)
                 else -> SuggestionView(viewModel, viewWidth, textSize)
             }

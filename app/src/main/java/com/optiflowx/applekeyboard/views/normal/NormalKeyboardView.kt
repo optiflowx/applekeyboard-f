@@ -12,7 +12,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.optiflowx.applekeyboard.R
 import com.optiflowx.applekeyboard.core.data.Key
 import com.optiflowx.applekeyboard.core.preferences.PrefsConstants

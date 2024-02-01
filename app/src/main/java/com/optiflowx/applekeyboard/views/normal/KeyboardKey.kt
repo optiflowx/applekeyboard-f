@@ -9,6 +9,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -71,36 +72,44 @@ fun KeyboardKey(key: Key, viewModel: KeyboardViewModel) {
         } else key.value.lowercase()
     }
 
-    LaunchedEffect(key.id) {
+    DisposableEffect(key.id) {
         if (key.id == "action") {
-            view.rootView.addOnLayoutChangeListener { view, _, _, _, _, _, _, _, _ ->
-                view.isInLayout.let {
+            view.addOnLayoutChangeListener { view, _, _, _, _, _, _, _, _ ->
+                view.isInLayout.let {visible ->
                     val action =
                         (ctx as IMEService).currentInputEditorInfo.imeOptions and EditorInfo.IME_MASK_ACTION
-                    when (action) {
-                        EditorInfo.IME_ACTION_DONE -> {
-                            viewModel.updateIMEActions(colorA, colorB, "done")
-                        }
+                    if (visible) {
+                        when (action) {
+                            EditorInfo.IME_ACTION_DONE -> {
+                                viewModel.updateIMEActions(colorA, colorB, "done")
+                            }
 
-                        EditorInfo.IME_ACTION_GO -> {
-                            viewModel.updateIMEActions(colorA, colorB, "go")
-                        }
+                            EditorInfo.IME_ACTION_GO -> {
+                                viewModel.updateIMEActions(colorA, colorB, "go")
+                            }
 
-                        EditorInfo.IME_ACTION_SEARCH -> {
-                            viewModel.updateIMEActions(colorA, colorB, "search")
-                        }
+                            EditorInfo.IME_ACTION_SEARCH -> {
+                                viewModel.updateIMEActions(colorA, colorB, "search")
+                            }
 
-                        EditorInfo.IME_ACTION_NEXT -> {
-                            viewModel.updateIMEActions(colorA, colorB, "next")
-                        }
+                            EditorInfo.IME_ACTION_NEXT -> {
+                                viewModel.updateIMEActions(colorA, colorB, "next")
+                            }
 
-                        EditorInfo.IME_ACTION_SEND -> {
-                            viewModel.updateIMEActions(colorA, colorB, "send")
-                        }
+                            EditorInfo.IME_ACTION_SEND -> {
+                                viewModel.updateIMEActions(colorA, colorB, "send")
+                            }
 
-                        else -> viewModel.updateIMEActions(colorC, colorD, "return")
+                            else -> viewModel.updateIMEActions(colorC, colorD, "return")
+                        }
                     }
                 }
+            }
+        }
+
+        onDispose {
+            view.removeOnLayoutChangeListener { view, _, _, _, _, _, _, _, _ ->
+                Log.v("KEYBOARD INFO", "onDispose: actionView Listener")
             }
         }
     }
