@@ -17,13 +17,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.PlatformTextStyle
@@ -52,14 +51,14 @@ fun KeyboardOptionsView(
     itemHeight: Int = 45,
     itemTextSize: Int = 16,
 ) {
-    val showOptions = viewModel.isShowOptions.observeAsState(false).value
+    val showOptions = viewModel.isShowOptions.collectAsState().value
     val options = listOf("Keyboard Settings", "Language", "Clipboard")
     val context = LocalContext.current
 
     if (showOptions) {
         Popup(
             alignment = Alignment.BottomStart,
-            onDismissRequest = { viewModel.isShowOptions.value = false },
+            onDismissRequest = { viewModel.updateIsShowOptions(false) },
             properties = PopupProperties(
                 focusable = false,
                 dismissOnBackPress = true,
@@ -104,22 +103,22 @@ fun KeyboardOptionsView(
                                 ) {
                                     when (title) {
                                         "Keyboard Settings" -> {
-                                            context.startActivity(Intent(
-                                                context,
-                                                MainActivity::class.java
-                                            ).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+                                            context.startActivity(
+                                                Intent(
+                                                    context,
+                                                    MainActivity::class.java
+                                                ).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                            )
                                         }
 
                                         "Language" -> {
                                             //TODO: Add language selection
                                         }
 
-                                        "Clipboard" -> {
-                                            viewModel.keyboardType.value = KeyboardType.Clipboard
-                                        }
+                                        "Clipboard" -> viewModel.onUpdateKeyboardType(KeyboardType.Clipboard)
                                     }
 
-                                    viewModel.isShowOptions.value = false
+                                    viewModel.updateIsShowOptions(false)
                                 }
                         ) {
                             Text(

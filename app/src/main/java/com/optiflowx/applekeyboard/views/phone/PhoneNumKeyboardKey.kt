@@ -1,6 +1,5 @@
 package com.optiflowx.applekeyboard.views.phone
 
-import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -10,7 +9,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -19,15 +19,15 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.optiflowx.applekeyboard.R
 import com.optiflowx.applekeyboard.core.data.Key
-import com.optiflowx.applekeyboard.core.preferences.PreferencesConstants
+import com.optiflowx.applekeyboard.core.preferences.PrefsConstants
+import com.optiflowx.applekeyboard.core.preferences.rememberPreference
 import com.optiflowx.applekeyboard.core.utils.KeyboardLocale
+import com.optiflowx.applekeyboard.ui.keyboard.EraseButton
 import com.optiflowx.applekeyboard.ui.keyboard.KeyButton
 import com.optiflowx.applekeyboard.utils.appFontType
 import com.optiflowx.applekeyboard.utils.nonScaledSp
@@ -44,44 +44,52 @@ fun PhoneNumKeyboardKey(key: Key, viewModel: KeyboardViewModel) {
 
     //Make it global
     val keyboardLocale = KeyboardLocale()
-    val isPhoneSymbols = viewModel.isPhoneSymbol.observeAsState().value!!
+    val isPhoneSymbols = viewModel.isPhoneSymbol.collectAsState().value
 
-    val fontType =
-        viewModel.preferences.getFlowPreference(PreferencesConstants.FONT_TYPE_KEY, "Regular")
-            .collectAsStateWithLifecycle(
-                "Regular"
-            ).value
-
-    val locale = viewModel.preferences.getFlowPreference(PreferencesConstants.LOCALE_KEY, "English")
-        .collectAsStateWithLifecycle(
-            "English"
-        ).value
+    val fontType by rememberPreference(PrefsConstants.FONT_TYPE_KEY, "Regular")
+    val locale by rememberPreference(PrefsConstants.LOCALE_KEY, "English")
 
     val keysToDisable = (key.id == "1" || key.id == "2"
             || key.id == "3" || key.id == "5"
             || key.id == "8")
 
-    //Erase and Switch Keys
-    KeyButton(
-        color = (if (isErase || isSwitch) Color.Transparent
+    if (isErase) {
+        EraseButton(
+            color = Color.Transparent,
+            id = key.id,
+            onClick = {
+                viewModel.playSound(key)
+                viewModel.vibrate()
+            },
+            onRepeatableClick = { viewModel.onIKeyClick(key, ctx) }
+        ) {
+            Icon(
+                painter = painterResource(R.drawable.deletebackward),
+                "icons",
+                tint = colorScheme.primary,
+                modifier = Modifier
+                    .fillMaxWidth(0.3f)
+                    .fillMaxHeight(0.3f),
+            )
+        }
+    } else KeyButton(
+        color = (if (isSwitch) Color.Transparent
         else if (keysToDisable && isPhoneSymbols) colorScheme.outline
         else colorScheme.secondary),
         id = key.id,
         showPopup = false,
-        onRepeatableClick = {
-            if (isErase) viewModel.onIKeyClick(key, ctx)
-            else if (isSwitch) viewModel.onPhoneSymbol()
+        enabled = !(isPhoneSymbols && keysToDisable),
+        onClick = {
+            if (isSwitch) viewModel.onPhoneSymbol()
             else viewModel.onNumKeyClick(key, ctx)
-        },
-        onSingleClick = {
+
             viewModel.playSound(key)
             viewModel.vibrate()
         },
     ) {
-        if (isSwitch || isErase) {
+        if (isSwitch) {
             Icon(
-                painter = (if (isErase) painterResource(R.drawable.deletebackward)
-                else if (isPhoneSymbols) painterResource(R.drawable.num)
+                painter = (if (isPhoneSymbols) painterResource(R.drawable.num)
                 else painterResource(R.drawable.sym)),
                 "icons",
                 tint = colorScheme.primary,
@@ -115,7 +123,7 @@ fun PhoneNumKeyboardKey(key: Key, viewModel: KeyboardViewModel) {
                         ),
                     )
                 } else {
-                    (if(isPhoneSymbols) {
+                    (if (isPhoneSymbols) {
                         CupertinoColors.systemGray(isSystemInDarkTheme())
                     } else MaterialTheme.colorScheme.primary).apply {
                         Text(

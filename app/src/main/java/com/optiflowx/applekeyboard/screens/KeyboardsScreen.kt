@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.absolutePadding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
@@ -17,7 +18,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.optiflowx.applekeyboard.core.enums.KeyboardLanguage
-import com.optiflowx.applekeyboard.core.preferences.PreferencesConstants
+import com.optiflowx.applekeyboard.core.preferences.PrefsConstants
+import com.optiflowx.applekeyboard.core.preferences.rememberPreference
 import com.optiflowx.applekeyboard.ui.regular
 import com.optiflowx.applekeyboard.utils.nonScaledSp
 import com.optiflowx.applekeyboard.viewmodels.AppViewModel
@@ -44,7 +46,7 @@ import io.github.alexzhirkevich.cupertino.theme.systemBlue
 fun KeyboardsScreen(navigator: DestinationsNavigator) {
     val keyboards = KeyboardLanguage.entries
     val context = LocalContext.current
-    val pC = PreferencesConstants
+    val pC = PrefsConstants
 
     val tileTextStyle = TextStyle(
         fontSize = TextUnit(17f, TextUnitType.Sp).nonScaledSp,
@@ -60,8 +62,7 @@ fun KeyboardsScreen(navigator: DestinationsNavigator) {
         }
     )
 
-    val locale = viewModel.preferences.getFlowPreference(pC.LOCALE_KEY, "English")
-        .collectAsStateWithLifecycle("English")
+    val locale by rememberPreference(pC.LOCALE_KEY, "English")
 
     CupertinoScaffold(
         containerColor = CupertinoSectionDefaults.containerColor(LocalSectionStyle.current),
@@ -87,7 +88,7 @@ fun KeyboardsScreen(navigator: DestinationsNavigator) {
                             key = index,
                             title = { CupertinoText(language.name, style = tileTextStyle) },
                             trailingIcon = {
-                                if(language.name == locale.value) {
+                                if(language.name == locale) {
                                     CupertinoIcon(
                                         imageVector = CupertinoIcons.Default.CheckmarkCircle,
                                         contentDescription = "check",

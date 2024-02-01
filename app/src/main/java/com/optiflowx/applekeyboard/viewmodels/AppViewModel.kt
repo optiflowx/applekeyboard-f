@@ -5,8 +5,8 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.optiflowx.applekeyboard.core.preferences.PreferencesConstants
 import com.optiflowx.applekeyboard.core.preferences.PreferencesHelper
+import com.optiflowx.applekeyboard.core.preferences.PrefsConstants
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -17,13 +17,13 @@ class AppViewModel(context: Context) : ViewModel() {
     val preferences = PreferencesHelper(context)
 
     @Stable
-    private val pC = PreferencesConstants
+    private val pC = PrefsConstants
 
     @Stable
-    private val dispatcher = Dispatchers.IO
+    private val dispatcherIO = Dispatchers.IO
 
     init {
-        viewModelScope.launch(dispatcher) {
+        viewModelScope.launch {
             val isFirstRun = preferences.getPreference(pC.FIRST_RUN_KEY, true)
 
             if (isFirstRun) {
@@ -33,62 +33,62 @@ class AppViewModel(context: Context) : ViewModel() {
     }
 
     @Stable
-    fun updateLocale(value: String) = viewModelScope.launch(dispatcher) {
+    fun updateLocale(value: String) = viewModelScope.launch(dispatcherIO) {
         preferences.putPreference(pC.LOCALE_KEY, value)
     }
 
     @Stable
-    fun updateFontType(value: String) = viewModelScope.launch(dispatcher) {
+    fun updateFontType(value: String) = viewModelScope.launch(dispatcherIO) {
         preferences.putPreference(pC.FONT_TYPE_KEY, value)
     }
 
     @Stable
-    fun updateVibrateOnKeyPress(value: Boolean) = viewModelScope.launch(dispatcher) {
+    fun updateVibrateOnKeyPress(value: Boolean) = viewModelScope.launch(dispatcherIO) {
         preferences.putPreference(pC.VIBRATE_ON_KEY_PRESS_KEY, value)
     }
 
     @Stable
-    fun updateSoundOnKeyPress(value: Boolean) = viewModelScope.launch(dispatcher) {
+    fun updateSoundOnKeyPress(value: Boolean) = viewModelScope.launch(dispatcherIO) {
         preferences.putPreference(pC.SOUND_ON_KEY_PRESS_KEY, value)
     }
 
     @Stable
-    fun updateAutoCapitalisation(value: Boolean) = viewModelScope.launch(dispatcher) {
+    fun updateAutoCapitalisation(value: Boolean) = viewModelScope.launch(dispatcherIO) {
         preferences.putPreference(pC.AUTO_CAPITALISATION_KEY, value)
     }
 
     @Stable
-    fun updateDotShortcut(value: Boolean) = viewModelScope.launch(dispatcher) {
+    fun updateDotShortcut(value: Boolean) = viewModelScope.launch(dispatcherIO) {
         preferences.putPreference(pC.DOT_SHORTCUT_KEY, value)
     }
 
     @Stable
-    fun updateEnableCapsLock(value: Boolean) = viewModelScope.launch(dispatcher) {
+    fun updateEnableCapsLock(value: Boolean) = viewModelScope.launch(dispatcherIO) {
         preferences.putPreference(pC.ENABLE_CAPS_LOCK_KEY, value)
     }
 
     @Stable
-    fun updateCheckSpelling(value: Boolean) = viewModelScope.launch(dispatcher) {
+    fun updateCheckSpelling(value: Boolean) = viewModelScope.launch(dispatcherIO) {
         preferences.putPreference(pC.CHECK_SPELLING_KEY, value)
     }
 
     @Stable
-    fun updateCharacterPreview(value: Boolean) = viewModelScope.launch(dispatcher) {
+    fun updateCharacterPreview(value: Boolean) = viewModelScope.launch(dispatcherIO) {
         preferences.putPreference(pC.CHARACTER_PREVIEW_KEY, value)
     }
 
     @Stable
-    fun updateAutoCorrection(value: Boolean) = viewModelScope.launch(dispatcher) {
+    fun updateAutoCorrection(value: Boolean) = viewModelScope.launch(dispatcherIO) {
         preferences.putPreference(pC.AUTO_CORRECTION_KEY, value)
     }
 
     @Stable
-    fun updateSmartPunctuation(value: Boolean) = viewModelScope.launch(dispatcher) {
+    fun updateSmartPunctuation(value: Boolean) = viewModelScope.launch(dispatcherIO) {
         preferences.putPreference(pC.SMART_PUNCTUATION_KEY, value)
     }
 
     @Stable
-    fun updatePredictive(value: Boolean) = viewModelScope.launch(dispatcher) {
+    fun updatePredictive(value: Boolean) = viewModelScope.launch(dispatcherIO) {
         preferences.putPreference(pC.PREDICTIVE_KEY, value)
     }
 }

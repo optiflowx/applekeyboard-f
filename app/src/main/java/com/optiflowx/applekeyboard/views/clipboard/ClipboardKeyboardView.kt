@@ -18,6 +18,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -33,7 +34,8 @@ import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.optiflowx.applekeyboard.core.preferences.PreferencesConstants
+import com.optiflowx.applekeyboard.core.preferences.PrefsConstants
+import com.optiflowx.applekeyboard.core.preferences.rememberPreference
 import com.optiflowx.applekeyboard.core.utils.KeyboardLocale
 import com.optiflowx.applekeyboard.utils.appFontType
 import com.optiflowx.applekeyboard.utils.nonScaledSp
@@ -53,13 +55,9 @@ fun ClipboardKeyboardView(
 
     val clipDataList = viewModel.clipData.observeAsState().value?.reversed()
 
-    val fontType = viewModel.preferences.getFlowPreference(
-        PreferencesConstants.FONT_TYPE_KEY, "Regular"
-    ).collectAsStateWithLifecycle("Regular").value
+    val fontType  by rememberPreference(PrefsConstants.FONT_TYPE_KEY, "Regular")
 
-    val locale = viewModel.preferences.getFlowPreference(
-        PreferencesConstants.LOCALE_KEY, "English"
-    ).collectAsStateWithLifecycle("English").value
+    val locale  by rememberPreference(PrefsConstants.LOCALE_KEY, "English")
 
     Box(
         contentAlignment = Alignment.Center,

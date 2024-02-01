@@ -2,47 +2,46 @@ package com.optiflowx.applekeyboard.views.global
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.optiflowx.applekeyboard.core.preferences.PreferencesConstants
+import com.optiflowx.applekeyboard.core.preferences.PrefsConstants
+import com.optiflowx.applekeyboard.core.preferences.rememberPreference
 import com.optiflowx.applekeyboard.ui.keyboard.Div
 import com.optiflowx.applekeyboard.ui.keyboard.Suggestion
 import com.optiflowx.applekeyboard.viewmodels.KeyboardViewModel
 
 @Composable
-fun SuggestionView(viewModel: KeyboardViewModel, viewWidth: Double, textSize : Float) {
+fun SuggestionView(viewModel: KeyboardViewModel, viewWidth: Double, textSize: Float) {
     val context = LocalContext.current
-    val suggestions = viewModel.wordsDictionary.observeAsState().value
+    val suggestions = viewModel.wordsDictionary.collectAsState().value
 
     val suggestion1 = remember(suggestions) {
-        mutableStateOf(if (suggestions?.isNotEmpty() == true) suggestions.elementAt(0) else "")
+        mutableStateOf(if (suggestions.isNotEmpty()) suggestions.elementAt(0) else "")
     }
 
     val suggestion2 = remember(suggestions) {
-        mutableStateOf(if (suggestions != null && suggestions.size >= 2) suggestions.elementAt(1) else "")
+        mutableStateOf(if (suggestions.size >= 2) suggestions.elementAt(1) else "")
     }
 
     val suggestion3 = remember(suggestions) {
-        mutableStateOf(if (suggestions != null && suggestions.size >= 3) suggestions.elementAt(2) else "")
+        mutableStateOf(if (suggestions.size >= 3) suggestions.elementAt(2) else "")
     }
 
-    val fontType = viewModel.preferences.getFlowPreference(PreferencesConstants.FONT_TYPE_KEY, "Regular").collectAsStateWithLifecycle(
-        "Regular")
+    val fontType by rememberPreference(PrefsConstants.FONT_TYPE_KEY, "Regular")
+
 
     val constraints = ConstraintSet {
         val firstSuggestion = createRefFor("sug1")
@@ -88,7 +87,7 @@ fun SuggestionView(viewModel: KeyboardViewModel, viewWidth: Double, textSize : F
     }
 
     LaunchedEffect(suggestions) {
-        if (suggestions?.isNotEmpty() == true) {
+        if (suggestions.isNotEmpty()) {
             suggestions.forEachIndexed { index, element ->
                 when (index) {
                     0 -> suggestion1.value = element
@@ -113,21 +112,21 @@ fun SuggestionView(viewModel: KeyboardViewModel, viewWidth: Double, textSize : F
                 .fillMaxHeight()
                 .align(Alignment.Center), 100, true
         ) {
-            Suggestion("sug1", suggestion1.value,fontType.value,textSize, onClick = {
+            Suggestion("sug1", suggestion1.value, fontType, textSize, onClick = {
                 viewModel.onSuggestionClick(
                     suggestion1.value,
                     context
                 )
             })
             Div("div1")
-            Suggestion("sug2", suggestion2.value,fontType.value, textSize, onClick = {
+            Suggestion("sug2", suggestion2.value, fontType, textSize, onClick = {
                 viewModel.onSuggestionClick(
                     suggestion2.value,
                     context
                 )
             })
             Div("div2")
-            Suggestion("sug3", suggestion3.value,fontType.value, textSize, onClick = {
+            Suggestion("sug3", suggestion3.value, fontType, textSize, onClick = {
                 viewModel.onSuggestionClick(
                     suggestion3.value,
                     context

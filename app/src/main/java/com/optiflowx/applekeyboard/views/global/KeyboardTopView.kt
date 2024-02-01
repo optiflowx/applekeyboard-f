@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
 import com.optiflowx.applekeyboard.core.enums.KeyboardType
 import com.optiflowx.applekeyboard.viewmodels.KeyboardViewModel

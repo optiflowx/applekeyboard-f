@@ -1,7 +1,7 @@
 package com.optiflowx.applekeyboard.views.normal
 
+import android.util.Log
 import android.view.inputmethod.EditorInfo
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -10,33 +10,27 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.TextUnit
-import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.optiflowx.applekeyboard.R
 import com.optiflowx.applekeyboard.core.data.Key
-import com.optiflowx.applekeyboard.core.preferences.PreferencesConstants
+import com.optiflowx.applekeyboard.core.preferences.PrefsConstants
+import com.optiflowx.applekeyboard.core.preferences.rememberPreference
 import com.optiflowx.applekeyboard.core.services.IMEService
 import com.optiflowx.applekeyboard.core.utils.KeyboardLocale
+import com.optiflowx.applekeyboard.ui.keyboard.EraseButton
 import com.optiflowx.applekeyboard.ui.keyboard.KeyButton
 import com.optiflowx.applekeyboard.utils.appFontType
 import com.optiflowx.applekeyboard.utils.nonScaledSp
@@ -46,84 +40,65 @@ import com.optiflowx.applekeyboard.viewmodels.KeyboardViewModel
 fun KeyboardKey(key: Key, viewModel: KeyboardViewModel) {
     val ctx = LocalContext.current
     val view = LocalView.current
-    var keyValue by rememberSaveable { mutableStateOf(key.value) }
-    var action by rememberSaveable { mutableIntStateOf(((ctx as IMEService).currentInputEditorInfo.imeOptions and EditorInfo.IME_MASK_ACTION)) }
+
+    val keyboardLocale = KeyboardLocale()
     val colorScheme = MaterialTheme.colorScheme
 
     val isSymbols = key.id == "symbol"
     val isShift = key.id == "shift"
     val isErase = key.id == "delete"
     val isEmoji = key.id == "emoji"
-    val isAllCaps = viewModel.isAllCaps.observeAsState(false).value
-    val isNumberSymbol = viewModel.isNumberSymbol.observeAsState(false).value
-    val isCapsLock = viewModel.isCapsLock.observeAsState(false).value
 
-    val keyboardLocale = KeyboardLocale()
+    val colorA = colorScheme.onSurface
+    val colorB = colorScheme.inversePrimary
+    val colorD = colorScheme.primary
+    val colorC = colorScheme.secondaryContainer
 
-    var actionButtonColor by remember { mutableStateOf(colorScheme.secondaryContainer) }
+    val isAllCaps = viewModel.isAllCaps.collectAsState().value
+    val isNumberSymbol = viewModel.isNumberSymbol.collectAsState().value
+    val isCapsLock = viewModel.isCapsLock.collectAsState().value
+    val buttonColor = viewModel.keyActionButtonColor.collectAsState().value
+    val textColor = viewModel.keyActionTextColor.collectAsState().value
+    val text = viewModel.keyActionText.collectAsState().value
 
-    var actionTextColor by remember { mutableStateOf(colorScheme.inversePrimary) }
-
-    var actionText by rememberSaveable { mutableStateOf("return") }
-
-    val fontType = viewModel.preferences
-        .getFlowPreference(PreferencesConstants.FONT_TYPE_KEY, "Regular")
-        .collectAsStateWithLifecycle("Regular").value
-
-    val locale = viewModel.preferences
-        .getFlowPreference(PreferencesConstants.LOCALE_KEY, "English")
-        .collectAsStateWithLifecycle("English").value
+    var keyValue by rememberSaveable { mutableStateOf(key.value) }
+    val fontType by rememberPreference(PrefsConstants.FONT_TYPE_KEY, "Regular")
+    val locale by rememberPreference(PrefsConstants.LOCALE_KEY, "English")
 
     LaunchedEffect(isAllCaps) {
-        isAllCaps.let {
-            keyValue = if (it == true) key.value.uppercase() else key.value.lowercase()
-        }
+        keyValue = if (isAllCaps) {
+            key.value.uppercase()
+        } else key.value.lowercase()
     }
 
     LaunchedEffect(key.id) {
         if (key.id == "action") {
             view.rootView.addOnLayoutChangeListener { view, _, _, _, _, _, _, _, _ ->
                 view.isInLayout.let {
-                    if (it) {
-                        action =
-                            (ctx as IMEService).currentInputEditorInfo.imeOptions and EditorInfo.IME_MASK_ACTION
-                        when (action) {
-                            EditorInfo.IME_ACTION_DONE -> {
-                                actionButtonColor = colorScheme.onSurface
-                                actionTextColor = colorScheme.inversePrimary
-                                actionText = "done"
-                            }
-
-                            EditorInfo.IME_ACTION_GO -> {
-                                actionButtonColor = colorScheme.onSurface
-                                actionTextColor = colorScheme.inversePrimary
-                                actionText = "go"
-                            }
-
-                            EditorInfo.IME_ACTION_SEARCH -> {
-                                actionButtonColor = colorScheme.onSurface
-                                actionTextColor = colorScheme.inversePrimary
-                                actionText = "search"
-                            }
-
-                            EditorInfo.IME_ACTION_NEXT -> {
-                                actionButtonColor = colorScheme.onSurface
-                                actionTextColor = colorScheme.inversePrimary
-                                actionText = "next"
-                            }
-
-                            EditorInfo.IME_ACTION_SEND -> {
-                                actionButtonColor = colorScheme.onSurface
-                                actionTextColor = colorScheme.inversePrimary
-                                actionText = "send"
-                            }
-
-                            else -> {
-                                actionButtonColor = colorScheme.secondaryContainer
-                                actionTextColor = colorScheme.primary
-                                actionText = "return"
-                            }
+                    val action =
+                        (ctx as IMEService).currentInputEditorInfo.imeOptions and EditorInfo.IME_MASK_ACTION
+                    when (action) {
+                        EditorInfo.IME_ACTION_DONE -> {
+                            viewModel.updateIMEActions(colorA, colorB, "done")
                         }
+
+                        EditorInfo.IME_ACTION_GO -> {
+                            viewModel.updateIMEActions(colorA, colorB, "go")
+                        }
+
+                        EditorInfo.IME_ACTION_SEARCH -> {
+                            viewModel.updateIMEActions(colorA, colorB, "search")
+                        }
+
+                        EditorInfo.IME_ACTION_NEXT -> {
+                            viewModel.updateIMEActions(colorA, colorB, "next")
+                        }
+
+                        EditorInfo.IME_ACTION_SEND -> {
+                            viewModel.updateIMEActions(colorA, colorB, "send")
+                        }
+
+                        else -> viewModel.updateIMEActions(colorC, colorD, "return")
                     }
                 }
             }
@@ -132,34 +107,55 @@ fun KeyboardKey(key: Key, viewModel: KeyboardViewModel) {
 
     val width = LocalConfiguration.current.screenWidthDp
     val widthFactor = 0.086f
-    val popupWidth = width * widthFactor
+    val specialWidthFactor = 0.13f
+    val popupWidth = if (
+        key.id == "." || key.id == "," || key.id == "?" || key.id == "'" || key.id == "\""
+    ) (width * specialWidthFactor) else width * widthFactor
 
     //Erase and Shift Keys
-    if (isShift || isErase || isSymbols || isEmoji) {
+    if (isErase) {
+        EraseButton(
+            color = colorC,
+            id = key.id,
+            onClick = {
+                viewModel.playSound(key)
+                viewModel.vibrate()
+            },
+            onRepeatableClick = { viewModel.onIKeyClick(key, ctx) }
+        ) {
+            Icon(
+                painter = painterResource(R.drawable.deletebackward),
+                contentDescription = "icon",
+                modifier = Modifier
+                    .fillMaxHeight(0.54f)
+                    .fillMaxWidth(0.54f),
+                tint = colorScheme.primary,
+            )
+        }
+    } else if (isShift || isSymbols || isEmoji) {
         (if (isShift) {
-            if (isCapsLock!!) painterResource(R.drawable.capslockfill)
+            if (isCapsLock) painterResource(R.drawable.capslockfill)
             else painterResource(
-                if (isAllCaps == true) R.drawable.shift_fill else R.drawable.shift
+                if (isAllCaps) R.drawable.shift_fill else R.drawable.shift
             )
         } else if (isSymbols) {
             painterResource(
-                if (isNumberSymbol == true) R.drawable.num else R.drawable.sym
+                if (isNumberSymbol) R.drawable.num else R.drawable.sym
             )
-        } else if (isEmoji) {
+        } else {
             painterResource(
                 if (isSystemInDarkTheme()) R.drawable.emoji_fill else R.drawable.emoji_outline
             )
-        } else painterResource(R.drawable.deletebackward)).apply {
+        }).apply {
             KeyButton(
-                color = (if (isShift && isAllCaps!!) colorScheme.surface else colorScheme.secondaryContainer).copy(
-                    alpha = 0.8f
-                ),
+                color = (if (isShift && isAllCaps) colorScheme.surface else colorC),
                 id = key.id,
                 showPopup = false,
-                onRepeatableClick = { viewModel.onIKeyClick(key, ctx) },
-                onSingleClick = {
-                    viewModel.playSound(key)
-                    viewModel.vibrate()
+                onClick = {
+                    viewModel.onIKeyClick(key, ctx).let {
+                        viewModel.playSound(key)
+                        viewModel.vibrate()
+                    }
                 }
             ) {
                 Icon(
@@ -168,7 +164,7 @@ fun KeyboardKey(key: Key, viewModel: KeyboardViewModel) {
                     modifier = Modifier
                         .fillMaxHeight(0.54f)
                         .fillMaxWidth(0.54f),
-                    tint = if (isAllCaps!! && !isErase && !isEmoji && !isSymbols)
+                    tint = if (isAllCaps && !isEmoji && !isSymbols)
                         Color.Black else colorScheme.primary,
                 )
             }
@@ -176,7 +172,7 @@ fun KeyboardKey(key: Key, viewModel: KeyboardViewModel) {
     } else {
         //All Other Text Keys
         (if (key.id == "123" || key.id == "ABC" || key.id == "action") {
-            if (key.id == "action") actionButtonColor else colorScheme.secondaryContainer
+            if (key.id == "action") buttonColor else colorC
         } else colorScheme.secondary).apply {
             KeyButton(
                 color = this,
@@ -184,15 +180,16 @@ fun KeyboardKey(key: Key, viewModel: KeyboardViewModel) {
                 text = keyValue,
                 popupWidth = popupWidth,
                 showPopup = !(key.id == "123" || key.id == "ABC" || key.id == "action" || key.id == "space"),
-                onRepeatableClick = { viewModel.onTKeyClick(key, ctx, actionText) },
-                onSingleClick = {
-                    viewModel.playSound(key)
-                    viewModel.vibrate()
+                onClick = {
+                    viewModel.onTKeyClick(key, ctx, text).let {
+                        viewModel.playSound(key)
+                        viewModel.vibrate()
+                    }
                 }
             ) {
                 Text(
                     text = (if (key.id == "ABC" || key.id == "space" || key.id == "action") {
-                        if (key.id == "action") keyboardLocale.action(actionText, locale)
+                        if (key.id == "action") keyboardLocale.action(text, locale)
                         else key.value
                     } else keyValue),
                     maxLines = 1,
@@ -202,7 +199,7 @@ fun KeyboardKey(key: Key, viewModel: KeyboardViewModel) {
                             15.sp else 22.5.sp).nonScaledSp,
                         platformStyle = PlatformTextStyle(includeFontPadding = false)
                     ),
-                    color = if (key.id == "action") actionTextColor else colorScheme.primary,
+                    color = if (key.id == "action") textColor else colorD,
                 )
             }
         }

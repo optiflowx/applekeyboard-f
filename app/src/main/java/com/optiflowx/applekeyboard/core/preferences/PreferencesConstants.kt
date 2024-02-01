@@ -5,7 +5,7 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 
 @Immutable
-object PreferencesConstants {
+object PrefsConstants {
     val FIRST_RUN_KEY = booleanPreferencesKey("FIRST_RUN_KEY")
     val LOCALE_KEY = stringPreferencesKey("LOCALE_KEY")
     val FONT_TYPE_KEY = stringPreferencesKey("FONT_TYPE_KEY")

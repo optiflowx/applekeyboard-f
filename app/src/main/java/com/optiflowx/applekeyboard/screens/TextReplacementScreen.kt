@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
@@ -16,7 +17,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.optiflowx.applekeyboard.core.enums.KeyboardFontType
-import com.optiflowx.applekeyboard.core.preferences.PreferencesConstants
+import com.optiflowx.applekeyboard.core.preferences.PrefsConstants
+import com.optiflowx.applekeyboard.core.preferences.rememberPreference
 import com.optiflowx.applekeyboard.ui.bold
 import com.optiflowx.applekeyboard.ui.regular
 import com.optiflowx.applekeyboard.utils.nonScaledSp
@@ -34,13 +36,12 @@ import io.github.alexzhirkevich.cupertino.icons.outlined.Plus
 import io.github.alexzhirkevich.cupertino.section.CupertinoSectionDefaults
 import io.github.alexzhirkevich.cupertino.section.LocalSectionStyle
 
+@Suppress("UNCHECKED_CAST")
 @OptIn(ExperimentalCupertinoApi::class)
 @Composable
 @Destination
 fun TextReplacementScreen(navigator: DestinationsNavigator) {
-    val fonts = KeyboardFontType.entries
     val context = LocalContext.current
-    val pC = PreferencesConstants
 
     val tileTextStyle = TextStyle(
         fontSize = TextUnit(17f, TextUnitType.Sp).nonScaledSp,
@@ -56,8 +57,7 @@ fun TextReplacementScreen(navigator: DestinationsNavigator) {
         }
     )
 
-    val fontType = viewModel.preferences.getFlowPreference(pC.FONT_TYPE_KEY, "Regular")
-        .collectAsStateWithLifecycle("Regular")
+    val fontType by rememberPreference(PrefsConstants.FONT_TYPE_KEY, "Regular")
 
     CupertinoScaffold(
         containerColor = CupertinoSectionDefaults.containerColor(LocalSectionStyle.current),

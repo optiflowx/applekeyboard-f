@@ -5,7 +5,6 @@ package com.optiflowx.applekeyboard.screens
 import android.content.Intent
 import android.provider.Settings
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.gestures.FlingBehavior
 import androidx.compose.foundation.gestures.ScrollableDefaults
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Row
@@ -29,9 +28,9 @@ import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.optiflowx.applekeyboard.core.preferences.PreferencesConstants
+import com.optiflowx.applekeyboard.core.preferences.PrefsConstants
+import com.optiflowx.applekeyboard.core.preferences.rememberPreference
 import com.optiflowx.applekeyboard.screens.destinations.KeyboardFontsScreenDestination
 import com.optiflowx.applekeyboard.screens.destinations.KeyboardsScreenDestination
 import com.optiflowx.applekeyboard.screens.destinations.TextReplacementScreenDestination
@@ -41,6 +40,7 @@ import com.optiflowx.applekeyboard.ui.sheets.CopyrightBottomSheet
 import com.optiflowx.applekeyboard.utils.nonScaledSp
 import com.optiflowx.applekeyboard.viewmodels.AppViewModel
 import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import io.github.alexzhirkevich.cupertino.CupertinoIcon
 import io.github.alexzhirkevich.cupertino.CupertinoScaffold
@@ -62,12 +62,13 @@ import splitties.systemservices.inputMethodManager
 
 @Suppress("UNCHECKED_CAST")
 @OptIn(ExperimentalCupertinoApi::class, ExperimentalFoundationApi::class)
-@Destination(start = true)
 @Composable
+@Destination
+@RootNavGraph(start = true)
 fun HomeScreen(navigator: DestinationsNavigator) {
     val uriHandler = LocalUriHandler.current
     val context = LocalContext.current
-    val pC = PreferencesConstants
+    val pC = PrefsConstants
 
     val tileTextStyle = TextStyle(
         fontSize = TextUnit(17f, TextUnitType.Sp).nonScaledSp,
@@ -95,36 +96,33 @@ fun HomeScreen(navigator: DestinationsNavigator) {
 
     val packageInfo = context.packageManager.getPackageInfo(context.packageName, 0)
 
-    val isSound = viewModel.preferences.getFlowPreference(pC.SOUND_ON_KEY_PRESS_KEY, false)
-        .collectAsStateWithLifecycle(false)
-    val isVibrate = viewModel.preferences.getFlowPreference(pC.VIBRATE_ON_KEY_PRESS_KEY, false)
-        .collectAsStateWithLifecycle(false)
-    val isAutoCapitalisation =
-        viewModel.preferences.getFlowPreference(pC.AUTO_CAPITALISATION_KEY, true)
-            .collectAsStateWithLifecycle(true)
-    val isDotShortcut = viewModel.preferences.getFlowPreference(pC.DOT_SHORTCUT_KEY, true)
-        .collectAsStateWithLifecycle(true)
-    val isEnableCapsLock = viewModel.preferences.getFlowPreference(pC.ENABLE_CAPS_LOCK_KEY, true)
-        .collectAsStateWithLifecycle(true)
-    val isPredictive = viewModel.preferences.getFlowPreference(pC.PREDICTIVE_KEY, true)
-        .collectAsStateWithLifecycle(true)
-    val isAutoCorrect = viewModel.preferences.getFlowPreference(pC.AUTO_CORRECTION_KEY, false)
-        .collectAsStateWithLifecycle(false)
-    val isCheckSpelling = viewModel.preferences.getFlowPreference(pC.CHECK_SPELLING_KEY, false)
-        .collectAsStateWithLifecycle(false)
-    val isCharacterPreview =
-        viewModel.preferences.getFlowPreference(pC.CHARACTER_PREVIEW_KEY, false)
-            .collectAsStateWithLifecycle(false)
+    val isSound = rememberPreference(pC.SOUND_ON_KEY_PRESS_KEY, false)
+
+    val isVibrate = rememberPreference(pC.VIBRATE_ON_KEY_PRESS_KEY, false)
+
+    val isAutoCapitalisation = rememberPreference(pC.AUTO_CAPITALISATION_KEY, true)
+
+    val isDotShortcut = rememberPreference(pC.DOT_SHORTCUT_KEY, true)
+
+    val isEnableCapsLock = rememberPreference(pC.ENABLE_CAPS_LOCK_KEY, true)
+
+    val isPredictive = rememberPreference(pC.PREDICTIVE_KEY, true)
+
+    val isAutoCorrect = rememberPreference(pC.AUTO_CORRECTION_KEY, false)
+
+    val isCheckSpelling = rememberPreference(pC.CHECK_SPELLING_KEY, false)
+
+    val isCharacterPreview = rememberPreference(pC.CHARACTER_PREVIEW_KEY, false)
 
     val (copyrightSheet, onCopyrightSheetChanged) = remember { mutableStateOf(false) }
 
     val (value, onValueChange) = remember { mutableStateOf("") }
 
+    val interactionSource = remember { MutableInteractionSource() }
+
     if (copyrightSheet) {
         CopyrightBottomSheet { onCopyrightSheetChanged(false) }
     }
-
-    val interactionSource = remember { MutableInteractionSource() }
 
     CupertinoScaffold(
         appBarsBlurAlpha = 0.65f,

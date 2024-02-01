@@ -14,19 +14,20 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.optiflowx.applekeyboard.core.data.frequentlyUsedEmoji
-import com.optiflowx.applekeyboard.core.preferences.PreferencesConstants
+import com.optiflowx.applekeyboard.core.preferences.PrefsConstants
+import com.optiflowx.applekeyboard.core.preferences.rememberPreference
 import com.optiflowx.applekeyboard.core.utils.handleTitle
 import com.optiflowx.applekeyboard.utils.appFontType
 import com.optiflowx.applekeyboard.utils.nonScaledSp
@@ -45,15 +46,10 @@ fun EmojiKeyboardView(
 ) {
     val defaultViewPort = (viewWidth)
     val freqViewPort = (viewWidth * 0.76f)
-    val isESearch = viewModel.isEmojiSearch.observeAsState()
+    val isESearch = viewModel.isEmojiSearch.collectAsState()
     val frequentEmojis = viewModel.frequentlyUsedEmojis.observeAsState().value?.reversed()
-
-    val fontType =
-        viewModel.preferences.getFlowPreference(PreferencesConstants.FONT_TYPE_KEY, "Regular")
-            .collectAsStateWithLifecycle("Regular").value
-
-    val locale = viewModel.preferences.getFlowPreference(PreferencesConstants.LOCALE_KEY, "English")
-        .collectAsStateWithLifecycle("English").value
+    val fontType by rememberPreference(PrefsConstants.FONT_TYPE_KEY, "Regular")
+    val locale by rememberPreference(PrefsConstants.LOCALE_KEY, "English")
 
     val emojiViewPager = arrayListOf(
         hashMapOf("Frequently Used" to listOf()),

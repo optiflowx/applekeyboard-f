@@ -58,15 +58,6 @@ fun appFontType(fontType: String?): FontFamily {
 }
 
 @Stable
-fun Modifier.disabledColor(
-    color: Color = Color(0xA6525252)
-) {
-    this.drawWithContent {
-        this.drawIntoCanvas {  }
-    }
-}
-
-@Stable
 fun Modifier.boxShadow(
     color: Color = Color.Black,
     alpha: Float = 0.07f,

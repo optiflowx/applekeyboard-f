@@ -51,7 +51,7 @@ fun KeyboardBottomView(viewModel: KeyboardViewModel, locale: String, fontType: S
                         indication = null,
                         interactionSource = remember { MutableInteractionSource() },
                         role = Role.Button,
-                    ) { viewModel.isShowOptions.value = true }
+                    ) { viewModel.updateIsShowOptions(true)  }
             )
 
             Icon(

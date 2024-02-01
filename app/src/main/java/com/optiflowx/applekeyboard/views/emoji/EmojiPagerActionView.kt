@@ -27,6 +27,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import com.optiflowx.applekeyboard.R
 import com.optiflowx.applekeyboard.core.data.Key
+import com.optiflowx.applekeyboard.core.enums.KeyboardType
 import com.optiflowx.applekeyboard.viewmodels.KeyboardViewModel
 import io.github.alexzhirkevich.cupertino.Surface
 import io.github.alexzhirkevich.cupertino.theme.CupertinoColors
@@ -78,7 +79,7 @@ fun EmojiPagerActionView(pagerState: PagerState, viewModel: KeyboardViewModel) {
                         indication = null,
                         interactionSource = iS,
                         role = Role.Button,
-                    ) { viewModel.onABCTap() },
+                    ) { viewModel.onUpdateKeyboardType(KeyboardType.Normal) },
             )
             for (i in listProps.indices) {
                 val id = listProps[i]

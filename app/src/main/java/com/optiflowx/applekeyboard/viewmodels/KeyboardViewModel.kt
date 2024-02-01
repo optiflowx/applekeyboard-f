@@ -6,14 +6,14 @@ import android.media.AudioAttributes
 import android.media.SoundPool
 import android.os.Build
 import android.os.VibrationEffect
-import android.util.Log
 import android.view.inputmethod.InputConnection
 import android.view.inputmethod.InputConnection.GET_TEXT_WITH_STYLES
 import androidx.compose.runtime.Stable
+import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.optiflowx.applekeyboard.R
 import com.optiflowx.applekeyboard.core.algorithm.DictationProcessor
 import com.optiflowx.applekeyboard.core.data.Key
 import com.optiflowx.applekeyboard.core.database.dao.ClipboardDatabaseDAO
@@ -24,8 +24,8 @@ import com.optiflowx.applekeyboard.core.database.entities.ClipData
 import com.optiflowx.applekeyboard.core.database.entities.FrequentlyUsedEmoji
 import com.optiflowx.applekeyboard.core.enums.KeyboardLanguage
 import com.optiflowx.applekeyboard.core.enums.KeyboardType
-import com.optiflowx.applekeyboard.core.preferences.PreferencesConstants
 import com.optiflowx.applekeyboard.core.preferences.PreferencesHelper
+import com.optiflowx.applekeyboard.core.preferences.PrefsConstants
 import com.optiflowx.applekeyboard.core.services.IMEService
 import com.optiflowx.applekeyboard.core.utils.KeyboardLocale
 import com.optiflowx.applekeyboard.languages.english.enListA
@@ -46,6 +46,7 @@ import com.optiflowx.applekeyboard.languages.spanish.spListC
 import com.optiflowx.applekeyboard.languages.spanish.spListD
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import splitties.systemservices.vibrator
@@ -54,21 +55,48 @@ import java.util.Locale
 @Stable
 class KeyboardViewModel(context: Context) : ViewModel() {
     //UI
-    val isAllCaps = MutableLiveData(false)
-    val keyboardType = MutableLiveData(KeyboardType.Normal)
-    val isNumberSymbol = MutableLiveData(false)
-    val isCapsLock = MutableLiveData(false)
-    val isPhoneSymbol = MutableLiveData(false)
-    val isEmojiSearch = MutableLiveData(false)
-    val isShowOptions = MutableLiveData(false)
-    val isPoolLoaded = MutableLiveData(false)
-    val soundIDT = MutableStateFlow(0)
-    val soundIDD = MutableStateFlow(0)
-    val soundIDS = MutableStateFlow(0)
-    val soundIDR = MutableStateFlow(0)
+    private val _isAllCaps = MutableStateFlow(false)
+    val isAllCaps = _isAllCaps.asStateFlow()
+
+    private val _keyboardType = MutableStateFlow(KeyboardType.Normal)
+    val keyboardType = _keyboardType.asStateFlow()
+
+    private val _isNumberSymbol = MutableStateFlow(false)
+    val isNumberSymbol = _isNumberSymbol.asStateFlow()
+
+    private val _isCapsLock = MutableStateFlow(false)
+    val isCapsLock = _isCapsLock.asStateFlow()
+
+    private val _isPhoneSymbol = MutableStateFlow(false)
+    val isPhoneSymbol = _isPhoneSymbol.asStateFlow()
+
+    private val _isEmojiSearch = MutableStateFlow(false)
+    val isEmojiSearch = _isEmojiSearch.asStateFlow()
+
+    private val _isShowOptions = MutableStateFlow(false)
+    val isShowOptions = _isShowOptions.asStateFlow()
+
+    //Sound
+    private val _isPoolLoaded = MutableStateFlow(false)
+    val isPoolLoaded = _isPoolLoaded.asStateFlow()
+    private val _soundIDT = MutableStateFlow(0)
+    private val _soundIDD = MutableStateFlow(0)
+    private val _soundIDS = MutableStateFlow(0)
+    private val _soundIDR = MutableStateFlow(0)
+
+    //Action Key
+    private val _keyActionButtonColor = MutableStateFlow(Color.Transparent)
+    val keyActionButtonColor = _keyActionButtonColor.asStateFlow()
+
+    private val _keyActionTextColor = MutableStateFlow(Color.Transparent)
+    val keyActionTextColor = _keyActionTextColor.asStateFlow()
+
+    private val _keyActionText = MutableStateFlow("")
+    val keyActionText = _keyActionText.asStateFlow()
 
     //Dictionaries
-    val wordsDictionary = MutableLiveData(listOf<String>())
+    private val _wordsDictionary = MutableStateFlow(listOf<String>())
+    val wordsDictionary = _wordsDictionary.asStateFlow()
 
     //Private Variables
     private val englishWords = (enListA + enListB + enListC + enListD).toSet()
@@ -77,74 +105,72 @@ class KeyboardViewModel(context: Context) : ViewModel() {
     private val frenchWords = (frListA + frListB + frListC + frListD).toSet()
 
     //Sound
-    lateinit var soundPool: SoundPool
+    private lateinit var _soundPool: SoundPool
 
     //DAO
-    private lateinit var fuEmojiDbDAO: FrequentlyUsedEmojiDatabaseDAO
-    private lateinit var clipDataDbDAO: ClipboardDatabaseDAO
+    private lateinit var _fuEmojiDbDAO: FrequentlyUsedEmojiDatabaseDAO
+    private lateinit var _clipDataDbDAO: ClipboardDatabaseDAO
 
     //Databases
-    private lateinit var fuEmojiDB: FrequentlyUsedDatabase
-    private lateinit var clipboardDB: ClipboardDatabase
+    private lateinit var _fuEmojiDB: FrequentlyUsedDatabase
+    private lateinit var _clipboardDB: ClipboardDatabase
 
     //Database Utils
     lateinit var frequentlyUsedEmojis: LiveData<List<FrequentlyUsedEmoji>>
     lateinit var clipData: LiveData<List<ClipData>>
 
     //DictationProcessor
-    private lateinit var dictationProcessor: DictationProcessor
-    private lateinit var dictionary: Set<String>
+    private lateinit var _dictationProcessor: DictationProcessor
+    private lateinit var _dictionary: Set<String>
 
     //UI Locale
-    private val keyboardLocale = KeyboardLocale()
+    private val _keyboardLocale = KeyboardLocale()
     private val clipboardManager =
         context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
 
     //DataStore
-    val preferences = PreferencesHelper(context)
-    private val pC = PreferencesConstants
+    private val preferences = PreferencesHelper(context)
+    private val pC = PrefsConstants
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
             initSoundPool()
             //Init Databases
-            fuEmojiDB = FrequentlyUsedDatabase.getInstance(context)
-            clipboardDB = ClipboardDatabase.getInstance(context)
+            _fuEmojiDB = FrequentlyUsedDatabase.getInstance(context)
+            _clipboardDB = ClipboardDatabase.getInstance(context)
 
             //Init DAO
-            fuEmojiDbDAO = fuEmojiDB.fUsedEmojiDatabaseDAO()
-            clipDataDbDAO = clipboardDB.clipboardDAO()
+            _fuEmojiDbDAO = _fuEmojiDB.fUsedEmojiDatabaseDAO()
+            _clipDataDbDAO = _clipboardDB.clipboardDAO()
 
             //Init LiveData
-            frequentlyUsedEmojis = fuEmojiDbDAO.getAllEmojis()
-            clipData = clipDataDbDAO.getAllClipData()
+            frequentlyUsedEmojis = _fuEmojiDbDAO.getAllEmojis()
+            clipData = _clipDataDbDAO.getAllClipData()
         }
 
-        viewModelScope.launch(Dispatchers.IO) {
-            clipboardManager.addPrimaryClipChangedListener {
-                val clipData = clipboardManager.primaryClip?.getItemAt(0)?.text
-                viewModelScope.launch(Dispatchers.IO) {
-                    if (!clipData.isNullOrEmpty()) {
-                        val text = clipData.toString()
-                        val id = text.hashCode()
+        clipboardManager.addPrimaryClipChangedListener {
+            val clipData = clipboardManager.primaryClip?.getItemAt(0)?.text
+            viewModelScope.launch(Dispatchers.IO) {
+                if (!clipData.isNullOrEmpty()) {
+                    val text = clipData.toString()
+                    val id = text.hashCode()
 
-                        clipDataDbDAO.insert(ClipData(id, text))
-                    }
+                    _clipDataDbDAO.insert(ClipData(id, text))
                 }
             }
         }
 
         viewModelScope.launch(Dispatchers.IO) {
             preferences.getFlowPreference(pC.LOCALE_KEY, "English")
-                .collect { locale ->
-                    dictionary = when (locale) {
+                .collectLatest { locale ->
+                    _dictionary = when (locale) {
                         "French" -> frenchWords
                         "Spanish" -> spanishWords
                         "Portuguese" -> ptWords
                         else -> englishWords
                     }
 
-                    dictationProcessor = DictationProcessor(dictionary)
+                    _dictationProcessor = DictationProcessor(_dictionary)
                 }
         }
     }
@@ -152,36 +178,95 @@ class KeyboardViewModel(context: Context) : ViewModel() {
     override fun onCleared() {
         super.onCleared()
 
-        fuEmojiDB.close()
-        clipboardDB.close()
-        soundPool.release()
+        _fuEmojiDB.close()
+        _clipboardDB.close()
+        _soundPool.release()
 
         clipboardManager.removePrimaryClipChangedListener {}
     }
 
+    fun updateIsEmojiSearch(value: Boolean) {
+        viewModelScope.launch {
+            _isEmojiSearch.value = value
+        }
+    }
+
+    fun updateIsShowOptions(value: Boolean) {
+        viewModelScope.launch {
+            _isShowOptions.value = value
+        }
+    }
+
     @Stable
-    fun playSound(key: Key) = viewModelScope.launch(Dispatchers.IO) {
-        val value: Boolean = preferences.getPreference(pC.SOUND_ON_KEY_PRESS_KEY, true)
-        if (value && isPoolLoaded.value != null && isPoolLoaded.value!!) {
-            when (key.id) {
-                "delete" -> soundPool.play(soundIDD.value, 1f, 1f, 0, 0, 1f)
-                "return" -> soundPool.play(soundIDR.value, 1f, 1f, 0, 0, 1f)
-                "space" -> soundPool.play(soundIDS.value, 1f, 1f, 0, 0, 1f)
-                else -> soundPool.play(soundIDT.value, 1f, 1f, 0, 0, 1f)
+    fun updateIMEActions(colorA: Color, colorB: Color, text: String) {
+        viewModelScope.launch {
+            _keyActionButtonColor.value = colorA
+            _keyActionTextColor.value = colorB
+            _keyActionText.value = text
+        }
+    }
+
+    @Stable
+    fun initSoundIDs(context: Context) {
+        viewModelScope.launch(Dispatchers.IO) {
+            _soundIDT.value = _soundPool.load(context, R.raw.standard, 1)
+            _soundIDD.value = _soundPool.load(context, R.raw.delete, 1)
+            _soundIDS.value = _soundPool.load(context, R.raw.spacebar, 1)
+            _soundIDR.value = _soundPool.load(context, R.raw.ret, 1)
+
+            _soundPool.setOnLoadCompleteListener { _, _, status ->
+                _isPoolLoaded.value = (status == 0)
             }
         }
     }
 
-    private fun initSoundPool() {
+    @Stable
+    fun onDisposeSoundIDs() {
+        viewModelScope.launch {
+            _soundPool.release().also {
+                _soundIDT.value = 0
+                _soundIDD.value = 0
+                _soundIDS.value = 0
+                _soundIDR.value = 0
+                _isPoolLoaded.value = false
+            }
+        }
+    }
+
+    private fun initSoundPool() = viewModelScope.launch(Dispatchers.IO) {
         val audioAttributes = AudioAttributes.Builder()
             .setUsage(AudioAttributes.USAGE_ASSISTANCE_SONIFICATION)
             .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
             .build()
 
-        soundPool = SoundPool.Builder()
+        _soundPool = SoundPool.Builder()
             .setMaxStreams(4)
             .setAudioAttributes(audioAttributes)
             .build()
+    }
+
+    @Stable
+    fun playSound(key: Key) = viewModelScope.launch(Dispatchers.IO) {
+        val value: Boolean = preferences.getPreference(pC.SOUND_ON_KEY_PRESS_KEY, true)
+        if (value && isPoolLoaded.value) {
+            when (key.id) {
+                "delete" -> _soundPool.play(_soundIDD.value, 1f, 1f, 0, 0, 1f)
+                "return" -> _soundPool.play(_soundIDR.value, 1f, 1f, 0, 0, 1f)
+                "space" -> _soundPool.play(_soundIDS.value, 1f, 1f, 0, 0, 1f)
+                else -> _soundPool.play(_soundIDT.value, 1f, 1f, 0, 0, 1f)
+            }
+        }
+    }
+
+    @Stable
+    fun vibrate() = viewModelScope.launch(Dispatchers.IO) {
+        val value: Boolean = preferences.getPreference(pC.VIBRATE_ON_KEY_PRESS_KEY, true)
+        if (value) {
+            @Suppress("DEPRECATION")
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                vibrator.vibrate(VibrationEffect.createOneShot(45, -1))
+            } else vibrator.vibrate(45)
+        }
     }
 
     @Stable
@@ -194,20 +279,7 @@ class KeyboardViewModel(context: Context) : ViewModel() {
     fun clearClipboard(data: List<ClipData>?) {
         viewModelScope.launch(Dispatchers.IO) {
             if (!data.isNullOrEmpty()) {
-                clipDataDbDAO.clear(data)
-            }
-        }
-    }
-
-    @Stable
-    fun vibrate() {
-        viewModelScope.launch(Dispatchers.IO) {
-            val value: Boolean = preferences.getPreference(pC.VIBRATE_ON_KEY_PRESS_KEY, true)
-            if (value) {
-                @Suppress("DEPRECATION")
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    vibrator.vibrate(VibrationEffect.createOneShot(45, -1))
-                } else vibrator.vibrate(45)
+                _clipDataDbDAO.clear(data)
             }
         }
     }
@@ -219,16 +291,18 @@ class KeyboardViewModel(context: Context) : ViewModel() {
             val autoCorrect = preferences.getPreference(pC.AUTO_CORRECTION_KEY, false)
             //Remove the space first
             if (checkSpelling && autoCorrect) {
-                connection.deleteSurroundingText(1, 0).let {
-                    val tBC = connection.getTextBeforeCursor(12, GET_TEXT_WITH_STYLES)
-                    if (tBC != null) {
-                        val lastWord = tBC.split(" ").last()
-                        Log.d("KeyboardDictation", "Last Word: $lastWord")
+                this.launch(Dispatchers.IO) {
+                    connection.deleteSurroundingText(1, 0).let {
+                        val tBC = connection.getTextBeforeCursor(12, GET_TEXT_WITH_STYLES)
+                        if (tBC != null) {
+                            val lastWord = tBC.split(" ").last()
 
-                        val correction = dictationProcessor.correct(lastWord)
-
-                        connection.deleteSurroundingText(lastWord.length, 0).let { value ->
-                            if (value) connection.commitText("$correction ", 0)
+                            this.launch(Dispatchers.IO) {
+                                val correction = _dictationProcessor.correct(lastWord)
+                                connection.deleteSurroundingText(lastWord.length, 0).let { value ->
+                                    if (value) connection.commitText("$correction ", 0)
+                                }
+                            }
                         }
                     }
                 }
@@ -238,8 +312,8 @@ class KeyboardViewModel(context: Context) : ViewModel() {
 
     @Stable
     private fun handleCapsLock() {
-        if (isAllCaps.value == true && isCapsLock.value == false) {
-            isAllCaps.value = false
+        if (_isAllCaps.value && !_isCapsLock.value) {
+            _isAllCaps.value = false
         }
     }
 
@@ -247,8 +321,8 @@ class KeyboardViewModel(context: Context) : ViewModel() {
     private suspend fun updateCapsLock() {
         val value: Boolean = preferences.getPreference(pC.AUTO_CAPITALISATION_KEY, true)
         if (value) {
-            isAllCaps.value = true
-            isCapsLock.value = false
+            _isAllCaps.value = true
+            _isCapsLock.value = false
         }
     }
 
@@ -282,7 +356,7 @@ class KeyboardViewModel(context: Context) : ViewModel() {
         val charSequence = connection.getTextBeforeCursor(24, GET_TEXT_WITH_STYLES)
         if (charSequence != null) {
             val filterText = charSequence.split(" ").last()
-            wordsDictionary.value = dictionary.filter {
+            _wordsDictionary.value = _dictionary.filter {
                 it.startsWith(filterText.lowercase())
             }
         }
@@ -309,17 +383,17 @@ class KeyboardViewModel(context: Context) : ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             if (!title.lowercase().contains("frequently")) {
                 val id = emoji.hashCode()
-                val data = fuEmojiDbDAO.getEmojisById(id)
-                val all = fuEmojiDbDAO.getAllEmojis().value
+                val data = _fuEmojiDbDAO.getEmojisById(id)
+                val all = _fuEmojiDbDAO.getAllEmojis().value
 
                 if (data != null && data.emoji == emoji) {
-                    fuEmojiDbDAO.deleteAndInsertEmoji(data, data)
-                } else if (data != null && all != null && all.size == 18) {
+                    _fuEmojiDbDAO.deleteAndInsertEmoji(data, data)
+                } else if (all?.isNotEmpty() == true && all.size >= 18) {
                     val oldData = all.last()
                     val newData = FrequentlyUsedEmoji(id, emoji)
 
-                    fuEmojiDbDAO.deleteAndInsertEmoji(newData, oldData)
-                } else fuEmojiDbDAO.insert(FrequentlyUsedEmoji(id = id, emoji = emoji))
+                    _fuEmojiDbDAO.deleteAndInsertEmoji(newData, oldData)
+                } else _fuEmojiDbDAO.insert(FrequentlyUsedEmoji(id = id, emoji = emoji))
             }
         }
     }
@@ -329,9 +403,9 @@ class KeyboardViewModel(context: Context) : ViewModel() {
         val connection = (context as IMEService).currentInputConnection
 
         when (key.id) {
-            "ABC" -> onABCTap()
+            "ABC" -> onUpdateKeyboardType(KeyboardType.Normal)
 
-            "123" -> on123Tap()
+            "123" -> onUpdateKeyboardType(KeyboardType.Symbol)
 
             "action" -> onAction(connection, context, action)
 
@@ -345,27 +419,25 @@ class KeyboardViewModel(context: Context) : ViewModel() {
     fun onNumKeyClick(key: Key, context: Context) {
         val connection = (context as IMEService).currentInputConnection
         viewModelScope.launch(Dispatchers.IO) {
-            preferences.getFlowPreference(pC.LOCALE_KEY, KeyboardLanguage.English.name)
-                .collectLatest {
-                    when (key.value) {
-                        "*" -> connection.commitText(key.value, key.value.length)
-                        "#" -> connection.commitText(key.value, key.value.length)
-                        "+" -> connection.commitText(key.value, key.value.length)
-                        keyboardLocale.wait(it) -> connection.commitText(";", ";".length)
-                        keyboardLocale.pause(it) -> connection.commitText(".", ".".length)
-                        else -> {
-                            if(key.id == "period") connection.commitText(".", ".".length)
-                            else connection.commitText(key.id, key.id.length)
-                        }
-                    }
+            val it = preferences.getPreference(pC.LOCALE_KEY, KeyboardLanguage.English.name)
+            when (key.value) {
+                "*" -> connection.commitText(key.value, key.value.length)
+                "#" -> connection.commitText(key.value, key.value.length)
+                "+" -> connection.commitText(key.value, key.value.length)
+                _keyboardLocale.wait(it) -> connection.commitText(";", ";".length)
+                _keyboardLocale.pause(it) -> connection.commitText(".", ".".length)
+                else -> {
+                    if (key.id == "period") connection.commitText(".", ".".length)
+                    else connection.commitText(key.id, key.id.length)
                 }
+            }
         }
     }
 
     @Stable
     fun onIKeyClick(key: Key, context: Context) {
         when (key.id) {
-            "emoji" -> onEmoji()
+            "emoji" -> onUpdateKeyboardType(KeyboardType.Emoji)
 
             "delete" -> onErase(context)
 
@@ -376,13 +448,13 @@ class KeyboardViewModel(context: Context) : ViewModel() {
     }
 
     @Stable
-    fun onABCTap() {
-        keyboardType.value = KeyboardType.Normal
+    fun onUpdateKeyboardType(newType: KeyboardType) {
+        _keyboardType.value = newType
     }
 
     @Stable
     fun onPhoneSymbol() {
-        isPhoneSymbol.value = !(isPhoneSymbol.value!!)
+        _isPhoneSymbol.value = !(_isPhoneSymbol.value)
     }
 
     @Stable
@@ -403,9 +475,9 @@ class KeyboardViewModel(context: Context) : ViewModel() {
     @Stable
     private fun onText(connection: InputConnection, key: Key) {
         connection.commitText(
-            (if (isAllCaps.value as Boolean) {
-                key.value.uppercase(Locale.getDefault())
-            } else key.value.lowercase(Locale.getDefault())), key.value.length
+            (if (_isAllCaps.value) {
+                key.value.uppercase()
+            } else key.value.lowercase()), key.value.length
         )
         getNextSuggestions(connection)
         handleCapsLock()
@@ -436,35 +508,25 @@ class KeyboardViewModel(context: Context) : ViewModel() {
 
     @Stable
     private fun onShift() {
-        if (isCapsLock.value == true) {
-            isCapsLock.value = false
-            isAllCaps.value = false
-        } else if (isAllCaps.value!! && !(isCapsLock.value!!)) {
+        if (_isCapsLock.value) {
+            _isCapsLock.value = false
+            _isAllCaps.value = false
+        } else if (_isAllCaps.value && !(_isCapsLock.value)) {
             onCapsLock()
-        } else isAllCaps.value = !(isAllCaps.value!!)
+        } else _isAllCaps.value = !(isAllCaps.value)
     }
 
     @Stable
     private fun onCapsLock() {
         viewModelScope.launch {
             val value = preferences.getPreference(pC.ENABLE_CAPS_LOCK_KEY, true)
-            if (value) isCapsLock.value = true //isAllCaps is already true.
-            else isAllCaps.value = false
+            if (value) _isCapsLock.value = true //isAllCaps is already true.
+            else _isAllCaps.value = false
         }
     }
 
     @Stable
-    private fun on123Tap() {
-        keyboardType.value = KeyboardType.Symbol
-    }
-
-    @Stable
     private fun onNumSymbol() {
-        isNumberSymbol.value = !(isNumberSymbol.value!!)
-    }
-
-    @Stable
-    private fun onEmoji() {
-        keyboardType.value = KeyboardType.Emoji
+        _isNumberSymbol.value = !(_isNumberSymbol.value)
     }
 }

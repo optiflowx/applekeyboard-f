@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -22,7 +23,8 @@ import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.optiflowx.applekeyboard.core.enums.KeyboardType
-import com.optiflowx.applekeyboard.core.preferences.PreferencesConstants
+import com.optiflowx.applekeyboard.core.preferences.PrefsConstants
+import com.optiflowx.applekeyboard.core.preferences.rememberPreference
 import com.optiflowx.applekeyboard.core.utils.KeyboardLocale
 import com.optiflowx.applekeyboard.utils.appFontType
 import com.optiflowx.applekeyboard.utils.nonScaledSp
@@ -35,9 +37,7 @@ import io.github.alexzhirkevich.cupertino.theme.systemRed
 @Composable
 fun ClipboardKeyboardActionView(viewModel: KeyboardViewModel, topViewHeight: Int) {
     val keyboardLocale = KeyboardLocale()
-    val locale = viewModel.preferences.getFlowPreference(
-        PreferencesConstants.LOCALE_KEY, "English"
-    ).collectAsStateWithLifecycle("English").value
+    val locale by rememberPreference(PrefsConstants.LOCALE_KEY, "English")
 
     val clipDataList = viewModel.clipData.observeAsState().value
 
@@ -45,7 +45,8 @@ fun ClipboardKeyboardActionView(viewModel: KeyboardViewModel, topViewHeight: Int
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
-            .fillMaxSize()
+            .height(topViewHeight.dp)
+            .fillMaxWidth()
             .padding(horizontal = 10.dp)
     ) {
         Text(
@@ -91,7 +92,7 @@ fun ClipboardKeyboardActionView(viewModel: KeyboardViewModel, topViewHeight: Int
                 modifier = Modifier
                     .padding(horizontal = 8.dp)
                     .clickable(
-                        onClick = { viewModel.keyboardType.value = KeyboardType.Normal }
+                        onClick = { viewModel.onUpdateKeyboardType(KeyboardType.Normal) }
                     ),
             )
         }

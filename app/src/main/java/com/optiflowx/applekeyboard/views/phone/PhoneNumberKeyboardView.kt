@@ -1,20 +1,20 @@
 package com.optiflowx.applekeyboard.views.phone
 
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.layoutId
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.optiflowx.applekeyboard.core.preferences.PreferencesConstants
+import com.optiflowx.applekeyboard.core.preferences.PrefsConstants
+import com.optiflowx.applekeyboard.core.preferences.rememberPreference
 import com.optiflowx.applekeyboard.viewmodels.KeyboardViewModel
 
 @Composable
@@ -22,10 +22,8 @@ fun PhoneNumberKeyboardView(
     viewModel: KeyboardViewModel, viewWidth: Dp, rowHeight: Int = 55,
     bottomDivHeight: Int = 30,
 ) {
-    val isPhoneSymbols = viewModel.isPhoneSymbol.observeAsState().value!!
-    val locale = viewModel.preferences.getFlowPreference(
-        PreferencesConstants.LOCALE_KEY, "English"
-    ).collectAsStateWithLifecycle("English").value
+    val isPhoneSymbols = viewModel.isPhoneSymbol.collectAsState().value
+    val locale  by rememberPreference(PrefsConstants.LOCALE_KEY, "English")
     val phoneRowKeys = PhoneRowKeys(locale)
     val phoneConst = PhoneConstraintsSet(rowHeight, bottomDivHeight)
 

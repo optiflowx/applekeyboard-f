@@ -2,13 +2,22 @@ package com.optiflowx.applekeyboard.core.services
 
 import android.content.Intent
 import android.inputmethodservice.InputMethodService
+import android.view.inputmethod.EditorInfo
 import androidx.annotation.CallSuper
+import androidx.compose.runtime.Stable
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ServiceLifecycleDispatcher
 
+@Stable
 abstract class LifecycleInputMethodService : InputMethodService(), LifecycleOwner {
 
     protected val dispatcher = ServiceLifecycleDispatcher(this)
+
+    @CallSuper
+    override fun onStartInputView(editorInfo: EditorInfo?, restarting: Boolean) {
+        dispatcher.onServicePreSuperOnStart()
+        super.onStartInputView(editorInfo, restarting)
+    }
 
     @CallSuper
     override fun onCreate() {
@@ -16,9 +25,10 @@ abstract class LifecycleInputMethodService : InputMethodService(), LifecycleOwne
         super.onCreate()
     }
 
+    @CallSuper
     override fun onBindInput() {
-        super.onBindInput()
         dispatcher.onServicePreSuperOnBind()
+        super.onBindInput()
     }
 
 
