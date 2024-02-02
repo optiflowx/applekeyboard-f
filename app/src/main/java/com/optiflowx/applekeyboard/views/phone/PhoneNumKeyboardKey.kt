@@ -29,8 +29,8 @@ import com.optiflowx.applekeyboard.core.preferences.rememberPreference
 import com.optiflowx.applekeyboard.core.utils.KeyboardLocale
 import com.optiflowx.applekeyboard.ui.keyboard.EraseButton
 import com.optiflowx.applekeyboard.ui.keyboard.KeyButton
-import com.optiflowx.applekeyboard.utils.appFontType
-import com.optiflowx.applekeyboard.utils.nonScaledSp
+import com.optiflowx.applekeyboard.core.utils.appFontType
+import com.optiflowx.applekeyboard.core.utils.nonScaledSp
 import com.optiflowx.applekeyboard.viewmodels.KeyboardViewModel
 import io.github.alexzhirkevich.cupertino.theme.CupertinoColors
 import io.github.alexzhirkevich.cupertino.theme.systemGray

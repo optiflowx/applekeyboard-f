@@ -21,10 +21,11 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
-import com.optiflowx.applekeyboard.core.utils.IMEPopup
+import androidx.compose.ui.window.Popup
+import androidx.compose.ui.window.PopupProperties
+import com.optiflowx.applekeyboard.core.utils.appFontType
+import com.optiflowx.applekeyboard.core.utils.nonScaledSp
 import com.optiflowx.applekeyboard.ui.keyShapeValue
-import com.optiflowx.applekeyboard.utils.appFontType
-import com.optiflowx.applekeyboard.utils.nonScaledSp
 
 @Preview
 @Composable
@@ -32,8 +33,12 @@ fun KeyButtonPopup(width: Dp = 56.dp, text: String = "M") {
     val height: Dp = 96.dp
     val previewWidth: Dp = ((width.value * 0.6) + width.value).dp
 
-    IMEPopup(
+    Popup(
         alignment = Alignment.BottomCenter,
+        properties = PopupProperties(
+            focusable = false,
+            clippingEnabled = false,
+        )
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally

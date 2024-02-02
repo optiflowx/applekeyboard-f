@@ -12,13 +12,14 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import com.optiflowx.applekeyboard.ui.bold
 import com.optiflowx.applekeyboard.ui.regular
-import com.optiflowx.applekeyboard.utils.nonScaledSp
+import com.optiflowx.applekeyboard.core.utils.nonScaledSp
 import io.github.alexzhirkevich.cupertino.CupertinoBottomSheetContent
 import io.github.alexzhirkevich.cupertino.CupertinoBottomSheetDefaults
 import io.github.alexzhirkevich.cupertino.CupertinoText
@@ -43,6 +44,7 @@ fun CopyrightBottomSheet(onDismiss: () -> Unit) {
         dragHandle = { CupertinoBottomSheetDefaults.DragHandle() },
     ) {
         CupertinoBottomSheetContent(
+            modifier = Modifier.testTag("copyright_bottom_sheet"),
             topBar = {
                 CupertinoTopAppBar(
                     title = { CupertinoText("COPYRIGHT NOTICE", fontFamily = bold) },

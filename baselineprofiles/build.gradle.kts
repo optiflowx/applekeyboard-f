@@ -7,8 +7,7 @@ plugins {
 }
 
 android {
-    buildToolsVersion = "34.0.0"
-    namespace = "com.example.baselineprofile"
+    namespace = "com.optiflowx.keyboard.baselineprofiles"
     compileSdk = 34
 
     compileOptions {

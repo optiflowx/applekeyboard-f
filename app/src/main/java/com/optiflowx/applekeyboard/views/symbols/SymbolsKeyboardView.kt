@@ -1,5 +1,6 @@
 package com.optiflowx.applekeyboard.views.symbols
 
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -19,6 +20,7 @@ import com.optiflowx.applekeyboard.core.data.Key
 import com.optiflowx.applekeyboard.core.preferences.PrefsConstants
 import com.optiflowx.applekeyboard.core.preferences.rememberPreference
 import com.optiflowx.applekeyboard.core.utils.KeyboardLocale
+import com.optiflowx.applekeyboard.core.utils.OPTIMIZATION_STANDARDIZED
 import com.optiflowx.applekeyboard.viewmodels.KeyboardViewModel
 import com.optiflowx.applekeyboard.views.normal.KeyboardKey
 
@@ -35,15 +37,24 @@ fun SymbolsKeyboardView(
     val keyboardLocale = KeyboardLocale()
     val symbolRowKeys = SymbolRowKeys()
 
-    ConstraintLayout(symbolConst.main, Modifier.width(viewWidth)) {
+    ConstraintLayout(
+        constraintSet = symbolConst.main,
+        modifier = Modifier.width(viewWidth),
+        optimizationLevel = OPTIMIZATION_STANDARDIZED,
+        animateChanges = true,
+        animationSpec = tween(350),
+    ) {
         Box(Modifier.layoutId('1')) {
             ConstraintLayout(
-                symbolConst.firstRowConstraints,
-                Modifier
+                constraintSet = symbolConst.firstRowConstraints,
+                modifier = Modifier
                     .width(viewWidth)
                     .align(Alignment.Center)
                     .fillMaxWidth()
-                    .padding(horizontal = 4.dp), 100, true
+                    .padding(horizontal = 4.dp),
+                optimizationLevel = OPTIMIZATION_STANDARDIZED,
+                animateChanges = true,
+                animationSpec = tween(350),
             ) {
                 if (!isSymbol) {
                     for (key in symbolRowKeys.row1Keys) KeyboardKey(key, viewModel)
@@ -54,12 +65,15 @@ fun SymbolsKeyboardView(
         }
         Box(Modifier.layoutId('2')) {
             ConstraintLayout(
-                symbolConst.secondRowConstraints,
-                Modifier
+                constraintSet = symbolConst.secondRowConstraints,
+                modifier = Modifier
                     .width(viewWidth)
                     .align(Alignment.Center)
                     .fillMaxWidth()
-                    .padding(horizontal = 4.dp), 100, true
+                    .padding(horizontal = 4.dp),
+                optimizationLevel = OPTIMIZATION_STANDARDIZED,
+                animateChanges = true,
+                animationSpec = tween(350),
             ) {
                 if (!isSymbol) {
                     for (key in symbolRowKeys.row2Keys) KeyboardKey(key, viewModel)
@@ -70,13 +84,14 @@ fun SymbolsKeyboardView(
         }
         Box(Modifier.layoutId('3')) {
             ConstraintLayout(
-                symbolConst.thirdRowConstraints,
-                Modifier
+                constraintSet = symbolConst.thirdRowConstraints,
+                modifier = Modifier
                     .width(viewWidth)
                     .align(Alignment.Center)
                     .fillMaxWidth()
                     .padding(horizontal = 4.dp),
-                100, true
+                optimizationLevel = OPTIMIZATION_STANDARDIZED, animateChanges = true,
+                animationSpec = tween(350),
             ) {
                 KeyboardKey(Key("symbol", ""), viewModel)
                 for (key in symbolRowKeys.row3Keys) KeyboardKey(key, viewModel)
@@ -85,12 +100,15 @@ fun SymbolsKeyboardView(
         }
         Box(Modifier.layoutId('4')) {
             ConstraintLayout(
-                symbolConst.fourthRowConstraints,
-                Modifier
+                constraintSet = symbolConst.fourthRowConstraints,
+                modifier = Modifier
                     .width(viewWidth)
                     .align(Alignment.Center)
                     .fillMaxWidth()
-                    .padding(horizontal = 4.dp), 100, true
+                    .padding(horizontal = 4.dp),
+                optimizationLevel = OPTIMIZATION_STANDARDIZED,
+                animateChanges = true,
+                animationSpec = tween(350),
             ) {
                 KeyboardKey(Key("ABC", stringResource(R.string.abc)), viewModel)
                 KeyboardKey(Key("emoji", "emoji"), viewModel)

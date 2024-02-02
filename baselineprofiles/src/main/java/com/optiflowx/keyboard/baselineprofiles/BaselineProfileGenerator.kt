@@ -1,4 +1,4 @@
-package com.example.baselineprofile
+package com.optiflowx.keyboard.baselineprofiles
 
 import androidx.benchmark.macro.junit4.BaselineProfileRule
 import androidx.test.ext.junit.runners.AndroidJUnit4

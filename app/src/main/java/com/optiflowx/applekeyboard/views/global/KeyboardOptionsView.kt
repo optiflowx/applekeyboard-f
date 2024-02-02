@@ -28,6 +28,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Popup
@@ -35,9 +36,9 @@ import androidx.compose.ui.window.PopupProperties
 import androidx.compose.ui.window.SecureFlagPolicy
 import com.optiflowx.applekeyboard.MainActivity
 import com.optiflowx.applekeyboard.core.enums.KeyboardType
-import com.optiflowx.applekeyboard.utils.appFontType
-import com.optiflowx.applekeyboard.utils.boxShadow
-import com.optiflowx.applekeyboard.utils.nonScaledSp
+import com.optiflowx.applekeyboard.core.utils.appFontType
+import com.optiflowx.applekeyboard.core.utils.boxShadow
+import com.optiflowx.applekeyboard.core.utils.nonScaledSp
 import com.optiflowx.applekeyboard.viewmodels.KeyboardViewModel
 import io.github.alexzhirkevich.cupertino.theme.CupertinoColors
 import io.github.alexzhirkevich.cupertino.theme.systemBlue
@@ -47,9 +48,9 @@ fun KeyboardOptionsView(
     viewModel: KeyboardViewModel,
     locale: String,
     fontType: String,
-    width: Double,
+    width: Dp,
     itemHeight: Int = 45,
-    itemTextSize: Int = 16,
+    itemTextSize: Int = 15,
 ) {
     val showOptions = viewModel.isShowOptions.collectAsState().value
     val options = listOf("Keyboard Settings", "Language", "Clipboard")
@@ -64,14 +65,14 @@ fun KeyboardOptionsView(
                 dismissOnBackPress = true,
                 securePolicy = SecureFlagPolicy.SecureOff,
                 dismissOnClickOutside = true,
-                clippingEnabled = true,
+                clippingEnabled = false,
             )
         ) {
             Surface(
                 shape = RoundedCornerShape(10.dp),
                 color = MaterialTheme.colorScheme.secondary,
                 modifier = Modifier
-                    .width((width * 0.5).dp)
+                    .width((width.value * 0.45).dp)
                     .wrapContentHeight()
                     .padding(start = 10.dp, bottom = 25.dp)
                     .boxShadow(

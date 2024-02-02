@@ -26,8 +26,8 @@ import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import com.optiflowx.applekeyboard.core.services.IMEService
 import com.optiflowx.applekeyboard.core.utils.KeyboardLocale
-import com.optiflowx.applekeyboard.utils.appFontType
-import com.optiflowx.applekeyboard.utils.nonScaledSp
+import com.optiflowx.applekeyboard.core.utils.appFontType
+import com.optiflowx.applekeyboard.core.utils.nonScaledSp
 import io.github.alexzhirkevich.cupertino.icons.CupertinoIcons
 import io.github.alexzhirkevich.cupertino.icons.outlined.ChevronDown
 import io.github.alexzhirkevich.cupertino.icons.outlined.ChevronUp

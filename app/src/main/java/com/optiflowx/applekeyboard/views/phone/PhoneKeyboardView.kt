@@ -1,5 +1,6 @@
 package com.optiflowx.applekeyboard.views.phone
 
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -14,6 +15,7 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.optiflowx.applekeyboard.core.preferences.PrefsConstants
 import com.optiflowx.applekeyboard.core.preferences.rememberPreference
+import com.optiflowx.applekeyboard.core.utils.OPTIMIZATION_STANDARDIZED
 import com.optiflowx.applekeyboard.viewmodels.KeyboardViewModel
 
 @Composable
@@ -26,7 +28,8 @@ fun PhoneKeyboardView(
     val phoneRowKeys = PhoneRowKeys(locale)
     val phoneConst = PhoneConstraintsSet(rowHeight, bottomDivHeight)
 
-    ConstraintLayout(phoneConst.constraints, Modifier.width(viewWidth), 100, true) {
+    ConstraintLayout(phoneConst.constraints, Modifier.width(viewWidth), optimizationLevel = OPTIMIZATION_STANDARDIZED, animateChanges = true,
+            animationSpec = tween(350),) {
 
         Box(Modifier.layoutId('1')) {
             ConstraintLayout(
@@ -34,7 +37,8 @@ fun PhoneKeyboardView(
                 Modifier
                     .width(viewWidth)
                     .align(Alignment.Center)
-                    .padding(horizontal = 4.dp), 100, true
+                    .padding(horizontal = 4.dp), optimizationLevel = OPTIMIZATION_STANDARDIZED, animateChanges = true,
+            animationSpec = tween(350),
             ) { for (key in phoneRowKeys.row1Keys) PhoneNumKeyboardKey(key, viewModel) }
         }
         Box(Modifier.layoutId('2')) {
@@ -43,7 +47,8 @@ fun PhoneKeyboardView(
                 Modifier
                     .width(viewWidth)
                     .align(Alignment.Center)
-                    .padding(horizontal = 4.dp), 100, true
+                    .padding(horizontal = 4.dp), optimizationLevel = OPTIMIZATION_STANDARDIZED, animateChanges = true,
+            animationSpec = tween(350),
             ) {
                 if (isPhoneSymbols) for (key in phoneRowKeys.row2KeysB) PhoneNumKeyboardKey(
                     key,
@@ -60,7 +65,8 @@ fun PhoneKeyboardView(
                 Modifier
                     .width(viewWidth)
                     .align(Alignment.Center)
-                    .padding(horizontal = 4.dp), 100, true
+                    .padding(horizontal = 4.dp), optimizationLevel = OPTIMIZATION_STANDARDIZED, animateChanges = true,
+            animationSpec = tween(350),
             ) {
                 if (isPhoneSymbols) for (key in phoneRowKeys.row3KeysB) PhoneNumKeyboardKey(
                     key,
@@ -77,7 +83,8 @@ fun PhoneKeyboardView(
                 Modifier
                     .width(viewWidth)
                     .align(Alignment.Center)
-                    .padding(horizontal = 4.dp), 100, true
+                    .padding(horizontal = 4.dp), optimizationLevel = OPTIMIZATION_STANDARDIZED, animateChanges = true,
+            animationSpec = tween(350),
             ) {
                 if (isPhoneSymbols) for (key in phoneRowKeys.row4keysB) PhoneNumKeyboardKey(
                     key,

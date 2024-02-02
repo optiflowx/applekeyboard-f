@@ -18,6 +18,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
@@ -29,7 +30,7 @@ import com.optiflowx.applekeyboard.viewmodels.KeyboardViewModel
 
 @Composable
 fun KeyboardBottomView(viewModel: KeyboardViewModel) {
-    val keyboardWidth = LocalConfiguration.current.screenWidthDp
+    val keyboardWidth = LocalConfiguration.current.screenWidthDp.dp
 
     val fontType by rememberPreference(PrefsConstants.FONT_TYPE_KEY, "Regular")
 
@@ -38,10 +39,11 @@ fun KeyboardBottomView(viewModel: KeyboardViewModel) {
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier
-            .padding(horizontal = (keyboardWidth * 0.075).dp)
+            .layoutId("bottomView")
+            .padding(horizontal = (keyboardWidth.value * 0.075).dp)
             .fillMaxWidth()
     ) {
-        KeyboardOptionsView(viewModel, locale, fontType, keyboardWidth.toDouble())
+        KeyboardOptionsView(viewModel, locale, fontType, keyboardWidth)
 
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,

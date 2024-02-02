@@ -23,7 +23,7 @@ fun NumberLandscapeKeyboard(viewModel: KeyboardViewModel) {
     val locale by rememberPreference(PrefsConstants.LOCALE_KEY, "English")
     val fontType by rememberPreference(PrefsConstants.FONT_TYPE_KEY, "Regular")
     val screenWidth = LocalConfiguration.current.screenWidthDp
-    val viewWidth = (screenWidth * 0.8)
+    val viewWidth = (screenWidth * 0.8).dp
     val sideWidth = (screenWidth * 0.1)
 
     Box(
@@ -36,7 +36,7 @@ fun NumberLandscapeKeyboard(viewModel: KeyboardViewModel) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            NumberKeyboardActionView(locale, viewWidth.dp)
+            NumberKeyboardActionView(locale, viewWidth)
 
             Row(
                 verticalAlignment = Alignment.Bottom,
@@ -50,7 +50,7 @@ fun NumberLandscapeKeyboard(viewModel: KeyboardViewModel) {
                         .padding(bottom = 2.dp)
                 ) {}
 
-                NumberKeyboardView(viewModel, viewWidth.dp, 36, 8)
+                NumberKeyboardView(viewModel, viewWidth, 34, 0)
 
                 Box(
                     contentAlignment = Alignment.BottomCenter,

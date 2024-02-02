@@ -13,7 +13,7 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import com.optiflowx.applekeyboard.ui.iosEmojiFontFamily
-import com.optiflowx.applekeyboard.utils.nonScaledSp
+import com.optiflowx.applekeyboard.core.utils.nonScaledSp
 import com.optiflowx.applekeyboard.viewmodels.KeyboardViewModel
 
 @Composable

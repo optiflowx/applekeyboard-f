@@ -1,4 +1,4 @@
-package com.optiflowx.applekeyboard.utils
+package com.optiflowx.applekeyboard.core.utils
 
 import android.content.Context
 import android.graphics.Rect
@@ -19,11 +19,16 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.constraintlayout.core.widgets.Optimizer
 import androidx.core.content.ContextCompat
 import com.optiflowx.applekeyboard.core.enums.KeyboardFontType
 import com.optiflowx.applekeyboard.ui.bold
 import com.optiflowx.applekeyboard.ui.medium
 import com.optiflowx.applekeyboard.ui.regular
+
+const val OPTIMIZATION_STANDARDIZED =
+    (Optimizer.OPTIMIZATION_DIRECT
+            or Optimizer.OPTIMIZATION_CACHE_MEASURES or Optimizer.OPTIMIZATION_CHAIN)
 
 @Stable
 val TextUnit.nonScaledSp

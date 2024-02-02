@@ -5,22 +5,24 @@ package com.optiflowx.applekeyboard.screens
 import android.content.Intent
 import android.provider.Settings
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.gestures.ScrollableDefaults
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.absolutePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.overscroll
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.TextUnit
@@ -31,13 +33,13 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.optiflowx.applekeyboard.core.preferences.PrefsConstants
 import com.optiflowx.applekeyboard.core.preferences.rememberPreference
+import com.optiflowx.applekeyboard.core.utils.nonScaledSp
 import com.optiflowx.applekeyboard.screens.destinations.KeyboardFontsScreenDestination
 import com.optiflowx.applekeyboard.screens.destinations.KeyboardsScreenDestination
 import com.optiflowx.applekeyboard.screens.destinations.TextReplacementScreenDestination
 import com.optiflowx.applekeyboard.ui.cupertino.CupertinoTile
 import com.optiflowx.applekeyboard.ui.regular
 import com.optiflowx.applekeyboard.ui.sheets.CopyrightBottomSheet
-import com.optiflowx.applekeyboard.utils.nonScaledSp
 import com.optiflowx.applekeyboard.viewmodels.AppViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
@@ -56,12 +58,14 @@ import io.github.alexzhirkevich.cupertino.section.switch
 import io.github.alexzhirkevich.cupertino.theme.CupertinoColors
 import io.github.alexzhirkevich.cupertino.theme.systemBlue
 import io.github.alexzhirkevich.cupertino.theme.systemGreen
-import io.github.alexzhirkevich.cupertino.theme.systemRed
+import io.github.alexzhirkevich.cupertino.theme.systemOrange
 import io.github.alexzhirkevich.cupertino.theme.systemYellow
 import splitties.systemservices.inputMethodManager
 
 @Suppress("UNCHECKED_CAST")
-@OptIn(ExperimentalCupertinoApi::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalCupertinoApi::class, ExperimentalFoundationApi::class,
+    ExperimentalComposeUiApi::class
+)
 @Composable
 @Destination
 @RootNavGraph(start = true)
@@ -127,6 +131,9 @@ fun HomeScreen(navigator: DestinationsNavigator) {
     CupertinoScaffold(
         appBarsBlurAlpha = 0.65f,
         appBarsBlurRadius = 10.dp,
+        modifier = Modifier.semantics {
+            testTagsAsResourceId = true
+        },
         topBar = {
             CupertinoTopAppBar(
                 isTranslucent = true,
@@ -145,13 +152,10 @@ fun HomeScreen(navigator: DestinationsNavigator) {
         }
     ) {
         LazyColumn(
-//            Modifier = ScrollableDefaults.overscrollEffect(),
             modifier = Modifier
                 .statusBarsPadding()
                 .absolutePadding(top = 40.dp)
-                .overscroll(
-                    ScrollableDefaults.overscrollEffect()
-                ),
+                .testTag("home_screen_list"),
             userScrollEnabled = true
         ) {
             item("Message Section") {
@@ -189,11 +193,13 @@ fun HomeScreen(navigator: DestinationsNavigator) {
                 ) {
                     this.link(
                         key = 0,
+                        onClickLabel = "Enable IME Service",
                         title = { CupertinoText("Enable IME Service", style = tileTextStyle) },
                         onClick = { context.startActivity(Intent(Settings.ACTION_INPUT_METHOD_SETTINGS)) }
                     )
                     this.link(
                         key = 1,
+                        onClickLabel = "Change IME Service",
                         title = { CupertinoText("Change IME Service", style = tileTextStyle) },
                         onClick = { inputMethodManager.showInputMethodPicker() }
                     )
@@ -220,10 +226,10 @@ fun HomeScreen(navigator: DestinationsNavigator) {
                             modifier = Modifier.padding(it),
                             interactionSource = interactionSource,
                             placeholder = {
-                                CupertinoText("Input Testing")
+                                CupertinoText("Input Test")
                             },
                             keyboardOptions = KeyboardOptions(
-                                keyboardType = KeyboardType.Phone,
+                                keyboardType = KeyboardType.Text,
                             ),
                         )
                     }
@@ -236,20 +242,47 @@ fun HomeScreen(navigator: DestinationsNavigator) {
                 ) {
                     this.link(
                         key = 0,
+                        onClickLabel = "Keyboards",
                         title = { CupertinoText("Keyboards", style = tileTextStyle) },
                         onClick = { navigator.navigate(KeyboardsScreenDestination) }
                     )
                     this.link(
                         key = 1,
+                        onClickLabel = "Keyboard Fonts",
                         title = { CupertinoText("Keyboard Fonts", style = tileTextStyle) },
                         onClick = { navigator.navigate(KeyboardFontsScreenDestination) }
                     )
                     this.link(
                         key = 2,
+                        onClickLabel = "Text Replacement",
                         title = {
                             CupertinoText("Text Replacement", style = tileTextStyle)
                         },
                         onClick = { navigator.navigate(TextReplacementScreenDestination) }
+                    )
+                }
+            }
+
+            item("Interactions") {
+                CupertinoSection(
+                    title = { CupertinoText("INTERACTIONS", style = titleTextStyle) },
+                ) {
+                    this.switch(
+                        title = {
+                            CupertinoText(
+                                text = "Sound On Key Press",
+                                style = tileTextStyle
+                            )
+                        },
+                        checked = isSound.value,
+                        onCheckedChange = { viewModel.updateSoundOnKeyPress(it) }
+                    )
+                    this.switch(
+                        title = {
+                            CupertinoText("Vibrate On Key Press", style = tileTextStyle)
+                        },
+                        checked = isVibrate.value,
+                        onCheckedChange = { viewModel.updateVibrateOnKeyPress(it) }
                     )
                 }
             }
@@ -275,7 +308,7 @@ fun HomeScreen(navigator: DestinationsNavigator) {
                         title = {
                             CupertinoText(
                                 text = "Auto-Correction",
-                                color = CupertinoColors.systemYellow,
+                                color = CupertinoColors.systemOrange,
                                 style = tileTextStyle
                             )
                         },
@@ -286,7 +319,7 @@ fun HomeScreen(navigator: DestinationsNavigator) {
                         title = {
                             CupertinoText(
                                 text = "Check Spelling",
-                                color = CupertinoColors.systemYellow,
+                                color = CupertinoColors.systemOrange,
                                 style = tileTextStyle
                             )
                         },
@@ -312,12 +345,12 @@ fun HomeScreen(navigator: DestinationsNavigator) {
                         title = {
                             CupertinoText(
                                 text = "Character Preview",
-                                color = CupertinoColors.systemRed,
+                                color = CupertinoColors.systemYellow,
                                 style = tileTextStyle
                             )
                         },
                         checked = isCharacterPreview.value,
-                        onCheckedChange = {}
+                        onCheckedChange = { viewModel.updateCharacterPreview(it) }
                     )
                     this.switch(
                         title = {
@@ -325,30 +358,6 @@ fun HomeScreen(navigator: DestinationsNavigator) {
                         },
                         checked = isDotShortcut.value,
                         onCheckedChange = { viewModel.updateDotShortcut(it) }
-                    )
-                }
-            }
-
-            item("Interactions") {
-                CupertinoSection(
-                    title = { CupertinoText("INTERACTIONS", style = titleTextStyle) },
-                ) {
-                    this.switch(
-                        title = {
-                            CupertinoText(
-                                text = "Sound On Key Press",
-                                style = tileTextStyle
-                            )
-                        },
-                        checked = isSound.value,
-                        onCheckedChange = { viewModel.updateSoundOnKeyPress(it) }
-                    )
-                    this.switch(
-                        title = {
-                            CupertinoText("Vibrate On Key Press", style = tileTextStyle)
-                        },
-                        checked = isVibrate.value,
-                        onCheckedChange = { viewModel.updateVibrateOnKeyPress(it) }
                     )
                 }
             }
@@ -392,6 +401,7 @@ fun HomeScreen(navigator: DestinationsNavigator) {
                     }
                 ) {
                     this.link(
+                        onClickLabel = "Copyright Information",
                         title = {
                             CupertinoText(
                                 text = "Copyright Information",
@@ -402,6 +412,7 @@ fun HomeScreen(navigator: DestinationsNavigator) {
                         onClick = { onCopyrightSheetChanged(true) }
                     )
                     this.link(
+                        onClickLabel = "Join The Support Channel",
                         title = {
                             CupertinoText(
                                 text = "Join The Support Channel",

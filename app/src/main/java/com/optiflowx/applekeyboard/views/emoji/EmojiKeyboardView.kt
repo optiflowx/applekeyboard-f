@@ -14,7 +14,6 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
@@ -28,11 +27,10 @@ import androidx.compose.ui.unit.dp
 import com.optiflowx.applekeyboard.core.data.frequentlyUsedEmoji
 import com.optiflowx.applekeyboard.core.preferences.PrefsConstants
 import com.optiflowx.applekeyboard.core.preferences.rememberPreference
+import com.optiflowx.applekeyboard.core.utils.appFontType
 import com.optiflowx.applekeyboard.core.utils.handleTitle
-import com.optiflowx.applekeyboard.utils.appFontType
-import com.optiflowx.applekeyboard.utils.nonScaledSp
+import com.optiflowx.applekeyboard.core.utils.nonScaledSp
 import com.optiflowx.applekeyboard.viewmodels.KeyboardViewModel
-import com.optiflowx.applekeyboard.views.normal.NormalKeyboardView
 import io.github.alexzhirkevich.cupertino.theme.CupertinoColors
 import io.github.alexzhirkevich.cupertino.theme.systemGray
 
@@ -46,7 +44,7 @@ fun EmojiKeyboardView(
 ) {
     val defaultViewPort = (viewWidth)
     val freqViewPort = (viewWidth * 0.76f)
-    val isESearch = viewModel.isEmojiSearch.collectAsState()
+//    val isESearch = viewModel.isEmojiSearch.collectAsState()
     val frequentEmojis = viewModel.frequentlyUsedEmojis.observeAsState().value?.reversed()
     val fontType by rememberPreference(PrefsConstants.FONT_TYPE_KEY, "Regular")
     val locale by rememberPreference(PrefsConstants.LOCALE_KEY, "English")
@@ -64,55 +62,52 @@ fun EmojiKeyboardView(
     )
     val pagerState = rememberPagerState(pageCount = { emojiViewPager.size }, initialPage = 0)
 
-
-    if (isESearch.value!!) NormalKeyboardView(viewModel, viewWidth)
-    else {
-        Column(
-            Modifier.width(viewWidth)
-        ) {
-            HorizontalPager(
-                state = pagerState,
-                pageSpacing = 10.dp,
-                pageSize = PageSize.Fixed(if (pagerState.currentPage == 0) freqViewPort else defaultViewPort),
-                modifier = Modifier.height(viewportHeight),
-            ) { page ->
-                emojiViewPager[page].forEach { (title, emojis) ->
-                    Column {
-                        Text(
-                            text = handleTitle(title, locale).uppercase(),
-                            modifier = Modifier.padding(start = 15.dp, bottom = 3.dp),
-                            style = TextStyle(
-                                fontFamily = appFontType(fontType),
-                                color = CupertinoColors.systemGray(isSystemInDarkTheme()),
-                                fontSize = TextUnit(13f, TextUnitType.Sp).nonScaledSp,
-                                platformStyle = PlatformTextStyle(includeFontPadding = false)
-                            )
+//    if (isESearch.value) NormalKeyboardView(viewModel, viewWidth)
+//    else
+    Column(
+        Modifier.width(viewWidth)
+    ) {
+        HorizontalPager(
+            state = pagerState,
+            pageSpacing = 10.dp,
+            pageSize = PageSize.Fixed(if (pagerState.currentPage == 0) freqViewPort else defaultViewPort),
+            modifier = Modifier.height(viewportHeight),
+        ) { page ->
+            emojiViewPager[page].forEach { (title, emojis) ->
+                Column {
+                    Text(
+                        text = handleTitle(title, locale).uppercase(),
+                        modifier = Modifier.padding(start = 15.dp, bottom = 3.dp),
+                        style = TextStyle(
+                            fontFamily = appFontType(fontType),
+                            color = CupertinoColors.systemGray(isSystemInDarkTheme()),
+                            fontSize = TextUnit(13f, TextUnitType.Sp).nonScaledSp,
+                            platformStyle = PlatformTextStyle(includeFontPadding = false)
                         )
+                    )
 
-                        Surface(
-                            modifier = Modifier.height(
-                                (viewportHeight.value - 20).dp),
-                            color = Color.Transparent
-                        ) {
-                            LazyVerticalGrid(columns = GridCells.Fixed(cellCount)) {
-                                if (page == 0 && frequentEmojis != null) {
-                                    frequentEmojis.forEach { data ->
-                                        item("Key:$data") {
-                                            EmojiItem(data.emoji, viewModel, title)
-                                        }
+                    Surface(
+                        modifier = Modifier.height((viewportHeight.value - 20).dp),
+                        color = Color.Transparent
+                    ) {
+                        LazyVerticalGrid(columns = GridCells.Fixed(cellCount)) {
+                            if (page == 0 && frequentEmojis != null) {
+                                frequentEmojis.forEach { data ->
+                                    item("Key:$data") {
+                                        EmojiItem(data.emoji, viewModel, title)
                                     }
-                                } else emojis.forEach { emoji ->
-                                    item("$page$emoji") {
-                                        EmojiItem(emoji, viewModel, title)
-                                    }
+                                }
+                            } else emojis.forEach { emoji ->
+                                item("$page$emoji") {
+                                    EmojiItem(emoji, viewModel, title)
                                 }
                             }
                         }
                     }
                 }
             }
-            EmojiPagerActionView(pagerState, viewModel)
         }
+        EmojiPagerActionView(pagerState, viewModel)
     }
 }
 

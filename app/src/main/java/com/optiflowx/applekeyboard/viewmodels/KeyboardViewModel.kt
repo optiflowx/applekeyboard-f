@@ -53,7 +53,8 @@ import splitties.systemservices.vibrator
 
 @Stable
 class KeyboardViewModel(context: Context) : ViewModel() {
-    //UI
+
+    //UI FLows
     private val _isAllCaps = MutableStateFlow(false)
     val isAllCaps = _isAllCaps.asStateFlow()
 
@@ -75,14 +76,6 @@ class KeyboardViewModel(context: Context) : ViewModel() {
     private val _isShowOptions = MutableStateFlow(false)
     val isShowOptions = _isShowOptions.asStateFlow()
 
-    //Sound
-    private val _isPoolLoaded = MutableStateFlow(false)
-    private val _soundIDT = MutableStateFlow(0)
-    private val _soundIDD = MutableStateFlow(0)
-    private val _soundIDS = MutableStateFlow(0)
-    private val _soundIDR = MutableStateFlow(0)
-
-    //Action Key
     private val _keyActionButtonColor = MutableStateFlow(Color.Transparent)
     val keyActionButtonColor = _keyActionButtonColor.asStateFlow()
 
@@ -92,9 +85,15 @@ class KeyboardViewModel(context: Context) : ViewModel() {
     private val _keyActionText = MutableStateFlow("")
     val keyActionText = _keyActionText.asStateFlow()
 
-    //Dictionaries
     private val _wordsDictionary = MutableStateFlow(listOf<String>())
     val wordsDictionary = _wordsDictionary.asStateFlow()
+
+    //Sound
+    private val _isPoolLoaded = MutableStateFlow(false)
+    private val _soundIDT = MutableStateFlow(0)
+    private val _soundIDD = MutableStateFlow(0)
+    private val _soundIDS = MutableStateFlow(0)
+    private val _soundIDR = MutableStateFlow(0)
 
     //Private Variables
     private val englishWords = (enListA + enListB + enListC + enListD).toSet()
@@ -183,11 +182,11 @@ class KeyboardViewModel(context: Context) : ViewModel() {
         clipboardManager.removePrimaryClipChangedListener {}
     }
 
-    fun updateIsAllCaps(value: Boolean) {
-        viewModelScope.launch {
-            _isAllCaps.value = value
-        }
-    }
+//    fun updateIsAllCaps(value: Boolean) {
+//        viewModelScope.launch {
+//            _isAllCaps.value = value
+//        }
+//    }
 
     fun updateIsEmojiSearch(value: Boolean) {
         viewModelScope.launch {
@@ -260,10 +259,10 @@ class KeyboardViewModel(context: Context) : ViewModel() {
         val value: Boolean = preferences.getPreference(pC.SOUND_ON_KEY_PRESS_KEY, true)
         if (value && _isPoolLoaded.value) {
             when (key.id) {
-                "delete" -> _soundPool.play(_soundIDD.value, 1f, 1f, 0, 0, 1.05f)
-                "return" -> _soundPool.play(_soundIDR.value, 1f, 1f, 0, 0, 1.05f)
-                "space" -> _soundPool.play(_soundIDS.value, 1f, 1f, 0, 0, 1.05f)
-                else -> _soundPool.play(_soundIDT.value, 1f, 1f, 0, 0, 1.05f)
+                "delete" -> _soundPool.play(_soundIDD.value, 0.5f, 0.5f, 1, 0, 1.05f)
+                "return" -> _soundPool.play(_soundIDR.value, 0.5f, 0.5f, 1, 0, 1.05f)
+                "space" -> _soundPool.play(_soundIDS.value, 0.5f, 0.5f, 1, 0, 1.05f)
+                else -> _soundPool.play(_soundIDT.value, 0.5f, 0.5f, 1, 0, 1.05f)
             }
         }
     }

@@ -8,6 +8,21 @@
       <entry key="app">
         <State />
       </entry>
+      <entry key="homeCompilationBaselineProfiles()">
+        <State />
+      </entry>
+      <entry key="homeCompilationNone()">
+        <State />
+      </entry>
+      <entry key="startupCompilationBaselineProfiles()">
+        <State />
+      </entry>
+      <entry key="startupCompilationNone()">
+        <State />
+      </entry>
+      <entry key="startupCompilationNone() (1)">
+        <State />
+      </entry>
     </value>
   </component>
 </project>

@@ -31,10 +31,10 @@ import com.optiflowx.applekeyboard.core.preferences.PrefsConstants
 import com.optiflowx.applekeyboard.core.preferences.rememberPreference
 import com.optiflowx.applekeyboard.core.services.IMEService
 import com.optiflowx.applekeyboard.core.utils.KeyboardLocale
+import com.optiflowx.applekeyboard.core.utils.appFontType
+import com.optiflowx.applekeyboard.core.utils.nonScaledSp
 import com.optiflowx.applekeyboard.ui.keyboard.EraseButton
 import com.optiflowx.applekeyboard.ui.keyboard.KeyButton
-import com.optiflowx.applekeyboard.utils.appFontType
-import com.optiflowx.applekeyboard.utils.nonScaledSp
 import com.optiflowx.applekeyboard.viewmodels.KeyboardViewModel
 
 @Composable
@@ -52,8 +52,9 @@ fun KeyboardKey(key: Key, viewModel: KeyboardViewModel) {
 
     val colorA = colorScheme.onSurface
     val colorB = colorScheme.inversePrimary
-    val colorD = colorScheme.primary
     val colorC = colorScheme.secondaryContainer
+    val colorD = colorScheme.primary
+
 
     val isAllCaps = viewModel.isAllCaps.collectAsState().value
     val isNumberSymbol = viewModel.isNumberSymbol.collectAsState().value
@@ -108,7 +109,7 @@ fun KeyboardKey(key: Key, viewModel: KeyboardViewModel) {
         }
 
         onDispose {
-            view.removeOnLayoutChangeListener { view, _, _, _, _, _, _, _, _ ->
+            view.removeOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
                 Log.v("KEYBOARD INFO", "onDispose: actionView Listener")
             }
         }
@@ -116,9 +117,9 @@ fun KeyboardKey(key: Key, viewModel: KeyboardViewModel) {
 
     val width = LocalConfiguration.current.screenWidthDp
     val widthFactor = 0.086f
-    val specialWidthFactor = 0.13f
+    val specialWidthFactor = 0.1275f
     val popupWidth = if (
-        key.id == "." || key.id == "," || key.id == "?" || key.id == "'" || key.id == "\""
+        key.id == "." || key.id == "," || key.id == "?" || key.id == "!" || key.id == "'"
     ) (width * specialWidthFactor) else width * widthFactor
 
     //Erase and Shift Keys

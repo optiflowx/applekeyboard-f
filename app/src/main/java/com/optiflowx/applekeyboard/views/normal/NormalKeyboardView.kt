@@ -1,5 +1,6 @@
 package com.optiflowx.applekeyboard.views.normal
 
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -17,6 +18,7 @@ import com.optiflowx.applekeyboard.core.data.Key
 import com.optiflowx.applekeyboard.core.preferences.PrefsConstants
 import com.optiflowx.applekeyboard.core.preferences.rememberPreference
 import com.optiflowx.applekeyboard.core.utils.KeyboardLocale
+import com.optiflowx.applekeyboard.core.utils.OPTIMIZATION_STANDARDIZED
 import com.optiflowx.applekeyboard.viewmodels.KeyboardViewModel
 import com.optiflowx.applekeyboard.views.normal.constraintsets.GlobalConstraintSets
 import com.optiflowx.applekeyboard.views.normal.rowkeys.GlobalRowKeys
@@ -31,57 +33,67 @@ fun NormalKeyboardView(
     val keyboardLocale = KeyboardLocale()
     val constraintSets = GlobalConstraintSets(keyHeight, rowHeight)
     val nRowKeys = GlobalRowKeys()
-    val locale  by rememberPreference(PrefsConstants.LOCALE_KEY, "English")
+    val locale by rememberPreference(PrefsConstants.LOCALE_KEY, "English")
 
     ConstraintLayout(
-        constraintSets.constraints, Modifier.width(viewWidth),
-        100, true
+        constraintSet = constraintSets.constraints,
+        modifier = Modifier.width(viewWidth),
+        optimizationLevel = OPTIMIZATION_STANDARDIZED,
+        animateChanges = true,
+        animationSpec = tween(350),
     ) {
-        Box(Modifier.layoutId('1')) {
+        Box(modifier = Modifier.layoutId('1')) {
             ConstraintLayout(
-                constraintSets.firstRowConstraints,
-                Modifier
+                constraintSet = constraintSets.firstRowConstraints,
+                modifier = Modifier
                     .width(viewWidth)
                     .align(Alignment.Center)
-                    .padding(horizontal = 4.dp), 100, true
+                    .padding(horizontal = 4.dp),
+                optimizationLevel = OPTIMIZATION_STANDARDIZED,
+                animateChanges = true,
+                animationSpec = tween(350),
             ) {
                 for (key in nRowKeys.row1Keys) KeyboardKey(key, viewModel)
             }
         }
-        Box(Modifier.layoutId('2')) {
+        Box(modifier = Modifier.layoutId('2')) {
             ConstraintLayout(
-                constraintSets.secondRowConstraints,
-                Modifier
+                constraintSet = constraintSets.secondRowConstraints,
+                modifier = Modifier
                     .width(viewWidth)
                     .align(Alignment.Center)
-                    .padding(horizontal = 4.dp), 100, true
+                    .padding(horizontal = 4.dp),
+                optimizationLevel = OPTIMIZATION_STANDARDIZED,
+                animateChanges = true,
+                animationSpec = tween(350),
             ) {
                 for (key in nRowKeys.row2Keys) KeyboardKey(key, viewModel)
             }
         }
-        Box(Modifier.layoutId('3')) {
+        Box(modifier =  Modifier.layoutId('3')) {
             ConstraintLayout(
-                constraintSets.thirdRowConstraints,
-                Modifier
+                constraintSet = constraintSets.thirdRowConstraints,
+                modifier = Modifier
                     .width(viewWidth)
                     .align(Alignment.Center)
                     .padding(horizontal = 4.dp),
-                100, true
+                optimizationLevel = OPTIMIZATION_STANDARDIZED,
+                animateChanges = true,
+                animationSpec = tween(350),
             ) {
-                for (key in nRowKeys.row3Keys) {
-                    if (key.id == "shift" || key.id == "delete") {
-                        KeyboardKey(key, viewModel)
-                    } else KeyboardKey(key, viewModel)
-                }
+                for (key in nRowKeys.row3Keys) KeyboardKey(key, viewModel)
             }
         }
-        Box(Modifier.layoutId('4')) {
+        Box(modifier = Modifier.layoutId('4')) {
             ConstraintLayout(
-                constraintSets.fourthRowConstraints,
-                Modifier
+                constraintSet = constraintSets.fourthRowConstraints,
+                modifier = Modifier
                     .width(viewWidth)
                     .align(Alignment.Center)
-                    .padding(horizontal = 4.dp), 100, true
+                    .padding(horizontal = 4.dp),
+                optimizationLevel = OPTIMIZATION_STANDARDIZED,
+                animateChanges = true,
+                animationSpec = tween(350),
             ) {
                 KeyboardKey(Key("123", stringResource(R.string.num)), viewModel)
                 KeyboardKey(Key("emoji", "emoji"), viewModel)

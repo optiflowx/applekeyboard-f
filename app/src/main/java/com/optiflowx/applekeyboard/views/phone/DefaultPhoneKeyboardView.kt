@@ -21,8 +21,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.optiflowx.applekeyboard.ui.AppleKeyboardIMETheme
 import com.optiflowx.applekeyboard.viewmodels.KeyboardViewModel
-import com.optiflowx.applekeyboard.views.number.NumberLandscapeKeyboard
-import com.optiflowx.applekeyboard.views.number.NumberPortraitKeyboard
 
 class DefaultPhoneKeyboardView(context: Context) : AbstractComposeView(context) {
     @Composable
@@ -59,8 +57,8 @@ class DefaultPhoneKeyboardView(context: Context) : AbstractComposeView(context) 
                     ),
                 ) {
                     if (orientation.intValue == Configuration.ORIENTATION_PORTRAIT) {
-                        NumberPortraitKeyboard(viewModel)
-                    } else NumberLandscapeKeyboard(viewModel)
+                        PhonePortraitKeyboard(viewModel)
+                    } else PhoneLandscapeKeyboard(viewModel)
                 }
             }
 

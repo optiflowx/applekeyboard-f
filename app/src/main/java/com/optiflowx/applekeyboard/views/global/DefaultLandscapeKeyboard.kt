@@ -45,7 +45,7 @@ fun LandscapeKeyboard(
     val locale by rememberPreference(PrefsConstants.LOCALE_KEY, "English")
 
     val screenWidth = LocalConfiguration.current.screenWidthDp
-    val viewWidth = (screenWidth * 0.8)
+    val viewWidth = (screenWidth * 0.8).dp
     val sideWidth = (screenWidth * 0.1)
 
     Box(
@@ -61,7 +61,6 @@ fun LandscapeKeyboard(
             if (showTopView) {
                 KeyboardTopView(
                     viewModel = viewModel,
-                    keyboardType = keyboardType,
                     viewWidth = viewWidth,
                     topViewHeight = 32,
                     textSize = 14f,
@@ -98,23 +97,23 @@ fun LandscapeKeyboard(
                 when (keyboardType.value) {
                     KeyboardType.Normal -> NormalKeyboardView(
                         viewModel,
-                        viewWidth.dp,
+                        viewWidth,
                         30.dp,
                         36.dp
                     )
 
                     KeyboardType.Symbol -> SymbolsKeyboardView(
                         viewModel,
-                        viewWidth.dp,
+                        viewWidth,
                         30.dp,
                         36.dp
                     )
 
-                    KeyboardType.Emoji -> EmojiKeyboardView(viewModel, viewWidth.dp, 150.dp, 9)
+                    KeyboardType.Emoji -> EmojiKeyboardView(viewModel, viewWidth, 150.dp, 9)
 
                     KeyboardType.Clipboard -> ClipboardKeyboardView(
                         viewModel,
-                        viewWidth.dp,
+                        viewWidth,
                         150
                     )
                 }

@@ -35,7 +35,7 @@ android {
         getByName("release") {
             isMinifyEnabled = true
             isShrinkResources = true
-            isProfileable = true //TO BE FALSE
+            isProfileable = false //TO BE FALSE
             isCrunchPngs = true
 
             proguardFiles(
@@ -82,12 +82,15 @@ android {
 }
 
 dependencies {
+
     implementation("androidx.profileinstaller:profileinstaller:1.3.1")
+    implementation("androidx.constraintlayout:constraintlayout-core:1.0.4")
     androidTestImplementation("androidx.test:runner:1.5.2")
 
     //Destinations
     implementation("io.github.raamcosta.compose-destinations:core:1.10.0")
-    "baselineProfile"(project(":baselineprofile"))
+    "baselineProfile"(project(":non"))
+    "baselineProfile"(project(":baselineprofiles"))
     ksp("io.github.raamcosta.compose-destinations:ksp:1.10.0")
 
     implementation("org.jetbrains.kotlin:kotlin-stdlib:1.9.22")

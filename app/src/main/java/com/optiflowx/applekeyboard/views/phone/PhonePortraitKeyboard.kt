@@ -14,7 +14,7 @@ import com.optiflowx.applekeyboard.viewmodels.KeyboardViewModel
 import com.optiflowx.applekeyboard.views.global.NumberKeyboardActionView
 
 @Composable
-fun NumberPortraitKeyboard(viewModel: KeyboardViewModel) {
+fun PhonePortraitKeyboard(viewModel: KeyboardViewModel) {
     val locale by rememberPreference(PrefsConstants.LOCALE_KEY, "English")
 
     val viewWidth = LocalConfiguration.current.screenWidthDp.dp

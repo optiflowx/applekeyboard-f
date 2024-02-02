@@ -3,12 +3,11 @@ package com.optiflowx.applekeyboard.views.clipboard
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -24,8 +23,8 @@ import com.optiflowx.applekeyboard.core.enums.KeyboardType
 import com.optiflowx.applekeyboard.core.preferences.PrefsConstants
 import com.optiflowx.applekeyboard.core.preferences.rememberPreference
 import com.optiflowx.applekeyboard.core.utils.KeyboardLocale
-import com.optiflowx.applekeyboard.utils.appFontType
-import com.optiflowx.applekeyboard.utils.nonScaledSp
+import com.optiflowx.applekeyboard.core.utils.appFontType
+import com.optiflowx.applekeyboard.core.utils.nonScaledSp
 import com.optiflowx.applekeyboard.viewmodels.KeyboardViewModel
 import io.github.alexzhirkevich.cupertino.theme.CupertinoColors
 import io.github.alexzhirkevich.cupertino.theme.systemBlue
@@ -33,66 +32,65 @@ import io.github.alexzhirkevich.cupertino.theme.systemGray
 import io.github.alexzhirkevich.cupertino.theme.systemRed
 
 @Composable
-fun ClipboardKeyboardActionView(viewModel: KeyboardViewModel, topViewHeight: Int) {
+fun ClipboardKeyboardActionView(viewModel: KeyboardViewModel, boxScope: BoxScope) {
     val keyboardLocale = KeyboardLocale()
     val locale by rememberPreference(PrefsConstants.LOCALE_KEY, "English")
 
     val clipDataList = viewModel.clipData.observeAsState().value
 
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween,
-        modifier = Modifier
-            .height(topViewHeight.dp)
-            .fillMaxWidth()
-            .padding(horizontal = 10.dp)
-    ) {
-        Text(
-            keyboardLocale.clipboard(locale),
-            style = TextStyle(
-                fontFamily = appFontType("Bold"),
-                color = CupertinoColors.systemGray(isSystemInDarkTheme()),
-                fontSize = TextUnit(18f, TextUnitType.Sp).nonScaledSp,
-                platformStyle = PlatformTextStyle(includeFontPadding = false)
-            ),
-        )
-
+    boxScope.apply {
         Row(
-            modifier = Modifier.wrapContentWidth().fillMaxHeight(),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.End,
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 10.dp)
         ) {
             Text(
-                keyboardLocale.clear(locale),
+                keyboardLocale.clipboard(locale),
                 style = TextStyle(
-                    color = if (clipDataList.isNullOrEmpty()) CupertinoColors.systemGray(
-                        isSystemInDarkTheme()
-                    ) else CupertinoColors.systemRed,
                     fontFamily = appFontType("Bold"),
-                    fontSize = TextUnit(14f, TextUnitType.Sp).nonScaledSp,
+                    color = CupertinoColors.systemGray(isSystemInDarkTheme()),
+                    fontSize = TextUnit(18f, TextUnitType.Sp).nonScaledSp,
                     platformStyle = PlatformTextStyle(includeFontPadding = false)
                 ),
-                modifier = Modifier
-                    .padding(horizontal = 8.dp)
-                    .clickable(
-                        enabled = !clipDataList.isNullOrEmpty(),
-                    ) { viewModel.clearClipboard(clipDataList)},
             )
 
-            Text(
-                keyboardLocale.back(locale),
-                style = TextStyle(
-                    color = CupertinoColors.systemBlue,
-                    fontFamily = appFontType("Bold"),
-                    fontSize = TextUnit(14f, TextUnitType.Sp).nonScaledSp,
-                    platformStyle = PlatformTextStyle(includeFontPadding = false)
-                ),
-                modifier = Modifier
-                    .padding(horizontal = 8.dp)
-                    .clickable(
-                        onClick = { viewModel.onUpdateKeyboardType(KeyboardType.Normal) }
+            Row(
+                modifier = Modifier.wrapContentSize(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.End,
+            ) {
+                Text(
+                    keyboardLocale.clear(locale),
+                    style = TextStyle(
+                        color = if (clipDataList.isNullOrEmpty()) CupertinoColors.systemGray(
+                            isSystemInDarkTheme()
+                        ) else CupertinoColors.systemRed,
+                        fontFamily = appFontType("Bold"),
+                        fontSize = TextUnit(14f, TextUnitType.Sp).nonScaledSp,
+                        platformStyle = PlatformTextStyle(includeFontPadding = false)
                     ),
-            )
+                    modifier = Modifier
+                        .padding(horizontal = 8.dp)
+                        .clickable(
+                            enabled = !clipDataList.isNullOrEmpty(),
+                        ) { viewModel.clearClipboard(clipDataList)},
+                )
+
+                Text(
+                    keyboardLocale.back(locale),
+                    style = TextStyle(
+                        color = CupertinoColors.systemBlue,
+                        fontFamily = appFontType("Bold"),
+                        fontSize = TextUnit(14f, TextUnitType.Sp).nonScaledSp,
+                        platformStyle = PlatformTextStyle(includeFontPadding = false)
+                    ),
+                    modifier = Modifier
+                        .padding(horizontal = 8.dp)
+                        .clickable(
+                            onClick = { viewModel.onUpdateKeyboardType(KeyboardType.Normal) }
+                        ),
+                )
+            }
         }
     }
 }

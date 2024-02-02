@@ -13,6 +13,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.unit.dp
+import com.optiflowx.applekeyboard.core.preferences.PrefsConstants
+import com.optiflowx.applekeyboard.core.preferences.rememberPreference
 
 @Composable
 fun KeyButton(
@@ -31,6 +33,8 @@ fun KeyButton(
 
     val interactionSource = remember { MutableInteractionSource() }
 
+    val isCharacterPreview = rememberPreference(PrefsConstants.CHARACTER_PREVIEW_KEY, false)
+
     val pressed = interactionSource.collectIsPressedAsState()
 
     Surface(
@@ -40,12 +44,14 @@ fun KeyButton(
         interactionSource = interactionSource,
         onClick = onClick,
         shadowElevation = if (isIgnoreElevation) 0.dp else (1.6).dp,
-        modifier = modifier.layoutId(id).fillMaxSize()
+        modifier = modifier
+            .layoutId(id)
+            .fillMaxSize()
     ) {
         Box(contentAlignment = Alignment.Center) {
-//            if (pressed.value && showPopup) {
-//                KeyButtonPopup(popupWidth.dp, text)
-//            }
+            if (pressed.value && showPopup && isCharacterPreview.value) {
+                KeyButtonPopup(popupWidth.dp, text)
+            }
 
             content()
         }

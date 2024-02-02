@@ -19,7 +19,7 @@ import androidx.savedstate.SavedStateRegistry
 import androidx.savedstate.SavedStateRegistryController
 import androidx.savedstate.SavedStateRegistryOwner
 import androidx.savedstate.setViewTreeSavedStateRegistryOwner
-import com.optiflowx.applekeyboard.DefaultKeyboardView
+import com.optiflowx.applekeyboard.views.DefaultKeyboardView
 import com.optiflowx.applekeyboard.views.number.DefaultNumberKeyboardView
 import com.optiflowx.applekeyboard.views.phone.DefaultPhoneKeyboardView
 import splitties.experimental.ExperimentalSplittiesApi
@@ -27,8 +27,6 @@ import splitties.views.InputType
 
 @Suppress("DEPRECATION")
 class IMEService : LifecycleInputMethodService(), ViewModelStoreOwner, SavedStateRegistryOwner {
-
-
 
 
     override val viewModelStore: ViewModelStore
@@ -45,12 +43,6 @@ class IMEService : LifecycleInputMethodService(), ViewModelStoreOwner, SavedStat
     private val savedStateRegistryController = SavedStateRegistryController.create(this)
 
     override val savedStateRegistry: SavedStateRegistry get() = savedStateRegistryController.savedStateRegistry
-
-//    init {
-//        vm = KeyboardViewModel(this)
-//
-//        vm.initSoundIDs(this)
-//    }
 
 
 
@@ -85,7 +77,6 @@ class IMEService : LifecycleInputMethodService(), ViewModelStoreOwner, SavedStat
     }
 
     override fun onDestroy() {
-//        vm.onDisposeSoundIDs()
         store.clear()
         super.onDestroy()
     }
@@ -93,53 +84,33 @@ class IMEService : LifecycleInputMethodService(), ViewModelStoreOwner, SavedStat
     override fun onCreateInputView(): View {
         val view = DefaultKeyboardView(this)
 
-
-        window?.window?.decorView?.let { decorView ->
-            decorView.setViewTreeLifecycleOwner(this)
-            decorView.setViewTreeViewModelStoreOwner(this)
-            decorView.setViewTreeSavedStateRegistryOwner(this)
-        }
-
         val windowCompat = window?.window
 
         if (windowCompat != null) {
+            windowCompat.decorView.let { decorView ->
+                decorView.setViewTreeLifecycleOwner(this)
+                decorView.setViewTreeViewModelStoreOwner(this)
+                decorView.setViewTreeSavedStateRegistryOwner(this)
+            }
+
+            windowCompat.navigationBarColor = Color.Transparent.toArgb()
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                 windowCompat.setDecorFitsSystemWindows(false)
             } else {
                 ViewCompat.setOnApplyWindowInsetsListener(view) { _, insets ->
-                    val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
                     insets.replaceSystemWindowInsets(
-                        systemBars.left,
                         0,
-                        systemBars.right,
-                        0
+                        0,
+                        0,
+                        10
                     )
                 }
             }
 
-            windowCompat.navigationBarColor = Color.Transparent.toArgb()
-
-            val windowInsetsController =
-                WindowCompat.getInsetsController(windowCompat, view)
-
-            // Hide the system bars.
-            windowInsetsController.hide(WindowInsetsCompat.Type.navigationBars())
-
-//            val radius = 20f
-//
-//            // ViewGroup you want to start blur from. Choose root as close to BlurView in hierarchy as possible.
-////            val rootView = windowCompat.decorView.findViewById<ViewGroup>(android.R.id.content)
-//             val blurView = view.findViewById<BlurView>(R.id.keyboard_blur_view)
-//
-//            val decorView = this.window.window?.decorView
-//            val rootView = view.rootView as ViewGroup
-//            val windowBackground = decorView?.background
-//
-//
-//            blurView.setupWith(rootView, RenderScriptBlur(this)) // or RenderEffectBlur
-//                .setFrameClearDrawable(windowBackground)
-//                .setBlurRadius(radius)
+            WindowCompat.getInsetsController(windowCompat, view).apply {
+                hide(WindowInsetsCompat.Type.navigationBars())
+            }
         }
 
         return view
