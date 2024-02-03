@@ -15,11 +15,11 @@ val archVersion = "2.2.0"
 val roomVersion = "2.6.1"
 
 android {
-    namespace = "com.optiflowx.applekeyboard"
+    namespace = "com.optiflowx.optikeysx"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.optiflowx.applekeyboard"
+        applicationId = "com.optiflowx.optikeysx"
         minSdk = 24
         targetSdk = 34
         versionCode = 3
@@ -86,6 +86,8 @@ dependencies {
     implementation("androidx.profileinstaller:profileinstaller:1.3.1")
     implementation("androidx.constraintlayout:constraintlayout-core:1.0.4")
     androidTestImplementation("androidx.test:runner:1.5.2")
+
+    implementation ("io.qonversion.android.sdk:sdk:7.1.0") // Qonversion SDK
 
     //Destinations
     implementation("io.github.raamcosta.compose-destinations:core:1.10.0")

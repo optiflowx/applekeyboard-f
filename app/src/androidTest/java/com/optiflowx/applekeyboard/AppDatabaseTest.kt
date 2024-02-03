@@ -1,11 +1,11 @@
-package com.optiflowx.applekeyboard
+package com.optiflowx.optikeysx
 
 import androidx.room.Room
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import com.optiflowx.applekeyboard.database.FrequentlyUsedDatabase
-import com.optiflowx.applekeyboard.database.dao.RecentEmojiDatabaseDAO
-import com.optiflowx.applekeyboard.database.entities.EmojiData
+import com.optiflowx.optikeysx.database.FrequentlyUsedDatabase
+import com.optiflowx.optikeysx.database.dao.RecentEmojiDatabaseDAO
+import com.optiflowx.optikeysx.database.entities.EmojiData
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Assert.*

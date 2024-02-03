@@ -1,13 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Apple Keyboard</string>
+    <string name="app_name">OptiKeysX</string>
     <string name="abc">ABC</string>
     <string name="num">123</string>
-    <string name="space">space</string>
-    <string name="action">return</string>
-    <string name="actionDone">done</string>
-    <string name="actionGo">go</string>
-    <string name="actionSearch">search</string>
-    <string name="actionNext">next</string>
-    <string name="actionSend">send</string>
 </resources>

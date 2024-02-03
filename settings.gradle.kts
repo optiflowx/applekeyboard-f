@@ -13,7 +13,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Apple Keyboard"
+rootProject.name = "OptiKeysX"
 include(":app")
 include(":non")
 include(":baselineprofiles")

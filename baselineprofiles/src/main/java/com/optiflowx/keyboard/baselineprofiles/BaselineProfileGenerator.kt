@@ -40,9 +40,9 @@ class BaselineProfileGenerator {
 
     @Test
     fun generate() {
-        // This example works only with the variant with application id `com.optiflowx.applekeyboard`."
+        // This example works only with the variant with application id `com.optiflowx.optikeysx`."
         rule.collect(
-            packageName = "com.optiflowx.applekeyboard",
+            packageName = "com.optiflowx.optikeysx",
 
             // See: https://d.android.com/topic/performance/baselineprofiles/dex-layout-optimizations
             includeInStartupProfile = true

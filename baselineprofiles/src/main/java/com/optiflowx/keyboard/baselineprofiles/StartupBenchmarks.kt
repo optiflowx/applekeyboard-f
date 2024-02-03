@@ -47,9 +47,9 @@ class StartupBenchmarks {
         benchmark(CompilationMode.Partial(BaselineProfileMode.Require))
 
     private fun benchmark(compilationMode: CompilationMode) {
-        // This example works only with the variant with application id `com.optiflowx.applekeyboard`."
+        // This example works only with the variant with application id `com.optiflowx.optikeysx`."
         rule.measureRepeated(
-            packageName = "com.optiflowx.applekeyboard",
+            packageName = "com.optiflowx.optikeysx",
             metrics = listOf(StartupTimingMetric()),
             compilationMode = compilationMode,
             startupMode = StartupMode.COLD,

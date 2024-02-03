@@ -21,12 +21,14 @@
             </intent-filter>
         </activity>
 
+<!--        Spelling Check Service-->
+
         <service
             android:name=".core.services.IMEService"
             android:label="@string/app_name"
-
             android:permission="android.permission.BIND_INPUT_METHOD"
             android:exported="false">
+
             <intent-filter>
                 <action android:name="android.view.InputMethod" />
             </intent-filter>
