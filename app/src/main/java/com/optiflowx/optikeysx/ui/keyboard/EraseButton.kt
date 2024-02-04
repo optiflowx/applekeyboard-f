@@ -1,9 +1,14 @@
+
+
 package com.optiflowx.optikeysx.ui.keyboard
 
 import android.view.MotionEvent
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.absoluteOffset
+import androidx.compose.foundation.layout.absolutePadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -29,6 +34,7 @@ fun EraseButton(
     enabled: Boolean = true,
     color: Color,
     id: String,
+    applyShadow: Boolean = true,
     onClick: () -> Unit,
     onRepeatableClick: () -> Unit,
     content: @Composable () -> Unit,
@@ -40,21 +46,20 @@ fun EraseButton(
     val currentSingleClickListener by rememberUpdatedState(onClick)
 
     LaunchedEffect(pressed, enabled) {
-            while (enabled && pressed) {
-                if (pressedCount < 1) {
-                    pressedCount += 1
-                    currentSingleClickListener()
-                } else {
-                    currentClickListener()
-                    delay(delayMillis)
-                }
+        while (enabled && pressed) {
+            if (pressedCount < 1) {
+                pressedCount += 1
+                currentSingleClickListener()
+            } else {
+                currentClickListener()
+                delay(delayMillis)
             }
-            pressedCount = 0
+        }
+        pressedCount = 0
     }
 
-    Surface(
-        color = color,
-        shape = RoundedCornerShape((5.5).dp),
+    Box(
+        contentAlignment = Alignment.Center,
         modifier = modifier
             .layoutId(id)
             .fillMaxSize()
@@ -66,8 +71,25 @@ fun EraseButton(
                 true
             }
     ) {
-        Box(contentAlignment = Alignment.Center) {
-            content()
+        if(applyShadow) {
+            Surface(
+                color = MaterialTheme.colorScheme.tertiaryContainer,
+                shape = RoundedCornerShape(5.5.dp),
+                modifier = Modifier
+                    .matchParentSize()
+                    .absoluteOffset(0.dp, 1.5.dp)
+                    .absolutePadding(left = 0.75.dp, right = 0.5.dp)
+            ) {}
+        }
+
+        Surface(
+            color = color,
+            shape = RoundedCornerShape((5.5).dp),
+            modifier = modifier.matchParentSize()
+        ) {
+            Box(contentAlignment = Alignment.Center) {
+                content()
+            }
         }
     }
 }

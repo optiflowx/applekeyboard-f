@@ -3,8 +3,11 @@ package com.optiflowx.optikeysx.ui.keyboard
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.absoluteOffset
+import androidx.compose.foundation.layout.absolutePadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -28,7 +31,7 @@ fun KeyButton(
     onClick: () -> Unit,
     content: @Composable () -> Unit,
 
-) {
+    ) {
     val isIgnoreElevation = (id == "switch" || id == "period")
 
     val interactionSource = remember { MutableInteractionSource() }
@@ -37,23 +40,38 @@ fun KeyButton(
 
     val pressed = interactionSource.collectIsPressedAsState()
 
-    Surface(
-        color = color,
-        enabled = enabled,
-        shape = RoundedCornerShape((5.5).dp),
-        interactionSource = interactionSource,
-        onClick = onClick,
-        shadowElevation = if (isIgnoreElevation) 0.dp else (1.6).dp,
-        modifier = modifier
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier
             .layoutId(id)
             .fillMaxSize()
     ) {
-        Box(contentAlignment = Alignment.Center) {
-            if (pressed.value && showPopup && isCharacterPreview.value) {
-                KeyButtonPopup(popupWidth.dp, text)
-            }
+        if(!isIgnoreElevation) {
+            Surface(
+                color = MaterialTheme.colorScheme.tertiaryContainer,
+                shape = RoundedCornerShape(5.5.dp),
+                modifier = Modifier
+                    .matchParentSize()
+                    .absoluteOffset(0.dp, 1.5.dp)
+                    .absolutePadding(left = 0.75.dp, right = 0.5.dp)
+            ) {}
+        }
 
-            content()
+        Surface(
+            color = color,
+            enabled = enabled,
+            shape = RoundedCornerShape((5.5).dp),
+            interactionSource = interactionSource,
+            onClick = onClick,
+            modifier = modifier.matchParentSize()
+        ) {
+            Box(contentAlignment = Alignment.Center) {
+                if (pressed.value && showPopup && isCharacterPreview.value) {
+                    KeyButtonPopup(popupWidth.dp, text)
+                }
+
+                content()
+            }
         }
     }
 }
