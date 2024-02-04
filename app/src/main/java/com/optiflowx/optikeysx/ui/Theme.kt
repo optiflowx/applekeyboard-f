@@ -22,7 +22,7 @@ private val Dark = darkColorScheme(
     onBackground = Color.White,
     scrim = Color.White, //Bottom Icons color
     onPrimary = Color(0xFF404040), //Suggestion Div Color
-    tertiaryContainer = Color(0xFF000000), //Key Shadow Color
+    tertiaryContainer = Color.Black, //Key Shadow Color
     onSurfaceVariant = Color(0xff6c6c6c), //Options View Background Color
     outline = Color(0xFF5E5E5E) //Disabled Key Color
 )
@@ -41,7 +41,7 @@ private val Light = lightColorScheme(
     onBackground = Color.Black,
     scrim = Color(0xFF50555C), //Bottom Icons color
     onPrimary = Color(0xFFbcbdc0), //Suggestion Div Color
-    tertiaryContainer = Color(0xFF292929), //Key Shadow Color
+    tertiaryContainer = Color(0xFF898A8D), //Key Shadow Color
     onSurfaceVariant = Color(0xFFFFFFFF), //Options View Background Color
     outline = Color(0xFFE9E9E9) //Disabled Key Color
 )
