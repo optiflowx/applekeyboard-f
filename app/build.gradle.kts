@@ -37,6 +37,7 @@ android {
             isShrinkResources = true
             isProfileable = false //TO BE FALSE
             isCrunchPngs = true
+            isDebuggable = false
 
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
