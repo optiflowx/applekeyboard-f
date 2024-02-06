@@ -20,12 +20,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import com.optiflowx.optikeysx.R
-import com.optiflowx.optikeysx.core.data.Key
+import com.optiflowx.optikeysx.core.model.Key
 import com.optiflowx.optikeysx.core.preferences.PrefsConstants
 import com.optiflowx.optikeysx.core.preferences.rememberPreference
+import com.optiflowx.optikeysx.core.utils.appFontType
 import com.optiflowx.optikeysx.ui.keyboard.EraseButton
 import com.optiflowx.optikeysx.ui.keyboard.KeyButton
-import com.optiflowx.optikeysx.core.utils.appFontType
 import com.optiflowx.optikeysx.viewmodels.KeyboardViewModel
 
 @Composable
@@ -41,6 +41,7 @@ fun NumKeyboardKey(key: Key, viewModel: KeyboardViewModel) {
         EraseButton(
             color = Color.Transparent,
             id = key.id,
+            applyShadow = false,
             onClick = {
                 viewModel.playSound(key)
                 viewModel.vibrate()

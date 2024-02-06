@@ -1,30 +1,30 @@
-@file:Suppress("DEPRECATION")
-
 package com.optiflowx.optikeysx.screens
 
 import android.content.Intent
+import android.os.Build
 import android.provider.Settings
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.absolutePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.unit.TextUnit
-import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModel
@@ -33,38 +33,46 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.optiflowx.optikeysx.core.preferences.PrefsConstants
 import com.optiflowx.optikeysx.core.preferences.rememberPreference
 import com.optiflowx.optikeysx.core.utils.nonScaledSp
+import com.optiflowx.optikeysx.screens.components.TopBar
 import com.optiflowx.optikeysx.screens.destinations.KeyboardFontsScreenDestination
 import com.optiflowx.optikeysx.screens.destinations.KeyboardsScreenDestination
 import com.optiflowx.optikeysx.screens.destinations.TextReplacementScreenDestination
+import com.optiflowx.optikeysx.ui.bold
+import com.optiflowx.optikeysx.ui.cupertino.CopyrightBottomSheet
 import com.optiflowx.optikeysx.ui.cupertino.CupertinoTile
 import com.optiflowx.optikeysx.ui.regular
-import com.optiflowx.optikeysx.ui.sheets.CopyrightBottomSheet
 import com.optiflowx.optikeysx.viewmodels.AppViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import io.github.alexzhirkevich.cupertino.CupertinoScaffold
+import io.github.alexzhirkevich.cupertino.CupertinoBottomSheetScaffold
+import io.github.alexzhirkevich.cupertino.CupertinoBottomSheetScaffoldDefaults
+import io.github.alexzhirkevich.cupertino.CupertinoNavigationTitle
+import io.github.alexzhirkevich.cupertino.CupertinoSheetValue
 import io.github.alexzhirkevich.cupertino.CupertinoText
 import io.github.alexzhirkevich.cupertino.CupertinoTextField
-import io.github.alexzhirkevich.cupertino.CupertinoTopAppBar
 import io.github.alexzhirkevich.cupertino.ExperimentalCupertinoApi
+import io.github.alexzhirkevich.cupertino.PresentationDetent
+import io.github.alexzhirkevich.cupertino.PresentationStyle
+import io.github.alexzhirkevich.cupertino.rememberCupertinoBottomSheetScaffoldState
+import io.github.alexzhirkevich.cupertino.rememberCupertinoSheetState
 import io.github.alexzhirkevich.cupertino.section.CupertinoSection
 import io.github.alexzhirkevich.cupertino.section.link
 import io.github.alexzhirkevich.cupertino.section.switch
 import io.github.alexzhirkevich.cupertino.theme.CupertinoColors
+import io.github.alexzhirkevich.cupertino.theme.CupertinoTheme
 import io.github.alexzhirkevich.cupertino.theme.systemBlue
 import io.github.alexzhirkevich.cupertino.theme.systemGreen
 import io.github.alexzhirkevich.cupertino.theme.systemOrange
+import io.github.alexzhirkevich.cupertino.theme.systemRed
 import io.github.alexzhirkevich.cupertino.theme.systemYellow
+import kotlinx.coroutines.launch
 import splitties.systemservices.inputMethodManager
 
-@Suppress("UNCHECKED_CAST")
-@OptIn(
-    ExperimentalCupertinoApi::class, ExperimentalFoundationApi::class,
-    ExperimentalComposeUiApi::class
-)
+
 @Composable
 @Destination
+@OptIn(ExperimentalCupertinoApi::class, ExperimentalComposeUiApi::class)
 @RootNavGraph(start = true)
 fun HomeScreen(navigator: DestinationsNavigator) {
     val uriHandler = LocalUriHandler.current
@@ -72,23 +80,29 @@ fun HomeScreen(navigator: DestinationsNavigator) {
     val pC = PrefsConstants
 
     val tileTextStyle = TextStyle(
-        fontSize = TextUnit(17f, TextUnitType.Sp).nonScaledSp,
+        fontSize = 17.sp.nonScaledSp,
         fontFamily = regular,
     )
 
     val titleTextStyle = TextStyle(
-        fontSize = TextUnit(14f, TextUnitType.Sp).nonScaledSp,
+        fontSize = 14.sp.nonScaledSp,
         fontFamily = regular,
     )
 
+    val navigationTextStyle = TextStyle(
+        fontSize = 32.sp.nonScaledSp,
+        fontFamily = bold,
+    )
+
     val descTextStyle = TextStyle(
-        fontSize = TextUnit(13f, TextUnitType.Sp).nonScaledSp,
+        fontSize = 13.sp.nonScaledSp,
         fontFamily = regular,
     )
 
     val viewModel = viewModel<AppViewModel>(
         key = "AppViewModel",
         factory = object : ViewModelProvider.Factory {
+            @Suppress("UNCHECKED_CAST")
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
                 return AppViewModel(context) as T
             }
@@ -115,31 +129,63 @@ fun HomeScreen(navigator: DestinationsNavigator) {
 
     val isCharacterPreview = rememberPreference(pC.CHARACTER_PREVIEW_KEY, false)
 
-    val (copyrightSheet, onCopyrightSheetChanged) = remember { mutableStateOf(false) }
-
     val (value, onValueChange) = remember { mutableStateOf("") }
 
     val interactionSource = remember { MutableInteractionSource() }
 
-    if (copyrightSheet) {
-        CopyrightBottomSheet { onCopyrightSheetChanged(false) }
+    val lazyListState = rememberLazyListState()
+
+    val scaffoldState = rememberCupertinoBottomSheetScaffoldState(
+        rememberCupertinoSheetState(
+            presentationStyle = PresentationStyle.Modal(
+                detents = setOf(
+                    PresentationDetent.Large,
+                    PresentationDetent.Fraction(.6f),
+                ),
+            )
+        )
+    )
+
+    val coroutineScope = rememberCoroutineScope()
+
+    val sheetSectionColor = CupertinoTheme.colorScheme.tertiarySystemBackground
+
+    val focusManager = LocalFocusManager.current
+
+    LaunchedEffect(lazyListState.isScrollInProgress) {
+        if (lazyListState.isScrollInProgress) {
+            focusManager.clearFocus(force = true)
+        }
     }
 
-    CupertinoScaffold(
-        appBarsBlurAlpha = 0.65f,
-        appBarsBlurRadius = 10.dp,
+    LaunchedEffect(scaffoldState.bottomSheetState.targetValue) {
+        if (scaffoldState.bottomSheetState.targetValue == CupertinoSheetValue.Hidden) {
+            focusManager.clearFocus(force = true)
+        }
+    }
+
+    CupertinoBottomSheetScaffold(
+        hasNavigationTitle = true,
         modifier = Modifier.semantics {
             testTagsAsResourceId = true
         },
-        topBar = {
-            CupertinoTopAppBar(
-                isTranslucent = true,
-                isTransparent = true,
-                title = {
-                    CupertinoText("OptiKeysX - Cupertino Keyboard")
-                }
+        colors = CupertinoBottomSheetScaffoldDefaults.colors(
+            sheetContainerColor = CupertinoTheme.colorScheme
+                .secondarySystemBackground,
+        ),
+        sheetContent = {
+            CopyrightBottomSheet(
+                scaffoldState = scaffoldState,
+                sheetSectionColor = sheetSectionColor
             )
-        }
+        },
+        scaffoldState = scaffoldState,
+        topBar = {
+            TopBar(
+                lazyListState = lazyListState,
+                title = "OptiKeysX"
+            )
+        },
     ) {
         LazyColumn(
             modifier = Modifier
@@ -148,19 +194,22 @@ fun HomeScreen(navigator: DestinationsNavigator) {
                 .testTag("home_screen_list"),
             userScrollEnabled = true
         ) {
+            item {
+                CupertinoNavigationTitle {
+                    CupertinoText("OptiKeysX", style = navigationTextStyle)
+                }
+            }
             item("Message Section") {
                 CupertinoSection {
                     item("text") {
                         CupertinoText(
                             text = "CAUTION: Acquiring this application for free from unofficial sources may expose " +
                                     "you to potential malware threats. Thus, I strongly advise against accepting or using any " +
-                                    "modified versions of this app.\n" +
-                                    "\n" +
-                                    "Thank you for your support and understanding. If you have any concerns or questions, " +
-                                    "feel free to contact me.\uD83D\uDE0A",
+                                    "modified versions of this app. Download the app from the Google Play Store.",
                             style = TextStyle(
                                 fontSize = 14.sp.nonScaledSp,
                                 fontFamily = regular,
+                                color = CupertinoColors.systemRed,
                             ),
                             modifier = Modifier.padding(it)
                         )
@@ -188,7 +237,10 @@ fun HomeScreen(navigator: DestinationsNavigator) {
                         key = 1,
                         onClickLabel = "Change IME Service",
                         title = { CupertinoText("Change IME Service", style = tileTextStyle) },
-                        onClick = { inputMethodManager.showInputMethodPicker() }
+                        onClick = {
+                            inputMethodManager.showInputMethodPicker()
+                            focusManager.clearFocus(force = true)
+                        }
                     )
                 }
             }
@@ -200,7 +252,7 @@ fun HomeScreen(navigator: DestinationsNavigator) {
                     },
                     caption = {
                         CupertinoText(
-                            text = "This section contains test keyboards for you to try out.",
+                            text = "This section is for trying out the keyboard.",
                             style = descTextStyle
                         )
                     }
@@ -246,9 +298,7 @@ fun HomeScreen(navigator: DestinationsNavigator) {
                             CupertinoText("Text Replacement", style = tileTextStyle)
                         },
                         onClick = {
-                            navigator.navigate(
-                                TextReplacementScreenDestination,
-                            )
+                            navigator.navigate(TextReplacementScreenDestination)
                         }
                     )
                 }
@@ -374,7 +424,12 @@ fun HomeScreen(navigator: DestinationsNavigator) {
                     this.item(2) {
                         CupertinoTile(
                             title = "Build Version",
-                            trailingText = packageInfo.versionCode.toString(),
+                            trailingText = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                                packageInfo.longVersionCode.toString()
+                            } else {
+                                @Suppress("DEPRECATION")
+                                packageInfo.versionCode.toString()
+                            },
                             trailingIcon = null,
                         )
                     }
@@ -400,7 +455,11 @@ fun HomeScreen(navigator: DestinationsNavigator) {
                                 style = tileTextStyle
                             )
                         },
-                        onClick = { onCopyrightSheetChanged(true) }
+                        onClick = {
+                            coroutineScope.launch {
+                                scaffoldState.bottomSheetState.show()
+                            }
+                        }
                     )
                     this.link(
                         onClickLabel = "Join The Support Channel",

@@ -2,12 +2,14 @@ package com.optiflowx.optikeysx.viewmodels
 
 import android.content.ClipboardManager
 import android.content.Context
+import android.inputmethodservice.InputMethodService
 import android.media.AudioAttributes
 import android.media.SoundPool
 import android.os.Build
 import android.os.VibrationEffect
 import android.view.inputmethod.InputConnection
 import android.view.inputmethod.InputConnection.GET_TEXT_WITH_STYLES
+import android.view.inputmethod.InputMethodManager
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.LiveData
@@ -15,18 +17,16 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.optiflowx.optikeysx.R
 import com.optiflowx.optikeysx.core.algorithm.DictationProcessor
-import com.optiflowx.optikeysx.core.data.Key
 import com.optiflowx.optikeysx.core.database.dao.ClipboardDatabaseDAO
 import com.optiflowx.optikeysx.core.database.dao.FrequentlyUsedEmojiDatabaseDAO
 import com.optiflowx.optikeysx.core.database.dbs.ClipboardDatabase
 import com.optiflowx.optikeysx.core.database.dbs.FrequentlyUsedDatabase
 import com.optiflowx.optikeysx.core.database.entities.ClipData
 import com.optiflowx.optikeysx.core.database.entities.FrequentlyUsedEmoji
-import com.optiflowx.optikeysx.core.enums.KeyboardLanguage
 import com.optiflowx.optikeysx.core.enums.KeyboardType
+import com.optiflowx.optikeysx.core.model.Key
 import com.optiflowx.optikeysx.core.preferences.PreferencesHelper
 import com.optiflowx.optikeysx.core.preferences.PrefsConstants
-import com.optiflowx.optikeysx.core.services.IMEService
 import com.optiflowx.optikeysx.core.utils.KeyboardLocale
 import com.optiflowx.optikeysx.languages.english.enListA
 import com.optiflowx.optikeysx.languages.english.enListB
@@ -44,6 +44,7 @@ import com.optiflowx.optikeysx.languages.spanish.spListA
 import com.optiflowx.optikeysx.languages.spanish.spListB
 import com.optiflowx.optikeysx.languages.spanish.spListC
 import com.optiflowx.optikeysx.languages.spanish.spListD
+import com.optiflowx.optikeysx.services.IMEService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -85,6 +86,9 @@ class KeyboardViewModel(context: Context) : ViewModel() {
     private val _keyActionText = MutableStateFlow("return")
     val keyActionText = _keyActionText.asStateFlow()
 
+    private val _locale = MutableStateFlow("en-US")
+    val locale = _locale.asStateFlow()
+
     private val _wordsDictionary = MutableStateFlow(listOf<String>())
     val wordsDictionary = _wordsDictionary.asStateFlow()
 
@@ -120,10 +124,17 @@ class KeyboardViewModel(context: Context) : ViewModel() {
     private lateinit var _dictationProcessor: DictationProcessor
     private lateinit var _dictionary: Set<String>
 
-    //UI Locale
-    private val _keyboardLocale = KeyboardLocale()
+    private val mIMM =
+        (context.getSystemService(InputMethodService.INPUT_METHOD_SERVICE) as InputMethodManager)
+
+    val mIMS = mIMM.currentInputMethodSubtype
+
     private val clipboardManager =
         context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+
+    //UI Locale
+    private val _keyboardLocale = KeyboardLocale(locale.value)
+
 
     //DataStore
     private val preferences = PreferencesHelper(context)
@@ -158,17 +169,16 @@ class KeyboardViewModel(context: Context) : ViewModel() {
         }
 
         viewModelScope.launch(Dispatchers.IO) {
-            preferences.getFlowPreference(pC.LOCALE_KEY, "English")
-                .collectLatest { locale ->
-                    _dictionary = when (locale) {
-                        "French" -> frenchWords
-                        "Spanish" -> spanishWords
-                        "Portuguese" -> ptWords
-                        else -> englishWords
-                    }
-
-                    _dictationProcessor = DictationProcessor(_dictionary)
+            _locale.collectLatest { locale ->
+                _dictionary = when (locale) {
+                    "fr-FR" -> frenchWords
+                    "es" -> spanishWords
+                    "pt-BR" -> ptWords
+                    else -> englishWords
                 }
+
+                _dictationProcessor = DictationProcessor(_dictionary)
+            }
         }
     }
 
@@ -182,6 +192,12 @@ class KeyboardViewModel(context: Context) : ViewModel() {
         clipboardManager.removePrimaryClipChangedListener {}
     }
 
+    fun initLocale(data: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            _locale.value = data
+        }
+    }
+
 //    fun updateIsAllCaps(value: Boolean) {
 //        viewModelScope.launch {
 //            _isAllCaps.value = value
@@ -189,20 +205,20 @@ class KeyboardViewModel(context: Context) : ViewModel() {
 //    }
 
     fun updateIsEmojiSearch(value: Boolean) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             _isEmojiSearch.value = value
         }
     }
 
     fun updateIsShowOptions(value: Boolean) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             _isShowOptions.value = value
         }
     }
 
     @Stable
     fun updateIMEActions(colorA: Color, colorB: Color, text: String) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             _keyActionButtonColor.value = colorA
             _keyActionTextColor.value = colorB
             _keyActionText.value = text
@@ -428,13 +444,12 @@ class KeyboardViewModel(context: Context) : ViewModel() {
     fun onNumKeyClick(key: Key, context: Context) {
         val connection = (context as IMEService).currentInputConnection
         viewModelScope.launch(Dispatchers.IO) {
-            val it = preferences.getPreference(pC.LOCALE_KEY, KeyboardLanguage.English.name)
             when (key.value) {
                 "*" -> connection.commitText(key.value, key.value.length)
                 "#" -> connection.commitText(key.value, key.value.length)
                 "+" -> connection.commitText(key.value, key.value.length)
-                _keyboardLocale.wait(it) -> connection.commitText(";", ";".length)
-                _keyboardLocale.pause(it) -> connection.commitText(".", ".".length)
+                _keyboardLocale.wait() -> connection.commitText(";", ";".length)
+                _keyboardLocale.pause() -> connection.commitText(".", ".".length)
                 else -> {
                     if (key.id == "period") connection.commitText(".", ".".length)
                     else connection.commitText(key.id, key.id.length)

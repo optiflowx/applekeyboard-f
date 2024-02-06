@@ -10,6 +10,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
@@ -22,7 +23,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.optiflowx.optikeysx.ui.AppleKeyboardIMETheme
 import com.optiflowx.optikeysx.viewmodels.KeyboardViewModel
 
-class DefaultNumberKeyboardView(context: Context) : AbstractComposeView(context) {
+class DefaultNumberKeyboardView(context: Context, val locale: String) : AbstractComposeView(context) {
     @Composable
     override fun Content() {
         val config = LocalConfiguration.current
@@ -41,6 +42,10 @@ class DefaultNumberKeyboardView(context: Context) : AbstractComposeView(context)
             mutableIntStateOf(config.orientation)
         }
 
+        LaunchedEffect(locale) {
+            viewModel.initLocale(locale)
+        }
+
         DisposableEffect(Unit) {
             viewModel.initSoundIDs(context)
 
@@ -56,8 +61,8 @@ class DefaultNumberKeyboardView(context: Context) : AbstractComposeView(context)
                     ),
                 ) {
                     if (orientation.intValue == Configuration.ORIENTATION_PORTRAIT) {
-                        NumberPortraitKeyboard(viewModel)
-                    } else NumberLandscapeKeyboard(viewModel)
+                        NumberPortraitKeyboard(viewModel, locale)
+                    } else NumberLandscapeKeyboard(viewModel, locale)
                 }
             }
 

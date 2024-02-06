@@ -4,188 +4,232 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
 
 @Immutable
-class KeyboardLocale {
+class KeyboardLocale(val locale: String) {
 
     @Stable
-    fun emptyClipboard(locale: String?) : String {
+    fun keyboardSettings(): String {
+        return when (locale) {
+            "ru" -> "Настройки клавиатуры"
+            "fr-FR" -> "Paramètres du clavier"
+            "es" -> "Configuración del teclado"
+            "pt-PT" -> "Configurações do teclado"
+            "pt-BR" -> "Configurações do teclado"
+            "it" -> "Impostazioni della tastiera"
+            "nl" -> "Toetsenbordinstellingen"
+            "de" -> "Tastatureinstellungen"
+            else -> "Keyboard settings"
+        }
+    }
+
+    @Stable
+    fun language(): String {
+        return when (locale) {
+            "ru" -> "Язык"
+            "fr-FR" -> "Langue"
+            "es" -> "Idioma"
+            "pt-PT" -> "Idioma"
+            "pt-BR" -> "Idioma"
+            "it" -> "Lingua"
+            "nl" -> "Taal"
+            "de" -> "Sprache"
+            else -> "Language"
+        }
+    }
+
+    @Stable
+    fun emptyClipboard() : String {
         return when(locale) {
-            "Russian" -> "Буфер обмена пуст.\nСкопируйте данные, чтобы начать сохранение."
-            "French" -> "Le presse-papiers est vide.\nCopiez des données pour commencer à enregistrer."
-            "Spanish" -> "El portapapeles está vacío.\nCopie datos para comenzar a guardar."
-            "Portuguese" -> "A área de transferência está vazia.\nCopie dados para começar a salvar."
-            "Italian" -> "La clipboard è vuota.\nCopia i dati per iniziare a salvare."
-            "Dutch" -> "Het klembord is leeg.\nKopieer gegevens om te beginnen met opslaan."
-            "German" -> "Die Zwischenablage ist leer.\nKopieren Sie Daten, um mit dem Speichern zu beginnen."
+            "ru" -> "Буфер обмена пуст.\nСкопируйте данные, чтобы начать сохранение."
+            "fr-FR" -> "Le presse-papiers est vide.\nCopiez des données pour commencer à enregistrer."
+            "es" -> "El portapapeles está vacío.\nCopie datos para comenzar a guardar."
+            "pt-PT" -> "A área de transferência está vazia.\nCopie dados para começar a salvar."
+            "pt-BR" -> "A área de transferência está vazia.\nCopie dados para começar a salvar."
+            "it" -> "La clipboard è vuota.\nCopia i dati per iniziare a salvare."
+            "nl" -> "Het klembord is leeg.\nKopieer gegevens om te beginnen met opslaan."
+            "de" -> "Die Zwischenablage ist leer.\nKopieren Sie Daten, um mit dem Speichern zu beginnen."
             else -> "Clipboard is empty.\nCopy data to start saving."
         }
     }
 
     @Stable
-    fun clear(locale: String?) : String {
+    fun clear() : String {
         return when (locale) {
-            "Russian" -> "Очистить"
-            "French" -> "Effacer"
-            "Spanish" -> "Borrar"
-            "Portuguese" -> "Limpar"
-            "Italian" -> "Cancella"
-            "Dutch" -> "Wissen"
-            "German" -> "Löschen"
+            "ru" -> "Очистить"
+            "fr-FR" -> "Effacer"
+            "es" -> "Borrar"
+            "pt-PT" -> "Limpar"
+            "pt-BR" -> "Limpar"
+            "it" -> "Cancella"
+            "nl" -> "Wissen"
+            "de" -> "Löschen"
             else -> "Clear"
         }
     }
 
     @Stable
-    fun clipboard(locale: String?): String {
+    fun clipboard(): String {
         return when (locale) {
-            "Russian" -> "Буфер обмена"
-            "French" -> "Presse-papiers"
-            "Spanish" -> "Portapapeles"
-            "Portuguese" -> "Área de transferência"
-            "Italian" -> "Appunti"
-            "Dutch" -> "Klembord"
-            "German" -> "Zwischenablage"
+            "ru" -> "Буфер обмена"
+            "fr-FR" -> "Presse-papiers"
+            "es" -> "Portapapeles"
+            "pt-PT" -> "Área de transferência"
+            "pt-BR" -> "Área de transferência"
+            "it" -> "Appunti"
+            "nl" -> "Klembord"
+            "de" -> "Zwischenablage"
             else -> "Clipboard"
         }
     }
 
     @Stable
-    fun back(locale: String?) : String {
+    fun back() : String {
         return when(locale) {
-            "Russian" -> "Назад"
-            "French" -> "Retour"
-            "Spanish" -> "Atrás"
-            "Portuguese" -> "Voltar"
-            "Italian" -> "Indietro"
-            "Dutch" -> "Terug"
-            "German" -> "Zurück"
+            "ru" -> "Назад"
+            "fr-FR" -> "Retour"
+            "es" -> "Atrás"
+            "pt-PT" -> "Voltar"
+            "pt-BR" -> "Voltar"
+            "it" -> "Indietro"
+            "nl" -> "Terug"
+            "de" -> "Zurück"
             else -> "Back"
         }
     }
 
     @Stable
-    fun searchEmoji(locale: String?): String {
+    fun searchEmoji(): String {
         return when (locale) {
-            "Russian" -> "Поиск смайликов"
-            "French" -> "Rechercher Emoji"
-            "Spanish" -> "Buscar Emoji"
-            "Portuguese" -> "Pesquisar Emoji"
-            "Italian" -> "Cerca Emoji"
-            "Dutch" -> "Zoek Emoji"
-            "German" -> "Emoji suchen"
+            "ru" -> "Поиск смайликов"
+            "fr-FR" -> "Rechercher Emoji"
+            "es" -> "Buscar Emoji"
+            "pt-PT" -> "Pesquisar Emoji"
+            "pt-BR" -> "Pesquisar Emoji"
+            "it" -> "Cerca Emoji"
+            "nl" -> "Zoek Emoji"
+            "de" -> "Emoji suchen"
             else -> "Search Emoji"
         }
     }
 
     @Stable
-    fun space(locale: String?): String {
+    fun space(): String {
         return when (locale) {
-            "Russian" -> "пробел"
-            "French" -> "espace"
-            "Spanish" -> "espacio"
-            "Portuguese" -> "espaço"
-            "Italian" -> "spazio"
-            "Dutch" -> "spatie"
-            "German" -> "Leerzeichen"
+            "ru" -> "пробел"
+            "fr-FR" -> "espace"
+            "es" -> "espacio"
+            "pt-PT" -> "espaço"
+            "pt-BR" -> "espaço"
+            "it" -> "spazio"
+            "nl" -> "spatie"
+            "de" -> "Leerzeichen"
             else -> "space"
         }
     }
 
     @Stable
-    fun pause(locale: String?): String {
+    fun pause(): String {
         return when (locale) {
-            "Russian" -> "пауза"
-            "French" -> "pause"
-            "Spanish" -> "pausa"
-            "Portuguese" -> "pausa"
-            "Italian" -> "pausa"
-            "Dutch" -> "pauze"
-            "German" -> "Pause"
+            "ru" -> "пауза"
+            "fr-FR" -> "pause"
+            "es" -> "pausa"
+            "pt-PT" -> "pausa"
+            "pt-BR" -> "pausa"
+            "it" -> "pausa"
+            "nl" -> "pauze"
+            "de" -> "Pause"
             else -> "pause"
         }
     }
 
     @Stable
-    fun wait(locale: String?): String {
+    fun wait(): String {
         return when (locale) {
-            "Russian" -> "ждать"
-            "French" -> "attendre"
-            "Spanish" -> "esperar"
-            "Portuguese" -> "esperar"
-            "Italian" -> "aspettare"
-            "Dutch" -> "wachten"
-            "German" -> "warten"
+            "ru" -> "ждать"
+            "fr-FR" -> "attendre"
+            "es" -> "esperar"
+            "pt-PT" -> "esperar"
+            "pt-BR" -> "esperar"
+            "it" -> "aspettare"
+            "nl" -> "wachten"
+            "de" -> "warten"
             else -> "wait"
         }
     }
 
     @Stable
-    fun action(text: String, locale: String?): String {
+    fun action(text: String): String {
         return when (text) {
             "done" -> when (locale) {
-                "English" -> "done"
-                "Russian" -> "сделано"
-                "French" -> "terminé"
-                "Spanish" -> "aceptar"
-                "Portuguese" -> "concluído"
-                "Italian" -> "fatto"
-                "Dutch" -> "gedaan"
-                "German" -> "erledigt"
+                "en-US" -> "done"
+                "ru" -> "сделано"
+                "fr-FR" -> "terminé"
+                "es" -> "aceptar"
+                "pt-PT" -> "concluído"
+                "pt-BR" -> "concluído"
+                "it" -> "fatto"
+                "nl" -> "gedaan"
+                "de" -> "erledigt"
                 else -> "done"
             }
 
             "go" -> when (locale) {
-                "Russian" -> "идти"
-                "French" -> "aller"
-                "Spanish" -> "ir"
-                "Portuguese" -> "ir"
-                "Italian" -> "andare"
-                "Dutch" -> "gaan"
-                "German" -> "gehen"
+                "ru" -> "идти"
+                "fr-FR" -> "aller"
+                "es" -> "ir"
+                "pt-PT" -> "ir"
+                "pt-BR" -> "ir"
+                "it" -> "andare"
+                "nl" -> "gaan"
+                "de" -> "gehen"
                 else -> "go"
             }
 
             "search" -> when (locale) {
-                "Russian" -> "поиск"
-                "French" -> "rechercher"
-                "Spanish" -> "buscar"
-                "Portuguese" -> "buscar"
-                "Italian" -> "ricerca"
-                "Dutch" -> "zoeken"
-                "German" -> "suche"
+                "ru" -> "поиск"
+                "fr-FR" -> "rechercher"
+                "es" -> "buscar"
+                "pt-PT" -> "buscar"
+                "pt-BR" -> "buscar"
+                "it" -> "ricerca"
+                "nl" -> "zoeken"
+                "de" -> "suche"
                 else -> "search"
             }
 
             "next" -> when (locale) {
-                "English" -> "next"
-                "Russian" -> "следующий"
-                "French" -> "suivant"
-                "Spanish" -> "próximo"
-                "Portuguese" -> "próximo"
-                "Italian" -> "prossimo"
-                "Dutch" -> "volgende"
-                "German" -> "nächster"
+                "en-US" -> "next"
+                "ru" -> "следующий"
+                "fr-FR" -> "suivant"
+                "es" -> "próximo"
+                "pt-PT" -> "próximo"
+                "pt-BR" -> "próximo"
+                "it" -> "prossimo"
+                "nl" -> "volgende"
+                "de" -> "nächster"
                 else -> "next"
             }
 
             "send" -> when (locale) {
-                "Russian" -> "послать"
-                "French" -> "envoyer"
-                "Spanish" -> "enviar"
-                "Portuguese" -> "enviar"
-                "Italian" -> "inviare"
-                "Dutch" -> "verzenden"
-                "German" -> "senden"
+                "ru" -> "послать"
+                "fr-FR" -> "envoyer"
+                "es" -> "enviar"
+                "pt-PT" -> "enviar"
+                "pt-BR" -> "enviar"
+                "it" -> "inviare"
+                "nl" -> "verzenden"
+                "de" -> "senden"
                 else -> "send"
             }
 
             else -> when (locale) {
-                "Russian" -> "возврат"
-                "French" -> "retour"
-                "Spanish" -> "intro"
-                "Portuguese" -> "retorno"
-                "Italian" -> "ritorno"
-                "Dutch" -> "terug"
-                "German" -> "zurück"
+                "ru" -> "возврат"
+                "fr-FR" -> "retour"
+                "es" -> "intro"
+                "pt-PT" -> "retorno"
+                "pt-BR" -> "retorno"
+                "it" -> "ritorno"
+                "nl" -> "terug"
+                "de" -> "zurück"
                 else -> "return"
             }
         }

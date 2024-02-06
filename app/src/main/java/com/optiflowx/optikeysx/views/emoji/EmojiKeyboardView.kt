@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
-import com.optiflowx.optikeysx.core.data.frequentlyUsedEmoji
+import com.optiflowx.optikeysx.core.model.frequentlyUsedEmoji
 import com.optiflowx.optikeysx.core.preferences.PrefsConstants
 import com.optiflowx.optikeysx.core.preferences.rememberPreference
 import com.optiflowx.optikeysx.core.utils.appFontType
@@ -64,7 +64,7 @@ fun EmojiKeyboardView(
     )
     val pagerState = rememberPagerState(pageCount = { emojiViewPager.size }, initialPage = 0)
 
-//    if (isESearch.value) NormalKeyboardView(viewModel, viewWidth)
+//    if (isESearch.value) StandardKeyboardView(viewModel, viewWidth)
 //    else
     Column(
         Modifier.width(viewWidth)

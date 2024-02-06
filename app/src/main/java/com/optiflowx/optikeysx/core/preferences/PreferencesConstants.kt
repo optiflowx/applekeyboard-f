@@ -6,8 +6,7 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 
 @Immutable
 object PrefsConstants {
-    val FIRST_RUN_KEY = booleanPreferencesKey("FIRST_RUN_KEY")
-    val LOCALE_KEY = stringPreferencesKey("LOCALE_KEY")
+//    val FIRST_RUN_KEY = booleanPreferencesKey("FIRST_RUN_KEY")
     val FONT_TYPE_KEY = stringPreferencesKey("FONT_TYPE_KEY")
     val VIBRATE_ON_KEY_PRESS_KEY = booleanPreferencesKey("VIBRATE_ON_KEY_PRESS_KEY")
     val SOUND_ON_KEY_PRESS_KEY = booleanPreferencesKey("SOUND_ON_KEY_PRESS_KEY")

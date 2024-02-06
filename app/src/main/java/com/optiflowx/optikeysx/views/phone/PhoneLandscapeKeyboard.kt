@@ -7,58 +7,48 @@ import androidx.compose.foundation.layout.mandatorySystemGesturesPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
-import com.optiflowx.optikeysx.core.preferences.PrefsConstants
-import com.optiflowx.optikeysx.core.preferences.rememberPreference
+import com.optiflowx.optikeysx.ui.keyboard.NumberKeyboardActionView
 import com.optiflowx.optikeysx.viewmodels.KeyboardViewModel
-import com.optiflowx.optikeysx.views.global.KeyboardOptionsView
-import com.optiflowx.optikeysx.views.global.NumberKeyboardActionView
 
 @Composable
 fun PhoneLandscapeKeyboard(viewModel: KeyboardViewModel) {
-    val locale by rememberPreference(PrefsConstants.LOCALE_KEY, "English")
-    val fontType by rememberPreference(PrefsConstants.FONT_TYPE_KEY, "Regular")
     val screenWidth = LocalConfiguration.current.screenWidthDp
     val viewWidth = (screenWidth * 0.8).dp
     val sideWidth = (screenWidth * 0.1)
+    val locale = viewModel.locale.collectAsState().value
+    
 
-    Box(
-        Modifier
-            .mandatorySystemGesturesPadding()
+    Column(
+        modifier = Modifier.mandatorySystemGesturesPadding(),
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
+        NumberKeyboardActionView(locale, viewWidth)
 
-        KeyboardOptionsView(viewModel, locale, fontType, viewWidth, 32, 14)
-
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
+        Row(
+            verticalAlignment = Alignment.Bottom,
+            modifier = Modifier.padding(vertical = 2.dp)
         ) {
-            NumberKeyboardActionView(locale, viewWidth)
 
-            Row(
-                verticalAlignment = Alignment.Bottom,
-                modifier = Modifier.padding(vertical = 2.dp)
-            ) {
+            Box(
+                contentAlignment = Alignment.BottomCenter,
+                modifier = Modifier
+                    .width(sideWidth.dp)
+                    .padding(bottom = 2.dp)
+            ) {}
 
-                Box(
-                    contentAlignment = Alignment.BottomCenter,
-                    modifier = Modifier
-                        .width(sideWidth.dp)
-                        .padding(bottom = 2.dp)
-                ) {}
+            PhoneKeyboardView(viewModel, viewWidth,  34, 0)
 
-                PhoneKeyboardView(viewModel, viewWidth,  34, 0)
-
-                Box(
-                    contentAlignment = Alignment.BottomCenter,
-                    modifier = Modifier
-                        .width(sideWidth.dp)
-                        .padding(bottom = 2.dp)
-                ) {}
-            }
+            Box(
+                contentAlignment = Alignment.BottomCenter,
+                modifier = Modifier
+                    .width(sideWidth.dp)
+                    .padding(bottom = 2.dp)
+            ) {}
         }
     }
 }

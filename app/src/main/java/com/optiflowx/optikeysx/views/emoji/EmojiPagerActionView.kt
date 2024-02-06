@@ -26,8 +26,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import com.optiflowx.optikeysx.R
-import com.optiflowx.optikeysx.core.data.Key
 import com.optiflowx.optikeysx.core.enums.KeyboardType
+import com.optiflowx.optikeysx.core.model.Key
 import com.optiflowx.optikeysx.viewmodels.KeyboardViewModel
 import io.github.alexzhirkevich.cupertino.Surface
 import io.github.alexzhirkevich.cupertino.theme.CupertinoColors

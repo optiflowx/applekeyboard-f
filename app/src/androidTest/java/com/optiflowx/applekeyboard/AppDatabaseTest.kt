@@ -3,9 +3,9 @@ package com.optiflowx.optikeysx
 import androidx.room.Room
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import com.optiflowx.optikeysx.database.FrequentlyUsedDatabase
-import com.optiflowx.optikeysx.database.dao.RecentEmojiDatabaseDAO
-import com.optiflowx.optikeysx.database.entities.EmojiData
+import com.optiflowx.optikeysx.core.database.dao.FrequentlyUsedEmojiDatabaseDAO
+import com.optiflowx.optikeysx.core.database.dbs.FrequentlyUsedDatabase
+import com.optiflowx.optikeysx.core.database.entities.FrequentlyUsedEmoji
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Assert.*
@@ -22,7 +22,7 @@ import java.io.IOException
 @RunWith(AndroidJUnit4::class)
 class AppDatabaseTest {
 
-    private lateinit var appDataDao: RecentEmojiDatabaseDAO
+    private lateinit var appDataDao: FrequentlyUsedEmojiDatabaseDAO
     private lateinit var dataB: FrequentlyUsedDatabase
 
     @Before
@@ -39,7 +39,7 @@ class AppDatabaseTest {
     @After
     @Throws(IOException::class)
     fun deleteDb() {
-        if(dataB.isOpen) {
+        if (dataB.isOpen) {
             dataB.close()
         }
     }
@@ -48,15 +48,15 @@ class AppDatabaseTest {
     @Throws(Exception::class)
     fun insertAndGetEmoji() = runBlocking {
         val emojis = listOf("👍", "👎", "👌", "💅")
-        for (emoji in  emojis) {
-            appDataDao.insert(EmojiData(emoji = emoji))
+        for (emoji in emojis) {
+            appDataDao.insert(FrequentlyUsedEmoji(id = emoji.hashCode(), emoji = emoji))
         }
 //        val oneEmoji = appDataDao.getEmojiById(1)
         val allEmojis = appDataDao.getAllEmojis()
 
-        for (emoji in allEmojis) {
-            println("Emoji: ${emoji.emoji}")
-        }
+//        for (emoji in allEmojis) {
+//            println("Emoji: ${emoji.emoji}")
+//        }
 //        assertEquals(allEmojis[0].id, 1)
 //        assertEquals(allEmojis[0].emoji, "👍")
     }

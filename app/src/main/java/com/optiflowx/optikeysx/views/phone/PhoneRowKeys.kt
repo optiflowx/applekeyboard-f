@@ -1,12 +1,12 @@
 package com.optiflowx.optikeysx.views.phone
 
 import androidx.compose.runtime.Immutable
-import com.optiflowx.optikeysx.core.data.Key
+import com.optiflowx.optikeysx.core.model.Key
 import com.optiflowx.optikeysx.core.utils.KeyboardLocale
 
 @Immutable
-class PhoneRowKeys(locale: String?) {
-    private val keyboardLocale = KeyboardLocale()
+class PhoneRowKeys(locale: String) {
+    private val keyboardLocale = KeyboardLocale(locale)
 
     val row1Keys = listOf(
         Key("1", ""),
@@ -21,9 +21,9 @@ class PhoneRowKeys(locale: String?) {
     )
 
     val row2KeysB = listOf(
-        Key("4", keyboardLocale.pause(locale)),
+        Key("4", keyboardLocale.pause()),
         Key("5", "JKL"),
-        Key("6", keyboardLocale.wait(locale)),
+        Key("6", keyboardLocale.wait()),
     )
 
     val row3Keys = listOf(

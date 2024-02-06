@@ -1,7 +1,7 @@
 package com.optiflowx.optikeysx.views.number
 
 import androidx.compose.runtime.Immutable
-import com.optiflowx.optikeysx.core.data.Key
+import com.optiflowx.optikeysx.core.model.Key
 
 
 @Immutable

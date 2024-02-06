@@ -23,14 +23,14 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.sp
 import com.optiflowx.optikeysx.R
-import com.optiflowx.optikeysx.core.data.Key
+import com.optiflowx.optikeysx.core.model.Key
 import com.optiflowx.optikeysx.core.preferences.PrefsConstants
 import com.optiflowx.optikeysx.core.preferences.rememberPreference
 import com.optiflowx.optikeysx.core.utils.KeyboardLocale
-import com.optiflowx.optikeysx.ui.keyboard.EraseButton
-import com.optiflowx.optikeysx.ui.keyboard.KeyButton
 import com.optiflowx.optikeysx.core.utils.appFontType
 import com.optiflowx.optikeysx.core.utils.nonScaledSp
+import com.optiflowx.optikeysx.ui.keyboard.EraseButton
+import com.optiflowx.optikeysx.ui.keyboard.KeyButton
 import com.optiflowx.optikeysx.viewmodels.KeyboardViewModel
 import io.github.alexzhirkevich.cupertino.theme.CupertinoColors
 import io.github.alexzhirkevich.cupertino.theme.systemGray
@@ -43,11 +43,12 @@ fun PhoneNumKeyboardKey(key: Key, viewModel: KeyboardViewModel) {
     val isErase: Boolean = key.id == "delete"
 
     //Make it global
-    val keyboardLocale = KeyboardLocale()
+    
+    val locale = viewModel.locale.collectAsState().value
+    val keyboardLocale = KeyboardLocale(locale)
     val isPhoneSymbols = viewModel.isPhoneSymbol.collectAsState().value
 
     val fontType by rememberPreference(PrefsConstants.FONT_TYPE_KEY, "Regular")
-    val locale by rememberPreference(PrefsConstants.LOCALE_KEY, "English")
 
     val keysToDisable = (key.id == "1" || key.id == "2"
             || key.id == "3" || key.id == "5"
@@ -57,6 +58,7 @@ fun PhoneNumKeyboardKey(key: Key, viewModel: KeyboardViewModel) {
         EraseButton(
             color = Color.Transparent,
             id = key.id,
+            applyShadow = false,
             onClick = {
                 viewModel.playSound(key)
                 viewModel.vibrate()
@@ -102,16 +104,14 @@ fun PhoneNumKeyboardKey(key: Key, viewModel: KeyboardViewModel) {
                 verticalArrangement = Arrangement.Bottom,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                if (key.value == keyboardLocale.wait(locale) || key.value == keyboardLocale.pause(
-                        locale
-                    )
+                if (key.value == keyboardLocale.wait() || key.value == keyboardLocale.pause()
                     || key.value == "*" || key.value == "#"
                     || key.value == "+"
                 ) {
                     Text(
                         text = when (key.value) {
-                            keyboardLocale.wait(locale) -> keyboardLocale.wait(locale)
-                            keyboardLocale.pause(locale) -> keyboardLocale.pause(locale)
+                            keyboardLocale.wait() -> keyboardLocale.wait()
+                            keyboardLocale.pause() -> keyboardLocale.pause()
                             else -> key.value
                         },
                         fontWeight = FontWeight.Light,

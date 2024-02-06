@@ -1,6 +1,5 @@
 package com.optiflowx.optikeysx.views.number
 
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -24,7 +23,7 @@ fun NumberKeyboardView(
     val numRowKeys = NumberRowKeys()
 
     ConstraintLayout(numConst.constraints, Modifier.width(viewWidth), optimizationLevel = OPTIMIZATION_STANDARDIZED, animateChanges = true,
-            animationSpec = tween(350),) {
+            ) {
 
         Box(Modifier.layoutId('1')) {
             ConstraintLayout(
@@ -32,8 +31,8 @@ fun NumberKeyboardView(
                 modifier = Modifier
                     .width(viewWidth)
                     .align(Alignment.Center)
-                    .padding(horizontal = 4.dp), optimizationLevel = OPTIMIZATION_STANDARDIZED, animateChanges = true,
-            animationSpec = tween(350),
+                    .padding(horizontal = 3.dp), optimizationLevel = OPTIMIZATION_STANDARDIZED, animateChanges = true,
+            
             ) { for (key in numRowKeys.row1Keys) NumKeyboardKey(key, viewModel) }
         }
         Box(Modifier.layoutId('2')) {
@@ -42,8 +41,8 @@ fun NumberKeyboardView(
                 modifier = Modifier
                     .width(viewWidth)
                     .align(Alignment.Center)
-                    .padding(horizontal = 4.dp), optimizationLevel = OPTIMIZATION_STANDARDIZED, animateChanges = true,
-            animationSpec = tween(350),
+                    .padding(horizontal = 3.dp), optimizationLevel = OPTIMIZATION_STANDARDIZED, animateChanges = true,
+            
             ) { for (key in numRowKeys.row2Keys) NumKeyboardKey(key, viewModel) }
         }
         Box(Modifier.layoutId('3')) {
@@ -52,8 +51,8 @@ fun NumberKeyboardView(
                 modifier = Modifier
                     .width(viewWidth)
                     .align(Alignment.Center)
-                    .padding(horizontal = 4.dp), optimizationLevel = OPTIMIZATION_STANDARDIZED, animateChanges = true,
-            animationSpec = tween(350),
+                    .padding(horizontal = 3.dp), optimizationLevel = OPTIMIZATION_STANDARDIZED, animateChanges = true,
+            
             ) { for (key in numRowKeys.row3Keys) NumKeyboardKey(key, viewModel) }
         }
         Box(Modifier.layoutId('4')) {
@@ -62,9 +61,9 @@ fun NumberKeyboardView(
                 modifier = Modifier
                     .width(viewWidth)
                     .align(Alignment.Center)
-                    .padding(horizontal = 4.dp),
+                    .padding(horizontal = 3.dp),
                 optimizationLevel = OPTIMIZATION_STANDARDIZED, animateChanges = true,
-            animationSpec = tween(350),
+            
             ) { for (key in numRowKeys.row4Keys) NumKeyboardKey(key, viewModel) }
         }
     }

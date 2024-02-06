@@ -35,7 +35,7 @@ android {
         getByName("release") {
             isMinifyEnabled = true
             isShrinkResources = true
-            isProfileable = false //TO BE FALSE
+            isProfileable = true //TO BE FALSE
             isCrunchPngs = true
             isDebuggable = false
 
@@ -59,12 +59,12 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
 
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "11"
     }
 
     buildFeatures {
@@ -88,11 +88,12 @@ dependencies {
     implementation("androidx.constraintlayout:constraintlayout-core:1.0.4")
     androidTestImplementation("androidx.test:runner:1.5.2")
 
-    implementation ("io.qonversion.android.sdk:sdk:7.1.0") // Qonversion SDK
+//    implementation ("io.qonversion.android.sdk:sdk:7.1.0") // Qonversion SDK
+
+//    implementation("io.github.hokofly:hoko-blur:1.5.3")
 
     //Destinations
     implementation("io.github.raamcosta.compose-destinations:core:1.10.0")
-    "baselineProfile"(project(":non"))
     "baselineProfile"(project(":baselineprofiles"))
     ksp("io.github.raamcosta.compose-destinations:ksp:1.10.0")
 

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <input-method xmlns:android="http://schemas.android.com/apk/res/android">
-    <subtype android:label="English (US)"
+    <subtype android:label="English (Global)"
         android:imeSubtypeLocale="en_US"
         android:languageTag="en-US"
         android:imeSubtypeMode="keyboard"
@@ -24,12 +24,6 @@
         android:imeSubtypeMode="keyboard"
         android:imeSubtypeExtraValue="charDataFile=strokemaps_dynamic" />
 
-    <subtype android:label="German"
-        android:imeSubtypeLocale="de"
-        android:languageTag="de"
-        android:imeSubtypeMode="keyboard"
-        android:imeSubtypeExtraValue="charDataFile=strokemaps_dynamic" />
-
     <subtype android:label="Italian"
         android:imeSubtypeLocale="it"
         android:languageTag="it"
@@ -42,9 +36,9 @@
         android:imeSubtypeMode="keyboard"
         android:imeSubtypeExtraValue="charDataFile=strokemaps_dynamic" />
 
-    <subtype android:label="Portuguese"
-        android:imeSubtypeLocale="pt"
-        android:languageTag="pt"
+    <subtype android:label="Portuguese (Portugal)"
+        android:imeSubtypeLocale="pt_PT"
+        android:languageTag="pt-PT"
         android:imeSubtypeMode="keyboard"
         android:imeSubtypeExtraValue="charDataFile=strokemaps_dynamic" />
 
@@ -59,6 +53,12 @@
         android:languageTag="tr"
         android:imeSubtypeMode="keyboard"
         android:imeSubtypeExtraValue="charDataFile=strokemaps_dynamic" />
+
+<!--    <subtype android:label="German"-->
+<!--        android:imeSubtypeLocale="de"-->
+<!--        android:languageTag="de"-->
+<!--        android:imeSubtypeMode="keyboard"-->
+<!--        android:imeSubtypeExtraValue="charDataFile=strokemaps_dynamic" />-->
 
 <!--    <subtype android:label="Ukrainian"-->
 <!--        android:imeSubtypeLocale="uk"-->

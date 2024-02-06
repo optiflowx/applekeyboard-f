@@ -14,7 +14,7 @@ class SymbolConstraintSet(
 ) {
     private val percent = 0.086f
     private val percentB = 0.125f
-    private val gapW = 0.016f
+    private val gapW = 0.013f
     private val gapM = 0.035f
     private val pBig = 0.47f
     private val pMedium = 0.25f

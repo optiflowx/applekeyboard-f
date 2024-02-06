@@ -1,6 +1,6 @@
 package com.optiflowx.optikeysx.views.symbols
 
-import com.optiflowx.optikeysx.core.data.Key
+import com.optiflowx.optikeysx.core.model.Key
 
 class SymbolRowKeys {
     val row1Keys = arrayOf(

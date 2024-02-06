@@ -1,0 +1,104 @@
+package com.optiflowx.optikeysx.views.defaults
+
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.mandatorySystemGesturesPadding
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.layoutId
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
+import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.ConstraintSet
+import com.optiflowx.optikeysx.core.enums.KeyboardType
+import com.optiflowx.optikeysx.core.utils.OPTIMIZATION_STANDARDIZED
+import com.optiflowx.optikeysx.ui.keyboard.KeyboardBottomView
+import com.optiflowx.optikeysx.ui.keyboard.KeyboardTopView
+import com.optiflowx.optikeysx.viewmodels.KeyboardViewModel
+import com.optiflowx.optikeysx.views.clipboard.ClipboardKeyboardView
+import com.optiflowx.optikeysx.views.emoji.EmojiKeyboardView
+import com.optiflowx.optikeysx.views.keyboards.french.FrenchKeyboardView
+import com.optiflowx.optikeysx.views.keyboards.portuguese.PortugueseKeyboardView
+import com.optiflowx.optikeysx.views.keyboards.russian.RussianKeyboardView
+import com.optiflowx.optikeysx.views.keyboards.spanish.SpanishKeyboardView
+import com.optiflowx.optikeysx.views.keyboards.standard.StandardKeyboardView
+import com.optiflowx.optikeysx.views.symbols.SymbolsKeyboardView
+
+@Composable
+fun DefaultPortraitKeyboard(
+    vM: KeyboardViewModel
+) {
+    val vW = LocalConfiguration.current.screenWidthDp.dp
+    val vH: Dp = 230.dp
+    val cVH: Dp = 200.dp
+    val eCC: Int = 6
+    val keyboardType = vM.keyboardType.collectAsState()
+    val locale = vM.locale.collectAsState().value
+
+    val constraintsSet = ConstraintSet {
+        val topView = createRefFor("topView")
+        val keyboardView = createRefFor("keyboardView")
+        val bottomView = createRefFor("bottomView")
+
+        constrain(topView) {
+            top.linkTo(parent.top)
+            start.linkTo(parent.start)
+            end.linkTo(parent.end)
+        }
+
+        constrain(keyboardView) {
+            top.linkTo(topView.bottom)
+            start.linkTo(parent.start)
+            end.linkTo(parent.end)
+        }
+
+        constrain(bottomView) {
+            top.linkTo(keyboardView.bottom)
+            start.linkTo(parent.start)
+            end.linkTo(parent.end)
+            bottom.linkTo(parent.bottom)
+        }
+    }
+
+    
+
+    ConstraintLayout(
+        constraintSet = constraintsSet,
+        modifier = Modifier.mandatorySystemGesturesPadding(),
+        optimizationLevel = OPTIMIZATION_STANDARDIZED,
+        animateChanges = true,
+    ) {
+        KeyboardTopView(vM, viewWidth = vW)
+
+        Box(
+            modifier = Modifier
+                .layoutId("keyboardView")
+                .wrapContentSize(),
+            contentAlignment = Alignment.Center,
+        ) {
+            when (keyboardType.value) {
+                KeyboardType.Normal -> {
+                    when (locale) {
+                        "pt-BR" -> PortugueseKeyboardView(vM, vW)
+                        "pt-PT" -> PortugueseKeyboardView(vM, vW)
+                        "fr-FR" -> FrenchKeyboardView(vM, vW)
+                        "es" -> SpanishKeyboardView(vM, vW)
+                        "ru" -> RussianKeyboardView(vM, vW)
+                        else -> StandardKeyboardView(vM, vW)
+                    }
+                }
+
+                KeyboardType.Symbol -> SymbolsKeyboardView(vM, vW)
+
+                KeyboardType.Emoji -> EmojiKeyboardView(vM, vW)
+
+                KeyboardType.Clipboard -> ClipboardKeyboardView(vM, vW)
+            }
+        }
+
+        KeyboardBottomView(vM)
+    }
+}

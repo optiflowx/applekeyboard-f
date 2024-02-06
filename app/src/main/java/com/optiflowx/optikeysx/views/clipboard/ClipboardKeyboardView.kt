@@ -47,7 +47,7 @@ import io.github.alexzhirkevich.cupertino.theme.systemGray
 fun ClipboardKeyboardView(
     viewModel: KeyboardViewModel,
     viewWidth: Dp,
-    viewHeight: Int = 200,
+    viewHeight: Dp = 200.dp,
 ) {
     val context = LocalContext.current
 
@@ -61,7 +61,7 @@ fun ClipboardKeyboardView(
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier
-            .height(viewHeight.dp)
+            .height(viewHeight)
             .width(viewWidth)
     ) {
         if (!clipDataList.isNullOrEmpty()) {
