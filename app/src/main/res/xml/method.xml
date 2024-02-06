@@ -1,4 +1,122 @@
 <?xml version="1.0" encoding="utf-8"?>
 <input-method xmlns:android="http://schemas.android.com/apk/res/android">
-    <subtype android:imeSubtypeMode="keyboard" />
+    <subtype android:label="English (US)"
+        android:imeSubtypeLocale="en_US"
+        android:languageTag="en-US"
+        android:imeSubtypeMode="keyboard"
+        android:imeSubtypeExtraValue="charDataFile=strokemaps_dynamic" />
+
+    <subtype android:label="Russian"
+        android:imeSubtypeLocale="ru"
+        android:languageTag="ru"
+        android:imeSubtypeMode="keyboard"
+        android:imeSubtypeExtraValue="charDataFile=strokemaps_dynamic" />
+
+    <subtype android:label="Spanish"
+        android:imeSubtypeLocale="es"
+        android:languageTag="es"
+        android:imeSubtypeMode="keyboard"
+        android:imeSubtypeExtraValue="charDataFile=strokemaps_dynamic" />
+
+    <subtype android:label="French (France)"
+        android:imeSubtypeLocale="fr_FR"
+        android:languageTag="fr-FR"
+        android:imeSubtypeMode="keyboard"
+        android:imeSubtypeExtraValue="charDataFile=strokemaps_dynamic" />
+
+    <subtype android:label="German"
+        android:imeSubtypeLocale="de"
+        android:languageTag="de"
+        android:imeSubtypeMode="keyboard"
+        android:imeSubtypeExtraValue="charDataFile=strokemaps_dynamic" />
+
+    <subtype android:label="Italian"
+        android:imeSubtypeLocale="it"
+        android:languageTag="it"
+        android:imeSubtypeMode="keyboard"
+        android:imeSubtypeExtraValue="charDataFile=strokemaps_dynamic" />
+
+    <subtype android:label="Portuguese (Brazil)"
+        android:imeSubtypeLocale="pt_BR"
+        android:languageTag="pt-BR"
+        android:imeSubtypeMode="keyboard"
+        android:imeSubtypeExtraValue="charDataFile=strokemaps_dynamic" />
+
+    <subtype android:label="Portuguese"
+        android:imeSubtypeLocale="pt"
+        android:languageTag="pt"
+        android:imeSubtypeMode="keyboard"
+        android:imeSubtypeExtraValue="charDataFile=strokemaps_dynamic" />
+
+    <subtype android:label="Dutch"
+        android:imeSubtypeLocale="nl"
+        android:languageTag="nl"
+        android:imeSubtypeMode="keyboard"
+        android:imeSubtypeExtraValue="charDataFile=strokemaps_dynamic" />
+
+    <subtype android:label="Turkish"
+        android:imeSubtypeLocale="tr"
+        android:languageTag="tr"
+        android:imeSubtypeMode="keyboard"
+        android:imeSubtypeExtraValue="charDataFile=strokemaps_dynamic" />
+
+<!--    <subtype android:label="Ukrainian"-->
+<!--        android:imeSubtypeLocale="uk"-->
+<!--        android:imeSubtypeMode="keyboard"-->
+<!--        android:imeSubtypeExtraValue="charDataFile=strokemaps_dynamic" />-->
+
+<!--    <subtype android:label="Romanian"-->
+<!--        android:imeSubtypeLocale="ro"-->
+<!--        android:imeSubtypeMode="keyboard"-->
+<!--        android:imeSubtypeExtraValue="charDataFile=strokemaps_dynamic" />-->
+
+<!--    <subtype android:label="Hungarian"-->
+<!--        android:imeSubtypeLocale="hu"-->
+<!--        android:imeSubtypeMode="keyboard"-->
+<!--        android:imeSubtypeExtraValue="charDataFile=strokemaps_dynamic" />-->
+
+<!--    <subtype android:label="Arabic"-->
+<!--        android:imeSubtypeLocale="ar"-->
+<!--        android:imeSubtypeMode="keyboard"-->
+<!--        android:imeSubtypeExtraValue="charDataFile=strokemaps_dynamic" />-->
+
+<!--    <subtype android:label="Hindi"-->
+<!--        android:imeSubtypeLocale="hi"-->
+<!--        android:imeSubtypeMode="keyboard"-->
+<!--        android:imeSubtypeExtraValue="charDataFile=strokemaps_dynamic" />-->
+
+<!--    <subtype android:label="Danish"-->
+<!--        android:imeSubtypeLocale="da"-->
+<!--        android:imeSubtypeMode="keyboard"-->
+<!--        android:imeSubtypeExtraValue="charDataFile=strokemaps_dynamic" />-->
+
+<!--    <subtype android:label="Filipino"-->
+<!--        android:imeSubtypeLocale="fil"-->
+<!--        android:imeSubtypeMode="keyboard"-->
+<!--        android:imeSubtypeExtraValue="charDataFile=strokemaps_dynamic" />-->
+
+<!--    <subtype android:label="Vietnamese"-->
+<!--        android:imeSubtypeLocale="vi"-->
+<!--        android:imeSubtypeMode="keyboard"-->
+<!--        android:imeSubtypeExtraValue="charDataFile=strokemaps_dynamic" />-->
+
+<!--    <subtype android:label="Indonesian"-->
+<!--        android:imeSubtypeLocale="in"-->
+<!--        android:imeSubtypeMode="keyboard"-->
+<!--        android:imeSubtypeExtraValue="charDataFile=strokemaps_dynamic" />-->
+
+<!--    <subtype android:label="Malay"-->
+<!--        android:imeSubtypeLocale="ms"-->
+<!--        android:imeSubtypeMode="keyboard"-->
+<!--        android:imeSubtypeExtraValue="charDataFile=strokemaps_dynamic" />-->
+
+<!--    <subtype android:label="Afrikaans"-->
+<!--        android:imeSubtypeLocale="af"-->
+<!--        android:imeSubtypeMode="keyboard"-->
+<!--        android:imeSubtypeExtraValue="charDataFile=strokemaps_dynamic" />-->
+
+<!--    <subtype android:label="Zulu"-->
+<!--        android:imeSubtypeLocale="zu"-->
+<!--        android:imeSubtypeMode="keyboard"-->
+<!--        android:imeSubtypeExtraValue="charDataFile=strokemaps_dynamic" />-->
 </input-method>

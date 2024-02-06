@@ -1,10 +1,13 @@
-package com.optiflowx.optikeysx.views.global
+package com.optiflowx.optikeysx.ui.cupertino
 
+import android.content.Context
 import android.content.Intent
-import androidx.compose.foundation.LocalIndication
+import android.inputmethodservice.InputMethodService
+import android.provider.Settings
+import android.view.inputmethod.InputMethodManager
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -17,14 +20,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
@@ -33,9 +35,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
-import androidx.compose.ui.window.SecureFlagPolicy
 import com.optiflowx.optikeysx.MainActivity
 import com.optiflowx.optikeysx.core.enums.KeyboardType
+import com.optiflowx.optikeysx.core.utils.KeyboardLocale
 import com.optiflowx.optikeysx.core.utils.appFontType
 import com.optiflowx.optikeysx.core.utils.boxShadow
 import com.optiflowx.optikeysx.core.utils.nonScaledSp
@@ -44,47 +46,57 @@ import io.github.alexzhirkevich.cupertino.theme.CupertinoColors
 import io.github.alexzhirkevich.cupertino.theme.systemBlue
 
 @Composable
-fun KeyboardOptionsView(
+fun KeyboardGlobalOptions(
     viewModel: KeyboardViewModel,
-    locale: String,
     fontType: String,
     width: Dp,
     itemHeight: Int = 45,
     itemTextSize: Int = 15,
+    startPadding: Int = 0,
 ) {
-    val showOptions = viewModel.isShowOptions.collectAsState().value
-    val options = listOf("Keyboard Settings", "Language", "Clipboard")
     val context = LocalContext.current
+    val mIMM =
+        (context.getSystemService(InputMethodService.INPUT_METHOD_SERVICE) as InputMethodManager)
 
-    if (showOptions) {
+    val mIMS = mIMM.currentInputMethodSubtype
+
+    val displayName = mIMS?.getDisplayName(
+        context,
+        context.packageName,
+        context.applicationInfo
+    ).toString()
+
+    val isShowOptions = viewModel.isShowOptions.collectAsState().value
+    val options = listOf("Keyboard Settings", "Language", "Clipboard")
+    val locale = viewModel.locale.collectAsState().value
+    val keyboardLocale = KeyboardLocale(locale)
+
+    AnimatedVisibility(isShowOptions) {
         Popup(
             alignment = Alignment.BottomStart,
-            onDismissRequest = { viewModel.updateIsShowOptions(false) },
+            onDismissRequest = { dismiss(viewModel) },
             properties = PopupProperties(
                 focusable = false,
                 dismissOnBackPress = true,
-                securePolicy = SecureFlagPolicy.SecureOff,
                 dismissOnClickOutside = true,
                 clippingEnabled = false,
             )
         ) {
             Surface(
-                shape = RoundedCornerShape(10.dp),
+                shape = RoundedCornerShape(8.dp),
                 color = MaterialTheme.colorScheme.secondary,
                 modifier = Modifier
                     .width((width.value * 0.45).dp)
                     .wrapContentHeight()
-                    .padding(start = 10.dp, bottom = 25.dp)
                     .boxShadow(
                         color = MaterialTheme.colorScheme.tertiaryContainer,
-                        alpha = 0.25f,
-                        borderRadius = 20.dp,
+                        alpha = 0.5f,
                         offsetX = 0.dp,
                         offsetY = 0.dp,
-                        blurRadius = 10.dp,
-                        spread = 15.dp,
+                        blurRadius = 20.dp
                     )
-                    .clip(RoundedCornerShape(10.dp)),
+                    .padding(start = startPadding.dp)
+                    .clip(RoundedCornerShape(8.dp)),
             ) {
                 Column {
                     options.forEach { title ->
@@ -97,40 +109,23 @@ fun KeyboardOptionsView(
                                 })
                                 .fillMaxWidth()
                                 .height(itemHeight.dp)
-                                .clickable(
-                                    indication = LocalIndication.current,
-                                    interactionSource = remember { MutableInteractionSource() },
-                                    role = Role.Button,
-                                ) {
-                                    when (title) {
-                                        "Keyboard Settings" -> {
-                                            context.startActivity(
-                                                Intent(
-                                                    context,
-                                                    MainActivity::class.java
-                                                ).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                                            )
-                                        }
-
-                                        "Language" -> {
-                                            //TODO: Add language selection
-                                        }
-
-                                        "Clipboard" -> viewModel.onUpdateKeyboardType(KeyboardType.Clipboard)
-                                    }
-
-                                    viewModel.updateIsShowOptions(false)
-                                }
+                                .clickable(onClick = { onItemClick(title, context, viewModel) })
                         ) {
                             Text(
-                                text = if (title == "Language") locale else title,
+                                text = if (title == "Language") displayName else {
+                                    when (title) {
+                                        "Keyboard Settings" -> keyboardLocale.keyboardSettings()
+                                        "Clipboard" -> keyboardLocale.clipboard()
+                                        else -> "Unknown"
+                                    }
+                                },
                                 textAlign = TextAlign.Center,
                                 style = TextStyle(
                                     fontSize = itemTextSize.sp.nonScaledSp,
                                     fontFamily = appFontType(fontType),
                                     color = (if (title == "Language") Color.White
                                     else MaterialTheme.colorScheme.onBackground),
-                                    platformStyle = PlatformTextStyle(includeFontPadding = false)
+                                    platformStyle = PlatformTextStyle(false)
                                 ),
                             )
                         }
@@ -139,4 +134,47 @@ fun KeyboardOptionsView(
             }
         }
     }
+}
+
+@Stable
+private fun onKeyboardSelectionType(context: Context) {
+    val imId = Settings.Secure.getString(
+        context.contentResolver,
+        Settings.Secure.DEFAULT_INPUT_METHOD
+    )
+
+    val intent = Intent(Settings.ACTION_INPUT_METHOD_SUBTYPE_SETTINGS)
+        .putExtra(Settings.EXTRA_INPUT_METHOD_ID, imId)
+        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        .putExtra(Intent.EXTRA_TITLE, "Select Your Preferred Subtype(s)")
+
+    context.startActivity(intent)
+}
+
+@Stable
+private fun navigateToKeyboardSettings(context: Context) {
+    val intent = Intent(context, MainActivity::class.java)
+        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+
+    context.startActivity(intent)
+}
+
+@Stable
+private fun onItemClick(title: String, context: Context, viewModel: KeyboardViewModel) {
+    when (title) {
+        "Keyboard Settings" -> navigateToKeyboardSettings(context)
+        "Language" -> onKeyboardSelectionType(context)
+        "Clipboard" -> switchToClipboard(viewModel)
+    }
+    dismiss(viewModel)
+}
+
+@Stable
+private fun dismiss(viewModel: KeyboardViewModel) {
+    viewModel.updateIsShowOptions(false)
+}
+
+@Stable
+private fun switchToClipboard(viewModel: KeyboardViewModel) {
+    viewModel.onUpdateKeyboardType(KeyboardType.Clipboard)
 }
