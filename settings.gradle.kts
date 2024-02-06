@@ -15,5 +15,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "OptiKeysX"
 include(":app")
-include(":non")
 include(":baselineprofiles")

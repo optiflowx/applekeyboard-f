@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import com.optiflowx.optikeysx.R
 import com.optiflowx.optikeysx.core.preferences.PrefsConstants
 import com.optiflowx.optikeysx.core.preferences.rememberPreference
+import com.optiflowx.optikeysx.ui.cupertino.KeyboardGlobalOptions
 import com.optiflowx.optikeysx.viewmodels.KeyboardViewModel
 
 @Composable
@@ -34,8 +35,6 @@ fun KeyboardBottomView(viewModel: KeyboardViewModel) {
 
     val fontType by rememberPreference(PrefsConstants.FONT_TYPE_KEY, "Regular")
 
-    val locale by rememberPreference(PrefsConstants.LOCALE_KEY, "English")
-
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier
@@ -43,25 +42,31 @@ fun KeyboardBottomView(viewModel: KeyboardViewModel) {
             .padding(horizontal = (keyboardWidth.value * 0.075).dp)
             .fillMaxWidth()
     ) {
-        KeyboardOptionsView(viewModel, locale, fontType, keyboardWidth)
+
 
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.Bottom,
-            modifier = Modifier.height(48.dp).fillMaxWidth().fillMaxHeight()
+            modifier = Modifier
+                .height(48.dp)
+                .fillMaxWidth()
+                .fillMaxHeight()
         ) {
-            Icon(
-                painter = painterResource(R.drawable.globe_outline),
-                contentDescription = "globe",
-                tint = MaterialTheme.colorScheme.scrim,
-                modifier = Modifier
-                    .size(30.dp)
-                    .clickable(
-                        indication = null,
-                        interactionSource = remember { MutableInteractionSource() },
-                        role = Role.Button,
-                    ) { viewModel.updateIsShowOptions(true)  }
-            )
+            Box {
+                KeyboardGlobalOptions(viewModel, fontType, keyboardWidth)
+                Icon(
+                    painter = painterResource(R.drawable.globe_outline),
+                    contentDescription = "globe",
+                    tint = MaterialTheme.colorScheme.scrim,
+                    modifier = Modifier
+                        .size(30.dp)
+                        .clickable(
+                            indication = null,
+                            interactionSource = remember { MutableInteractionSource() },
+                            role = Role.Button,
+                        ) { viewModel.updateIsShowOptions(true) }
+                )
+            }
 
             Icon(
                 painter = painterResource(

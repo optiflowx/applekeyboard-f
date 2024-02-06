@@ -46,8 +46,8 @@ fun KeyButtonPopup(width: Dp = 56.dp, text: String = "M") {
             Surface(
                 color = MaterialTheme.colorScheme.secondary,
                 shape = RoundedCornerShape(
-                    topStart = 14.dp,
-                    topEnd = 14.dp,
+                    topStart = 13.dp,
+                    topEnd = 13.dp,
                     bottomStart = 15.dp,
                     bottomEnd = 15.dp,
                 ),

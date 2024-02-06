@@ -18,6 +18,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
@@ -50,13 +51,12 @@ fun ClipboardKeyboardView(
 ) {
     val context = LocalContext.current
 
-    val keyboardLocale = KeyboardLocale()
+    val locale = viewModel.locale.collectAsState().value
+    val keyboardLocale = KeyboardLocale(locale)
 
     val clipDataList = viewModel.clipData.observeAsState().value?.reversed()
 
     val fontType  by rememberPreference(PrefsConstants.FONT_TYPE_KEY, "Regular")
-
-    val locale  by rememberPreference(PrefsConstants.LOCALE_KEY, "English")
 
     Box(
         contentAlignment = Alignment.Center,
@@ -109,7 +109,7 @@ fun ClipboardKeyboardView(
                 }
             }
         } else Text(
-            keyboardLocale.emptyClipboard(locale),
+            keyboardLocale.emptyClipboard(),
             textAlign = TextAlign.Center,
             style = TextStyle(
                 color = CupertinoColors.systemGray(isSystemInDarkTheme()),

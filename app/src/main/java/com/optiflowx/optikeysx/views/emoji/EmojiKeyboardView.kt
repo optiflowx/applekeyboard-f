@@ -14,6 +14,7 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
@@ -42,12 +43,13 @@ fun EmojiKeyboardView(
     viewportHeight: Dp = 230.dp,
     cellCount: Int = 6,
 ) {
+    
     val defaultViewPort = (viewWidth)
     val freqViewPort = (viewWidth * 0.76f)
+    val locale = viewModel.locale.collectAsState().value
 //    val isESearch = viewModel.isEmojiSearch.collectAsState()
     val frequentEmojis = viewModel.frequentlyUsedEmojis.observeAsState().value?.reversed()
     val fontType by rememberPreference(PrefsConstants.FONT_TYPE_KEY, "Regular")
-    val locale by rememberPreference(PrefsConstants.LOCALE_KEY, "English")
 
     val emojiViewPager = arrayListOf(
         hashMapOf("Frequently Used" to listOf()),

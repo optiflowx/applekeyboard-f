@@ -10,7 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -20,8 +20,6 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import com.optiflowx.optikeysx.core.enums.KeyboardType
-import com.optiflowx.optikeysx.core.preferences.PrefsConstants
-import com.optiflowx.optikeysx.core.preferences.rememberPreference
 import com.optiflowx.optikeysx.core.utils.KeyboardLocale
 import com.optiflowx.optikeysx.core.utils.appFontType
 import com.optiflowx.optikeysx.core.utils.nonScaledSp
@@ -33,9 +31,8 @@ import io.github.alexzhirkevich.cupertino.theme.systemRed
 
 @Composable
 fun ClipboardKeyboardActionView(viewModel: KeyboardViewModel, boxScope: BoxScope) {
-    val keyboardLocale = KeyboardLocale()
-    val locale by rememberPreference(PrefsConstants.LOCALE_KEY, "English")
-
+    val locale = viewModel.locale.collectAsState().value
+    val keyboardLocale = KeyboardLocale(locale)
     val clipDataList = viewModel.clipData.observeAsState().value
 
     boxScope.apply {
@@ -45,7 +42,7 @@ fun ClipboardKeyboardActionView(viewModel: KeyboardViewModel, boxScope: BoxScope
             modifier = Modifier.fillMaxWidth().padding(horizontal = 10.dp)
         ) {
             Text(
-                keyboardLocale.clipboard(locale),
+                keyboardLocale.clipboard(),
                 style = TextStyle(
                     fontFamily = appFontType("Bold"),
                     color = CupertinoColors.systemGray(isSystemInDarkTheme()),
@@ -60,7 +57,7 @@ fun ClipboardKeyboardActionView(viewModel: KeyboardViewModel, boxScope: BoxScope
                 horizontalArrangement = Arrangement.End,
             ) {
                 Text(
-                    keyboardLocale.clear(locale),
+                    keyboardLocale.clear(),
                     style = TextStyle(
                         color = if (clipDataList.isNullOrEmpty()) CupertinoColors.systemGray(
                             isSystemInDarkTheme()
@@ -77,7 +74,7 @@ fun ClipboardKeyboardActionView(viewModel: KeyboardViewModel, boxScope: BoxScope
                 )
 
                 Text(
-                    keyboardLocale.back(locale),
+                    keyboardLocale.back(),
                     style = TextStyle(
                         color = CupertinoColors.systemBlue,
                         fontFamily = appFontType("Bold"),
