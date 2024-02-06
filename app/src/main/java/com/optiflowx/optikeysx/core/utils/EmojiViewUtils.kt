@@ -3,122 +3,131 @@ package com.optiflowx.optikeysx.core.utils
 import androidx.compose.runtime.Stable
 
 @Stable
-fun handleTitle(title: String, locale: String?): String {
+fun handleTitle(title: String, locale: String): String {
     return when(title) {
         "Smileys & People" -> {
             when(locale) {
-                "English" -> "Smileys & People"
-                "Spanish" -> "Caras y Personas"
-                "French" -> "Smileys et Personnes"
-                "German" -> "Smileys & Personen"
-                "Italian" -> "Faccine e Persone"
-                "Portuguese" -> "Carinhas e Pessoas"
-                "Dutch" -> "Smileys en Mensen"
-                "Russian" -> "Смайлики и люди"
+                "en-US" -> "Smileys & People"
+                "es" -> "Caras y Personas"
+                "fr-FR" -> "Smileys et Personnes"
+                "de" -> "Smileys & Personen"
+                "it" -> "Faccine e Persone"
+                "pt" -> "Carinhas e Pessoas"
+                "pt-BR" -> "Carinhas e Pessoas"
+                "nl" -> "Smileys en Mensen"
+                "ru" -> "Смайлики и люди"
                 else -> "Smileys & People"
             }
         }
         "Animals & Nature" -> {
             when(locale) {
-                "English" -> "Animals & Nature"
-                "Spanish" -> "Animales y Naturaleza"
-                "French" -> "Animaux et Nature"
-                "German" -> "Tiere & Natur"
-                "Italian" -> "Animali e Natura"
-                "Portuguese" -> "Animais e Natureza"
-                "Dutch" -> "Dieren en Natuur"
-                "Russian" -> "Животные и природа"
+                "en-US" -> "Animals & Nature"
+                "es" -> "Animales y Naturaleza"
+                "fr-FR" -> "Animaux et Nature"
+                "de" -> "Tiere & Natur"
+                "it" -> "Animali e Natura"
+                "pt" -> "Animais e Natureza"
+                "pt-BR" -> "Animais e Natureza"
+                "nl" -> "Dieren en Natuur"
+                "ru" -> "Животные и природа"
                 else -> "Animals & Nature"
             }
         }
         "Food & Drink" -> {
             when(locale) {
-                "English" -> "Food & Drink"
-                "Spanish" -> "Comida y Bebida"
-                "French" -> "Nourriture et Boissons"
-                "German" -> "Essen & Trinken"
-                "Italian" -> "Cibo e Bevande"
-                "Portuguese" -> "Comida e Bebida"
-                "Dutch" -> "Eten en Drinken"
-                "Russian" -> "Еда и напитки"
+                "en-US" -> "Food & Drink"
+                "es" -> "Comida y Bebida"
+                "fr-FR" -> "Nourriture et Boissons"
+                "de" -> "Essen & Trinken"
+                "it" -> "Cibo e Bevande"
+                "pt" -> "Comida e Bebida"
+                "pt-BR" -> "Comida e Bebida"
+                "nl" -> "Eten en Drinken"
+                "ru" -> "Еда и напитки"
                 else -> "Food & Drink"
             }
         }
         "Activities" -> {
             when(locale) {
-                "English" -> "Activities"
-                "Spanish" -> "Actividades"
-                "French" -> "Activités"
-                "German" -> "Aktivitäten"
-                "Italian" -> "Attività"
-                "Portuguese" -> "Atividades"
-                "Dutch" -> "Activiteiten"
-                "Russian" -> "Мероприятия"
+                "en-US" -> "Activities"
+                "es" -> "Actividades"
+                "fr-FR" -> "Activités"
+                "de" -> "Aktivitäten"
+                "it" -> "Attività"
+                "pt" -> "Atividades"
+                "pt-BR" -> "Atividades"
+                "nl" -> "Activiteiten"
+                "ru" -> "Мероприятия"
                 else -> "Activities"
             }
         }
         "Travel & Places" -> {
             when(locale) {
-                "English" -> "Travel & Places"
-                "Spanish" -> "Viajes y Lugares"
-                "French" -> "Voyages et Lieux"
-                "German" -> "Reisen & Orte"
-                "Italian" -> "Viaggi e Luoghi"
-                "Portuguese" -> "Viagens e Lugares"
-                "Dutch" -> "Reizen en Plaatsen"
-                "Russian" -> "Путешествия и места"
+                "en-US" -> "Travel & Places"
+                "es" -> "Viajes y Lugares"
+                "fr-FR" -> "Voyages et Lieux"
+                "de" -> "Reisen & Orte"
+                "it" -> "Viaggi e Luoghi"
+                "pt" -> "Viagens e Lugares"
+                "pt-BR" -> "Viagens e Lugares"
+                "nl" -> "Reizen en Plaatsen"
+                "ru" -> "Путешествия и места"
                 else -> "Travel & Places"
             }
         }
         "Objects"-> {
             when(locale) {
-                "English" -> "Objects"
-                "Spanish" -> "Objetos"
-                "French" -> "Objets"
-                "German" -> "Objekte"
-                "Italian" -> "Oggetti"
-                "Portuguese" -> "Objetos"
-                "Dutch" -> "Objecten"
-                "Russian" -> "Объекты"
+                "en-US" -> "Objects"
+                "es" -> "Objetos"
+                "fr-FR" -> "Objets"
+                "de" -> "Objekte"
+                "it" -> "Oggetti"
+                "pt" -> "Objetos"
+                "pt-BR" -> "Objetos"
+                "nl" -> "Objecten"
+                "ru" -> "Объекты"
                 else -> "Objects"
             }
         }
         "Symbols" -> {
             when(locale) {
-                "English" -> "Symbols"
-                "Spanish" -> "Símbolos"
-                "French" -> "Symboles"
-                "German" -> "Symbole"
-                "Italian" -> "Simboli"
-                "Portuguese" -> "Símbolos"
-                "Dutch" -> "Symbolen"
-                "Russian" -> "Символы"
+                "en-US" -> "Symbols"
+                "es" -> "Símbolos"
+                "fr-FR" -> "Symboles"
+                "de" -> "Symbole"
+                "it" -> "Simboli"
+                "pt" -> "Símbolos"
+                "pt-BR" -> "Símbolos"
+                "nl" -> "Symbolen"
+                "ru" -> "Символы"
                 else -> "Symbols"
             }
         }
         "Flags" -> {
             when(locale) {
-                "English" -> "Flags"
-                "Spanish" -> "Banderas"
-                "French" -> "Drapeaux"
-                "German" -> "Flaggen"
-                "Italian" -> "Bandiere"
-                "Portuguese" -> "Bandeiras"
-                "Dutch" -> "Vlaggen"
-                "Russian" -> "Флаги"
+                "en-US" -> "Flags"
+                "es" -> "Banderas"
+                "fr-FR" -> "Drapeaux"
+                "de" -> "Flaggen"
+                "it" -> "Bandiere"
+                "pt" -> "Bandeiras"
+                "pt-BR" -> "Bandeiras"
+                "nl" -> "Vlaggen"
+                "ru" -> "Флаги"
                 else -> "Flags"
             }
         }
         else -> {
             when (locale) {
-                "English" -> "Frequently Used"
-                "Spanish" -> "Frecuentemente Usado"
-                "French" -> "Utilisé Fréquemment"
-                "German" -> "Häufig verwendet"
-                "Italian" -> "Usato frequentemente"
-                "Portuguese" -> "Usado com frequência"
-                "Dutch" -> "Vaak gebruikt"
-                "Russian" -> "Часто используется"
+                "en-US" -> "Frequently Used"
+                "es" -> "Frecuentemente Usado"
+                "fr-FR" -> "Utilisé Fréquemment"
+                "de" -> "Häufig verwendet"
+                "it" -> "Usato frequentemente"
+                "pt" -> "Usado com frequência"
+                "pt-BR" -> "Usado com frequência"
+                "nl" -> "Vaak gebruikt"
+                "ru" -> "Часто используется"
                 else -> "Frequently Used"
             }
         }

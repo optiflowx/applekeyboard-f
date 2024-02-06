@@ -9,6 +9,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -48,8 +49,6 @@ fun EmojiSearchView(viewModel: KeyboardViewModel, textSize: Float, searchIconSiz
 
     val fontType  by rememberPreference(PrefsConstants.FONT_TYPE_KEY, "Regular")
 
-    val locale  by rememberPreference(PrefsConstants.LOCALE_KEY, "English")
-
     LaunchedEffect(state.isFocused) {
         if (state.isFocused) {
             focusRequester.requestFocus().let {
@@ -58,7 +57,9 @@ fun EmojiSearchView(viewModel: KeyboardViewModel, textSize: Float, searchIconSiz
         } else focusRequester.freeFocus()
     }
 
-    val keyboardLocale = KeyboardLocale()
+    
+    val locale = viewModel.locale.collectAsState().value
+    val keyboardLocale = KeyboardLocale(locale)
 
     boxScope.apply {
         CupertinoSearchTextField(
@@ -72,7 +73,7 @@ fun EmojiSearchView(viewModel: KeyboardViewModel, textSize: Float, searchIconSiz
                 .onFocusChanged { focusState -> viewModel.updateIsEmojiSearch(focusState.isFocused) },
             placeholder = {
                 Text(
-                    keyboardLocale.searchEmoji(locale),
+                    keyboardLocale.searchEmoji(),
                     style = TextStyle(
                         color = CupertinoColors.systemGray(isSystemInDarkTheme()),
                         fontFamily = appFontType(fontType),

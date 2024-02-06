@@ -109,7 +109,7 @@ fun EmojiPagerActionView(pagerState: PagerState, viewModel: KeyboardViewModel) {
                 contentDescription = null,
                 tint = CupertinoColors.systemGray(isSystemInDarkTheme()),
                 modifier = Modifier
-                    .padding(4.dp)
+                    .padding(3.dp)
                     .size(18.dp)
                     .clickable(
                         indication = null,
