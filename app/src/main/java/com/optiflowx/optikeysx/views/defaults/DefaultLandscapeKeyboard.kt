@@ -14,7 +14,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,8 +27,6 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
 import com.optiflowx.optikeysx.R
 import com.optiflowx.optikeysx.core.enums.KeyboardType
-import com.optiflowx.optikeysx.core.preferences.PrefsConstants
-import com.optiflowx.optikeysx.core.preferences.rememberPreference
 import com.optiflowx.optikeysx.core.utils.OPTIMIZATION_STANDARDIZED
 import com.optiflowx.optikeysx.ui.cupertino.KeyboardGlobalOptions
 import com.optiflowx.optikeysx.ui.keyboard.KeyboardTopView
@@ -42,6 +39,7 @@ import com.optiflowx.optikeysx.views.keyboards.russian.RussianKeyboardView
 import com.optiflowx.optikeysx.views.keyboards.spanish.SpanishKeyboardView
 import com.optiflowx.optikeysx.views.keyboards.standard.StandardKeyboardView
 import com.optiflowx.optikeysx.views.symbols.SymbolsKeyboardView
+import dev.patrickgold.jetpref.datastore.model.observeAsState
 
 @Composable
 fun DefaultLandscapeKeyboard(
@@ -68,10 +66,9 @@ fun DefaultLandscapeKeyboard(
         }
     }
 
-    val fontType by rememberPreference(PrefsConstants.FONT_TYPE_KEY, "Regular")
+    val fontType = viewModel.prefs.keyboardFontType.observeAsState().value
     val keyboardType = viewModel.keyboardType.collectAsState()
-    val locale = viewModel.locale.collectAsState().value
-
+    val locale = viewModel.keyboardData.collectAsState().value.locale
 
     ConstraintLayout(
         constraintSet = constraintsSet,

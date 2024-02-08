@@ -20,7 +20,7 @@ fun PhoneLandscapeKeyboard(viewModel: KeyboardViewModel) {
     val screenWidth = LocalConfiguration.current.screenWidthDp
     val viewWidth = (screenWidth * 0.8).dp
     val sideWidth = (screenWidth * 0.1)
-    val locale = viewModel.locale.collectAsState().value
+    val locale = viewModel.keyboardData.collectAsState().value.locale
     
 
     Column(

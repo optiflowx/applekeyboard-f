@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -24,16 +23,15 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import com.optiflowx.optikeysx.R
-import com.optiflowx.optikeysx.core.preferences.PrefsConstants
-import com.optiflowx.optikeysx.core.preferences.rememberPreference
 import com.optiflowx.optikeysx.ui.cupertino.KeyboardGlobalOptions
 import com.optiflowx.optikeysx.viewmodels.KeyboardViewModel
+import dev.patrickgold.jetpref.datastore.model.observeAsState
 
 @Composable
 fun KeyboardBottomView(viewModel: KeyboardViewModel) {
     val keyboardWidth = LocalConfiguration.current.screenWidthDp.dp
 
-    val fontType by rememberPreference(PrefsConstants.FONT_TYPE_KEY, "Regular")
+    val fontType = viewModel.prefs.keyboardFontType.observeAsState().value
 
     Box(
         contentAlignment = Alignment.Center,

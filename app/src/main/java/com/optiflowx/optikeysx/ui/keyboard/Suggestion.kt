@@ -29,11 +29,12 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
+import com.optiflowx.optikeysx.core.enums.KeyboardFontType
 import com.optiflowx.optikeysx.core.utils.appFontType
 import com.optiflowx.optikeysx.core.utils.nonScaledSp
 
 @Composable
-fun Suggestion(id: String, suggestion: String, fontType: String?,textSize: Float, onClick: () -> Unit) {
+fun Suggestion(id: String, suggestion: String, fontType: KeyboardFontType?,textSize: Float, onClick: () -> Unit) {
     val keyboardWidth = LocalConfiguration.current.screenWidthDp
     val width: Dp = (keyboardWidth * 0.31).dp
 

@@ -8,9 +8,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.core.screen.ScreenKey
+import cafe.adriel.voyager.core.screen.uniqueScreenKey
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.currentOrThrow
 import com.optiflowx.optikeysx.ui.bold
-import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import io.github.alexzhirkevich.cupertino.CupertinoIcon
 import io.github.alexzhirkevich.cupertino.CupertinoNavigateBackButton
 import io.github.alexzhirkevich.cupertino.CupertinoScaffold
@@ -22,59 +25,45 @@ import io.github.alexzhirkevich.cupertino.icons.outlined.Plus
 import io.github.alexzhirkevich.cupertino.section.CupertinoSectionDefaults
 import io.github.alexzhirkevich.cupertino.section.LocalSectionStyle
 
-@Suppress("UNCHECKED_CAST")
-@OptIn(ExperimentalCupertinoApi::class)
-@Composable
-@Destination
-fun TextReplacementScreen(navigator: DestinationsNavigator) {
-    val context = LocalContext.current
+class TextReplacementScreen : Screen {
+    override val key: ScreenKey = uniqueScreenKey
 
-//    val tileTextStyle = TextStyle(
-//        fontSize = TextUnit(17f, TextUnitType.Sp).nonScaledSp,
-//        fontFamily = regular,
-//    )
-//
-//    val viewModel = viewModel<AppViewModel>(
-//        key = "AppViewModel",
-//        factory = object : ViewModelProvider.Factory {
-//            override fun <T : ViewModel> create(modelClass: Class<T>): T {
-//                return AppViewModel(context) as T
-//            }
-//        }
-//    )
-//
-//    val fontType by rememberPreference(PrefsConstants.FONT_TYPE_KEY, "Regular")
+    @OptIn(ExperimentalCupertinoApi::class)
+    @Composable
+    override fun Content() {
+        val context = LocalContext.current
+        val navigator = LocalNavigator.currentOrThrow
 
-    CupertinoScaffold(
-        containerColor = CupertinoSectionDefaults.containerColor(LocalSectionStyle.current),
-        topBar = {
-            CupertinoTopAppBar(
-                modifier = Modifier.padding(end = 15.dp),
-                navigationIcon = {
-                    CupertinoNavigateBackButton(onClick = { navigator.popBackStack() }) {
-                        CupertinoText("Home")
+        CupertinoScaffold(
+            containerColor = CupertinoSectionDefaults.containerColor(LocalSectionStyle.current),
+            topBar = {
+                CupertinoTopAppBar(
+                    modifier = Modifier.padding(end = 15.dp),
+                    navigationIcon = {
+                        CupertinoNavigateBackButton(onClick = { navigator.pop() }) {
+                            CupertinoText("Home")
+                        }
+                    },
+                    title = {
+                        CupertinoText(
+                            text = "Text Replacement",
+                            fontFamily = bold,
+                        )
+                    },
+                    actions = {
+                        CupertinoIcon(
+                            imageVector = CupertinoIcons.Default.Plus,
+                            contentDescription = "add"
+                        )
                     }
-                },
-                title = {
-                    CupertinoText(
-                        text = "Text Replacement",
-                        fontFamily = bold,
-                    )
-                },
-                actions = {
-                    CupertinoIcon(
-                        imageVector = CupertinoIcons.Default.Plus,
-                        contentDescription = "add"
-                    )
-                }
-            )
-        }
-    ) {
-        LazyColumn(
-            modifier = Modifier.statusBarsPadding().absolutePadding(top = 40.dp),
-            userScrollEnabled = true
+                )
+            }
         ) {
-            item("Keyboard Fonts") {
+            LazyColumn(
+                modifier = Modifier.statusBarsPadding().absolutePadding(top = 40.dp),
+                userScrollEnabled = true
+            ) {
+                item("Keyboard Fonts") {
 //                CupertinoSection {
 //                    fonts.forEachIndexed { index, font ->
 //                        this.link(
@@ -93,9 +82,10 @@ fun TextReplacementScreen(navigator: DestinationsNavigator) {
 //                        )
 //                    }
 //                }
+                }
             }
         }
-    }
 //    navigator: DestinationsNavigator
 
+    }
 }

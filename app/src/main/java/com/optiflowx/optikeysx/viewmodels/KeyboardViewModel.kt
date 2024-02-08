@@ -17,6 +17,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.optiflowx.optikeysx.R
 import com.optiflowx.optikeysx.core.algorithm.DictationProcessor
+import com.optiflowx.optikeysx.core.data.KeyboardData
 import com.optiflowx.optikeysx.core.database.dao.ClipboardDatabaseDAO
 import com.optiflowx.optikeysx.core.database.dao.FrequentlyUsedEmojiDatabaseDAO
 import com.optiflowx.optikeysx.core.database.dbs.ClipboardDatabase
@@ -25,9 +26,8 @@ import com.optiflowx.optikeysx.core.database.entities.ClipData
 import com.optiflowx.optikeysx.core.database.entities.FrequentlyUsedEmoji
 import com.optiflowx.optikeysx.core.enums.KeyboardType
 import com.optiflowx.optikeysx.core.model.Key
-import com.optiflowx.optikeysx.core.preferences.PreferencesHelper
-import com.optiflowx.optikeysx.core.preferences.PrefsConstants
 import com.optiflowx.optikeysx.core.utils.KeyboardLocale
+import com.optiflowx.optikeysx.ime.IMEService
 import com.optiflowx.optikeysx.languages.english.enListA
 import com.optiflowx.optikeysx.languages.english.enListB
 import com.optiflowx.optikeysx.languages.english.enListC
@@ -44,7 +44,7 @@ import com.optiflowx.optikeysx.languages.spanish.spListA
 import com.optiflowx.optikeysx.languages.spanish.spListB
 import com.optiflowx.optikeysx.languages.spanish.spListC
 import com.optiflowx.optikeysx.languages.spanish.spListD
-import com.optiflowx.optikeysx.services.IMEService
+import com.optiflowx.optikeysx.optikeysxPreferences
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -55,18 +55,11 @@ import splitties.systemservices.vibrator
 @Stable
 class KeyboardViewModel(context: Context) : ViewModel() {
 
-    //UI FLows
-    private val _isAllCaps = MutableStateFlow(false)
-    val isAllCaps = _isAllCaps.asStateFlow()
-
     private val _keyboardType = MutableStateFlow(KeyboardType.Normal)
     val keyboardType = _keyboardType.asStateFlow()
 
     private val _isNumberSymbol = MutableStateFlow(false)
     val isNumberSymbol = _isNumberSymbol.asStateFlow()
-
-    private val _isCapsLock = MutableStateFlow(false)
-    val isCapsLock = _isCapsLock.asStateFlow()
 
     private val _isPhoneSymbol = MutableStateFlow(false)
     val isPhoneSymbol = _isPhoneSymbol.asStateFlow()
@@ -86,8 +79,8 @@ class KeyboardViewModel(context: Context) : ViewModel() {
     private val _keyActionText = MutableStateFlow("return")
     val keyActionText = _keyActionText.asStateFlow()
 
-    private val _locale = MutableStateFlow("en-US")
-    val locale = _locale.asStateFlow()
+    private val _keyboardData = MutableStateFlow(KeyboardData())
+    val keyboardData = _keyboardData.asStateFlow()
 
     private val _wordsDictionary = MutableStateFlow(listOf<String>())
     val wordsDictionary = _wordsDictionary.asStateFlow()
@@ -133,12 +126,9 @@ class KeyboardViewModel(context: Context) : ViewModel() {
         context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
 
     //UI Locale
-    private val _keyboardLocale = KeyboardLocale(locale.value)
+    private val _keyboardLocale = KeyboardLocale(keyboardData.value.locale)
 
-
-    //DataStore
-    private val preferences = PreferencesHelper(context)
-    private val pC = PrefsConstants
+     val prefs by optikeysxPreferences()
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
@@ -169,8 +159,8 @@ class KeyboardViewModel(context: Context) : ViewModel() {
         }
 
         viewModelScope.launch(Dispatchers.IO) {
-            _locale.collectLatest { locale ->
-                _dictionary = when (locale) {
+            keyboardData.collectLatest { data ->
+                _dictionary = when (data.locale) {
                     "fr-FR" -> frenchWords
                     "es" -> spanishWords
                     "pt-BR" -> ptWords
@@ -192,9 +182,9 @@ class KeyboardViewModel(context: Context) : ViewModel() {
         clipboardManager.removePrimaryClipChangedListener {}
     }
 
-    fun initLocale(data: String) {
+    fun initKeyboardData(data: KeyboardData) {
         viewModelScope.launch(Dispatchers.IO) {
-            _locale.value = data
+            _keyboardData.value = data
         }
     }
 
@@ -272,7 +262,7 @@ class KeyboardViewModel(context: Context) : ViewModel() {
 
     @Stable
     fun playSound(key: Key) = viewModelScope.launch(Dispatchers.IO) {
-        val value: Boolean = preferences.getPreference(pC.SOUND_ON_KEY_PRESS_KEY, true)
+        val value: Boolean = prefs.isSoundOnKeypress.get()
         if (value && _isPoolLoaded.value) {
             when (key.id) {
                 "delete" -> _soundPool.play(_soundIDD.value, 0.5f, 0.5f, 1, 0, 1.05f)
@@ -285,7 +275,7 @@ class KeyboardViewModel(context: Context) : ViewModel() {
 
     @Stable
     fun vibrate() = viewModelScope.launch(Dispatchers.IO) {
-        val value: Boolean = preferences.getPreference(pC.VIBRATE_ON_KEY_PRESS_KEY, true)
+        val value: Boolean = prefs.isVibrateOnKeypress.get()
         if (value) {
             @Suppress("DEPRECATION")
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -312,8 +302,8 @@ class KeyboardViewModel(context: Context) : ViewModel() {
     @Stable
     private fun checkSpelling(connection: InputConnection) {
         viewModelScope.launch(Dispatchers.IO) {
-            val checkSpelling: Boolean = preferences.getPreference(pC.CHECK_SPELLING_KEY, false)
-            val autoCorrect = preferences.getPreference(pC.AUTO_CORRECTION_KEY, false)
+            val checkSpelling = prefs.isCheckSpelling.get()
+            val autoCorrect = prefs.isAutoCorrect.get()
             //Remove the space first
             if (checkSpelling && autoCorrect) {
                 this.launch(Dispatchers.IO) {
@@ -337,24 +327,24 @@ class KeyboardViewModel(context: Context) : ViewModel() {
 
     @Stable
     private fun handleCapsLock() {
-        if (_isAllCaps.value && !_isCapsLock.value) {
-            _isAllCaps.value = false
+        if (prefs.isAllCaps.get() && !prefs.isCapsLock.get()) {
+            prefs.isAllCaps.set(false)
         }
     }
 
     @Stable
     private suspend fun updateCapsLock() {
-        val value: Boolean = preferences.getPreference(pC.AUTO_CAPITALISATION_KEY, true)
+        val value: Boolean = prefs.isAutoCapitalisation.get()
         if (value) {
-            _isAllCaps.value = true
-            _isCapsLock.value = false
+            prefs.isAllCaps.set(true)
+            prefs.isCapsLock.set(false)
         }
     }
 
     @Stable
     private fun handleDotShortcut(connection: InputConnection) {
         viewModelScope.launch {
-            val value: Boolean = preferences.getPreference(pC.DOT_SHORTCUT_KEY, true)
+            val value: Boolean = prefs.isDotShortcut.get()
             if (value) {
                 connection.deleteSurroundingText(1, 0).let {
                     connection.commitText(". ", ". ".length)
@@ -367,7 +357,7 @@ class KeyboardViewModel(context: Context) : ViewModel() {
     @Stable
     private fun capitalizeI(connection: InputConnection) {
         viewModelScope.launch {
-            val value: Boolean = preferences.getPreference(pC.AUTO_CAPITALISATION_KEY, true)
+            val value: Boolean = prefs.isAutoCapitalisation.get()
             if (value) {
                 connection.deleteSurroundingText(2, 0).let {
                     connection.commitText(" I ", " I ".length)
@@ -499,7 +489,7 @@ class KeyboardViewModel(context: Context) : ViewModel() {
     @Stable
     private fun onText(connection: InputConnection, key: Key) {
         connection.commitText(
-            (if (_isAllCaps.value) {
+            (if (prefs.isAllCaps.get()) {
                 key.value.uppercase()
             } else key.value.lowercase()), key.value.length
         )
@@ -532,20 +522,20 @@ class KeyboardViewModel(context: Context) : ViewModel() {
 
     @Stable
     private fun onShift() {
-        if (_isCapsLock.value) {
-            _isCapsLock.value = false
-            _isAllCaps.value = false
-        } else if (_isAllCaps.value && !(_isCapsLock.value)) {
+        if (prefs.isCapsLock.get()) {
+            prefs.isAllCaps.set(false)
+            prefs.isCapsLock.set(false)
+        } else if (prefs.isAllCaps.get() && !prefs.isCapsLock.get()) {
             onCapsLock()
-        } else _isAllCaps.value = !(isAllCaps.value)
+        } else prefs.isAllCaps.set(!prefs.isAllCaps.get())
     }
 
     @Stable
     private fun onCapsLock() {
         viewModelScope.launch {
-            val value = preferences.getPreference(pC.ENABLE_CAPS_LOCK_KEY, true)
-            if (value) _isCapsLock.value = true //isAllCaps is already true.
-            else _isAllCaps.value = false
+            val value = prefs.isEnableCapsLock.get()
+            if (value) prefs.isCapsLock.set(true)//isAllCaps is already true.
+            else prefs.isAllCaps.set(false)
         }
     }
 

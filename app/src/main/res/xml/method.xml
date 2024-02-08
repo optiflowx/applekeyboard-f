@@ -1,122 +1,123 @@
 <?xml version="1.0" encoding="utf-8"?>
-<input-method xmlns:android="http://schemas.android.com/apk/res/android">
+<input-method xmlns:android="http://schemas.android.com/apk/res/android"
+    android:settingsActivity="com.optiflowx.optikeysx.MainActivity">
     <subtype android:label="English (Global)"
         android:imeSubtypeLocale="en_US"
         android:languageTag="en-US"
         android:imeSubtypeMode="keyboard"
-        android:imeSubtypeExtraValue="charDataFile=strokemaps_dynamic" />
+        android:imeSubtypeExtraValue="com.optiflowx.optikeysx" />
 
     <subtype android:label="Russian"
         android:imeSubtypeLocale="ru"
         android:languageTag="ru"
         android:imeSubtypeMode="keyboard"
-        android:imeSubtypeExtraValue="charDataFile=strokemaps_dynamic" />
+        android:imeSubtypeExtraValue="com.optiflowx.optikeysx" />
 
     <subtype android:label="Spanish"
         android:imeSubtypeLocale="es"
         android:languageTag="es"
         android:imeSubtypeMode="keyboard"
-        android:imeSubtypeExtraValue="charDataFile=strokemaps_dynamic" />
+        android:imeSubtypeExtraValue="com.optiflowx.optikeysx" />
 
     <subtype android:label="French (France)"
         android:imeSubtypeLocale="fr_FR"
         android:languageTag="fr-FR"
         android:imeSubtypeMode="keyboard"
-        android:imeSubtypeExtraValue="charDataFile=strokemaps_dynamic" />
+        android:imeSubtypeExtraValue="com.optiflowx.optikeysx" />
 
     <subtype android:label="Italian"
         android:imeSubtypeLocale="it"
         android:languageTag="it"
         android:imeSubtypeMode="keyboard"
-        android:imeSubtypeExtraValue="charDataFile=strokemaps_dynamic" />
+        android:imeSubtypeExtraValue="com.optiflowx.optikeysx" />
 
     <subtype android:label="Portuguese (Brazil)"
         android:imeSubtypeLocale="pt_BR"
         android:languageTag="pt-BR"
         android:imeSubtypeMode="keyboard"
-        android:imeSubtypeExtraValue="charDataFile=strokemaps_dynamic" />
+        android:imeSubtypeExtraValue="com.optiflowx.optikeysx" />
 
     <subtype android:label="Portuguese (Portugal)"
         android:imeSubtypeLocale="pt_PT"
         android:languageTag="pt-PT"
         android:imeSubtypeMode="keyboard"
-        android:imeSubtypeExtraValue="charDataFile=strokemaps_dynamic" />
+        android:imeSubtypeExtraValue="com.optiflowx.optikeysx" />
 
     <subtype android:label="Dutch"
         android:imeSubtypeLocale="nl"
         android:languageTag="nl"
         android:imeSubtypeMode="keyboard"
-        android:imeSubtypeExtraValue="charDataFile=strokemaps_dynamic" />
+        android:imeSubtypeExtraValue="com.optiflowx.optikeysx" />
 
     <subtype android:label="Turkish"
         android:imeSubtypeLocale="tr"
         android:languageTag="tr"
         android:imeSubtypeMode="keyboard"
-        android:imeSubtypeExtraValue="charDataFile=strokemaps_dynamic" />
+        android:imeSubtypeExtraValue="com.optiflowx.optikeysx" />
 
 <!--    <subtype android:label="German"-->
 <!--        android:imeSubtypeLocale="de"-->
 <!--        android:languageTag="de"-->
 <!--        android:imeSubtypeMode="keyboard"-->
-<!--        android:imeSubtypeExtraValue="charDataFile=strokemaps_dynamic" />-->
+<!--        android:imeSubtypeExtraValue="com.optiflowx.optikeysx" />-->
 
 <!--    <subtype android:label="Ukrainian"-->
 <!--        android:imeSubtypeLocale="uk"-->
 <!--        android:imeSubtypeMode="keyboard"-->
-<!--        android:imeSubtypeExtraValue="charDataFile=strokemaps_dynamic" />-->
+<!--        android:imeSubtypeExtraValue="com.optiflowx.optikeysx" />-->
 
 <!--    <subtype android:label="Romanian"-->
 <!--        android:imeSubtypeLocale="ro"-->
 <!--        android:imeSubtypeMode="keyboard"-->
-<!--        android:imeSubtypeExtraValue="charDataFile=strokemaps_dynamic" />-->
+<!--        android:imeSubtypeExtraValue="com.optiflowx.optikeysx" />-->
 
 <!--    <subtype android:label="Hungarian"-->
 <!--        android:imeSubtypeLocale="hu"-->
 <!--        android:imeSubtypeMode="keyboard"-->
-<!--        android:imeSubtypeExtraValue="charDataFile=strokemaps_dynamic" />-->
+<!--        android:imeSubtypeExtraValue="com.optiflowx.optikeysx" />-->
 
 <!--    <subtype android:label="Arabic"-->
 <!--        android:imeSubtypeLocale="ar"-->
 <!--        android:imeSubtypeMode="keyboard"-->
-<!--        android:imeSubtypeExtraValue="charDataFile=strokemaps_dynamic" />-->
+<!--        android:imeSubtypeExtraValue="com.optiflowx.optikeysx" />-->
 
 <!--    <subtype android:label="Hindi"-->
 <!--        android:imeSubtypeLocale="hi"-->
 <!--        android:imeSubtypeMode="keyboard"-->
-<!--        android:imeSubtypeExtraValue="charDataFile=strokemaps_dynamic" />-->
+<!--        android:imeSubtypeExtraValue="com.optiflowx.optikeysx" />-->
 
 <!--    <subtype android:label="Danish"-->
 <!--        android:imeSubtypeLocale="da"-->
 <!--        android:imeSubtypeMode="keyboard"-->
-<!--        android:imeSubtypeExtraValue="charDataFile=strokemaps_dynamic" />-->
+<!--        android:imeSubtypeExtraValue="com.optiflowx.optikeysx" />-->
 
 <!--    <subtype android:label="Filipino"-->
 <!--        android:imeSubtypeLocale="fil"-->
 <!--        android:imeSubtypeMode="keyboard"-->
-<!--        android:imeSubtypeExtraValue="charDataFile=strokemaps_dynamic" />-->
+<!--        android:imeSubtypeExtraValue="com.optiflowx.optikeysx" />-->
 
 <!--    <subtype android:label="Vietnamese"-->
 <!--        android:imeSubtypeLocale="vi"-->
 <!--        android:imeSubtypeMode="keyboard"-->
-<!--        android:imeSubtypeExtraValue="charDataFile=strokemaps_dynamic" />-->
+<!--        android:imeSubtypeExtraValue="com.optiflowx.optikeysx" />-->
 
 <!--    <subtype android:label="Indonesian"-->
 <!--        android:imeSubtypeLocale="in"-->
 <!--        android:imeSubtypeMode="keyboard"-->
-<!--        android:imeSubtypeExtraValue="charDataFile=strokemaps_dynamic" />-->
+<!--        android:imeSubtypeExtraValue="com.optiflowx.optikeysx" />-->
 
 <!--    <subtype android:label="Malay"-->
 <!--        android:imeSubtypeLocale="ms"-->
 <!--        android:imeSubtypeMode="keyboard"-->
-<!--        android:imeSubtypeExtraValue="charDataFile=strokemaps_dynamic" />-->
+<!--        android:imeSubtypeExtraValue="com.optiflowx.optikeysx" />-->
 
 <!--    <subtype android:label="Afrikaans"-->
 <!--        android:imeSubtypeLocale="af"-->
 <!--        android:imeSubtypeMode="keyboard"-->
-<!--        android:imeSubtypeExtraValue="charDataFile=strokemaps_dynamic" />-->
+<!--        android:imeSubtypeExtraValue="com.optiflowx.optikeysx" />-->
 
 <!--    <subtype android:label="Zulu"-->
 <!--        android:imeSubtypeLocale="zu"-->
 <!--        android:imeSubtypeMode="keyboard"-->
-<!--        android:imeSubtypeExtraValue="charDataFile=strokemaps_dynamic" />-->
+<!--        android:imeSubtypeExtraValue="com.optiflowx.optikeysx" />-->
 </input-method>

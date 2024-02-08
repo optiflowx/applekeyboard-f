@@ -19,7 +19,7 @@ fun PhoneKeyboardView(
     viewModel: KeyboardViewModel, viewWidth: Dp, rowHeight: Int = 55,
     bottomDivHeight: Int = 30,
 ) {
-    val locale = viewModel.locale.collectAsState().value
+    val locale = viewModel.keyboardData.collectAsState().value.locale
     val isPhoneSymbols = viewModel.isPhoneSymbol.collectAsState().value
     val phoneRowKeys = PhoneRowKeys(locale)
     val phoneConst = PhoneConstraintsSet(rowHeight, bottomDivHeight)

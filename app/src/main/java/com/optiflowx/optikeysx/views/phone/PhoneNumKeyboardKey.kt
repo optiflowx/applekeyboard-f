@@ -10,7 +10,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -24,14 +23,13 @@ import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.sp
 import com.optiflowx.optikeysx.R
 import com.optiflowx.optikeysx.core.model.Key
-import com.optiflowx.optikeysx.core.preferences.PrefsConstants
-import com.optiflowx.optikeysx.core.preferences.rememberPreference
 import com.optiflowx.optikeysx.core.utils.KeyboardLocale
 import com.optiflowx.optikeysx.core.utils.appFontType
 import com.optiflowx.optikeysx.core.utils.nonScaledSp
 import com.optiflowx.optikeysx.ui.keyboard.EraseButton
 import com.optiflowx.optikeysx.ui.keyboard.KeyButton
 import com.optiflowx.optikeysx.viewmodels.KeyboardViewModel
+import dev.patrickgold.jetpref.datastore.model.observeAsState
 import io.github.alexzhirkevich.cupertino.theme.CupertinoColors
 import io.github.alexzhirkevich.cupertino.theme.systemGray
 
@@ -44,11 +42,11 @@ fun PhoneNumKeyboardKey(key: Key, viewModel: KeyboardViewModel) {
 
     //Make it global
     
-    val locale = viewModel.locale.collectAsState().value
+    val locale = viewModel.keyboardData.collectAsState().value.locale
     val keyboardLocale = KeyboardLocale(locale)
     val isPhoneSymbols = viewModel.isPhoneSymbol.collectAsState().value
 
-    val fontType by rememberPreference(PrefsConstants.FONT_TYPE_KEY, "Regular")
+    val fontType = viewModel.prefs.keyboardFontType.observeAsState().value
 
     val keysToDisable = (key.id == "1" || key.id == "2"
             || key.id == "3" || key.id == "5"
@@ -80,6 +78,7 @@ fun PhoneNumKeyboardKey(key: Key, viewModel: KeyboardViewModel) {
         else colorScheme.secondary),
         id = key.id,
         showPopup = false,
+        prefs = viewModel.prefs,
         enabled = !(isPhoneSymbols && keysToDisable),
         onClick = {
             if (isSwitch) viewModel.onPhoneSymbol()

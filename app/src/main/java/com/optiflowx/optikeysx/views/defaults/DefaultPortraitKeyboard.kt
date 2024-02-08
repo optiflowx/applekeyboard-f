@@ -9,7 +9,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
@@ -32,11 +31,8 @@ fun DefaultPortraitKeyboard(
     vM: KeyboardViewModel
 ) {
     val vW = LocalConfiguration.current.screenWidthDp.dp
-    val vH: Dp = 230.dp
-    val cVH: Dp = 200.dp
-    val eCC: Int = 6
     val keyboardType = vM.keyboardType.collectAsState()
-    val locale = vM.locale.collectAsState().value
+    val locale = vM.keyboardData.collectAsState().value.locale
 
     val constraintsSet = ConstraintSet {
         val topView = createRefFor("topView")
@@ -62,8 +58,6 @@ fun DefaultPortraitKeyboard(
             bottom.linkTo(parent.bottom)
         }
     }
-
-    
 
     ConstraintLayout(
         constraintSet = constraintsSet,

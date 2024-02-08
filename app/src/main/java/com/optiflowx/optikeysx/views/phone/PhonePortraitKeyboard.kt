@@ -15,7 +15,7 @@ import com.optiflowx.optikeysx.viewmodels.KeyboardViewModel
 fun PhonePortraitKeyboard(viewModel: KeyboardViewModel) {
     
     val viewWidth = LocalConfiguration.current.screenWidthDp.dp
-    val locale = viewModel.locale.collectAsState().value
+    val locale = viewModel.keyboardData.collectAsState().value.locale
 
     Box(
         Modifier

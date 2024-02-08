@@ -26,7 +26,7 @@ fun RussianKeyboardView(
     keyHeight: Dp = 42.dp,
     rowHeight: Dp = 56.dp,
 ) {
-    val locale = viewModel.locale.collectAsState().value
+    val locale = viewModel.keyboardData.collectAsState().value.locale
     val keyboardLocale = KeyboardLocale(locale)
     val constraintSets = RussianConstraintSets(keyHeight, rowHeight)
     val nRowKeys = RussianRowKeys()

@@ -1,11 +1,8 @@
-@file:Suppress("UNCHECKED_CAST")
-
 package com.optiflowx.optikeysx.screens
 
-import android.content.Context
-import android.content.Intent
-import android.provider.Settings
+import android.inputmethodservice.InputMethodService
 import android.view.inputmethod.InputMethodInfo
+import android.view.inputmethod.InputMethodManager
 import android.view.inputmethod.InputMethodSubtype
 import androidx.compose.foundation.layout.absolutePadding
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -20,11 +17,15 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
-import com.optiflowx.optikeysx.core.preferences.PrefsConstants
+import cafe.adriel.voyager.core.model.rememberScreenModel
+import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.core.screen.ScreenKey
+import cafe.adriel.voyager.core.screen.uniqueScreenKey
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.currentOrThrow
 import com.optiflowx.optikeysx.core.utils.nonScaledSp
 import com.optiflowx.optikeysx.ui.regular
-import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.optiflowx.optikeysx.viewmodels.KeyboardSettingsModel
 import io.github.alexzhirkevich.cupertino.CupertinoIcon
 import io.github.alexzhirkevich.cupertino.CupertinoNavigateBackButton
 import io.github.alexzhirkevich.cupertino.CupertinoScaffold
@@ -41,109 +42,98 @@ import io.github.alexzhirkevich.cupertino.theme.CupertinoColors
 import io.github.alexzhirkevich.cupertino.theme.systemBlue
 import splitties.systemservices.inputMethodManager
 
-private fun onAddKeyboard(context: Context) {
-    val imId = Settings.Secure.getString(
-        context.contentResolver,
-        Settings.Secure.DEFAULT_INPUT_METHOD
-    )
+class KeyboardsScreen : Screen {
+    override val key: ScreenKey = uniqueScreenKey
 
-    val intent = Intent(Settings.ACTION_INPUT_METHOD_SUBTYPE_SETTINGS)
-        .putExtra(Settings.EXTRA_INPUT_METHOD_ID, imId)
-        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        .putExtra(Intent.EXTRA_TITLE, "Select Enabled Subtypes")
-    context.startActivity(intent);
-}
-
-@OptIn(ExperimentalCupertinoApi::class)
-@Composable
-@Destination
-fun KeyboardsScreen(navigator: DestinationsNavigator) {
-    val context = LocalContext.current
-    val pC = PrefsConstants
-
-    val tileTextStyle = TextStyle(
-        fontSize = TextUnit(17f, TextUnitType.Sp).nonScaledSp,
-        fontFamily = regular,
-    )
-
-    val mIMM = inputMethodManager
-
-    val inputML: List<InputMethodInfo> = mIMM.enabledInputMethodList
-
-    val subtypeList: List<InputMethodSubtype> = mIMM.getEnabledInputMethodSubtypeList(
-        inputML[0], true
-    )
-
-    val mIMS = mIMM.showInputMethodPicker()
-
-    val id = inputML[0].id
-
-//    val token = mIMS.window.window?.attributes?.token
-
-    val currentTag by remember(mIMM, mIMM.currentInputMethodSubtype, subtypeList) {
-        mutableStateOf(mIMM.currentInputMethodSubtype?.languageTag)
+    companion object {
+        const val TAG = "KeyboardsScreen"
     }
 
-    CupertinoScaffold(
-        containerColor = CupertinoSectionDefaults.containerColor(LocalSectionStyle.current),
-        topBar = {
-            CupertinoTopAppBar(
-                navigationIcon = {
-                    CupertinoNavigateBackButton(onClick = { navigator.popBackStack() }) {
-                        CupertinoText("Home")
-                    }
-                },
-                title = { CupertinoText("Keyboards") }
-            )
-        }
-    ) {
-        LazyColumn(
-            modifier = Modifier
-                .statusBarsPadding()
-                .absolutePadding(top = 40.dp),
-            userScrollEnabled = true
-        ) {
-            item("Keyboards Settings") {
-                CupertinoSection {
-                    this.link(
-                        title = { CupertinoText("Add Keyboard", style = tileTextStyle) },
-                        onClick = { onAddKeyboard(context) }
-                    )
-                    this.link(
-                        title = { CupertinoText("Change Keyboard", style = tileTextStyle) },
-                        onClick = { mIMM.showInputMethodPicker() }
-                    )
-                }
-            }
-            item("Keyboards List") {
-                CupertinoSection {
-                    subtypeList.forEachIndexed { index, subtype ->
-                        val subtypeTag = subtype.languageTag
-                        val name = subtype.getDisplayName(
-                            context,
-                            context.packageName,
-                            context.applicationInfo
-                        )
+    @OptIn(ExperimentalCupertinoApi::class)
+    @Composable
+    override fun Content() {
+        val context = LocalContext.current
+        val navigator = LocalNavigator.currentOrThrow
 
+        val tileTextStyle = TextStyle(
+            fontSize = TextUnit(17f, TextUnitType.Sp).nonScaledSp,
+            fontFamily = regular,
+        )
+
+        val mIMM = context.getSystemService(InputMethodService.INPUT_METHOD_SERVICE) as InputMethodManager
+
+        val inputML: List<InputMethodInfo> = mIMM.enabledInputMethodList
+
+        val subtypeList: List<InputMethodSubtype> = mIMM.getEnabledInputMethodSubtypeList(
+            inputML[0], true
+        )
+
+        val currentTag by remember(mIMM, mIMM.currentInputMethodSubtype, subtypeList) {
+            mutableStateOf(mIMM.currentInputMethodSubtype?.languageTag)
+        }
+
+        val settingsModel = rememberScreenModel(TAG) {
+            KeyboardSettingsModel()
+        }
+
+        CupertinoScaffold(
+            containerColor = CupertinoSectionDefaults.containerColor(LocalSectionStyle.current),
+            topBar = {
+                CupertinoTopAppBar(
+                    navigationIcon = {
+                        CupertinoNavigateBackButton(onClick = { navigator.pop() }) {
+                            CupertinoText("Home")
+                        }
+                    },
+                    title = { CupertinoText("Keyboards") }
+                )
+            }
+        ) {
+            LazyColumn(
+                modifier = Modifier
+                    .statusBarsPadding()
+                    .absolutePadding(top = 40.dp),
+                userScrollEnabled = true
+            ) {
+                item("Keyboards Settings") {
+                    CupertinoSection {
                         this.link(
-                            key = index,
-                            title = { CupertinoText("$name", style = tileTextStyle) },
-                            trailingIcon = {
-                                if (subtypeTag == currentTag) {
-                                    CupertinoIcon(
-                                        imageVector = CupertinoIcons.Default.CheckmarkCircle,
-                                        contentDescription = "check",
-                                        tint = CupertinoColors.systemBlue,
-                                    )
-                                }
-                            },
-                            onClick = {
-//                                if(token != null) {
-//                                    @Suppress("DEPRECATION")
-//                                    mIMM.setInputMethodAndSubtype(token,id, subtype)
-//                                }
-                            }
+                            title = { CupertinoText("Add Keyboard", style = tileTextStyle) },
+                            onClick = { settingsModel.onAddKeyboard(context) }
                         )
+                        this.link(
+                            title = { CupertinoText("Change Keyboard", style = tileTextStyle) },
+                            onClick = { inputMethodManager.showInputMethodPicker() }
+                        )
+                    }
+                }
+                item("Keyboards List") {
+                    CupertinoSection {
+                        subtypeList.forEachIndexed { index, subtype ->
+                            val subtypeTag = subtype.languageTag
+                            val dName = subtype.getDisplayName(
+                                context,
+                                context.packageName,
+                                context.applicationInfo
+                            )
+
+                            val name = dName.ifEmpty { "System Default" }
+
+                            this.link(
+                                key = index,
+                                title = { CupertinoText("$name", style = tileTextStyle) },
+                                trailingIcon = {
+                                    if (subtypeTag == currentTag) {
+                                        CupertinoIcon(
+                                            imageVector = CupertinoIcons.Default.CheckmarkCircle,
+                                            contentDescription = "check",
+                                            tint = CupertinoColors.systemBlue,
+                                        )
+                                    }
+                                },
+                                onClick = {}
+                            )
+                        }
                     }
                 }
             }

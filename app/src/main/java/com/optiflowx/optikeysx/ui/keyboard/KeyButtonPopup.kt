@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
+import com.optiflowx.optikeysx.core.enums.KeyboardFontType
 import com.optiflowx.optikeysx.core.utils.appFontType
 import com.optiflowx.optikeysx.core.utils.nonScaledSp
 import com.optiflowx.optikeysx.ui.keyShapeValue
@@ -63,7 +64,7 @@ fun KeyButtonPopup(width: Dp = 56.dp, text: String = "M") {
                         textAlign = TextAlign.Center,
                         style = TextStyle(
                             fontWeight = FontWeight.Light,
-                            fontFamily = appFontType("Regular"),
+                            fontFamily = appFontType(KeyboardFontType.Regular),
                             platformStyle = PlatformTextStyle(includeFontPadding = false),
                             fontSize = TextUnit(24f, TextUnitType.Sp).nonScaledSp,
                         ),
@@ -71,6 +72,7 @@ fun KeyButtonPopup(width: Dp = 56.dp, text: String = "M") {
                     )
                 }
             }
+
             Surface(
                 color = MaterialTheme.colorScheme.secondary,
                 shape = RoundedCornerShape(

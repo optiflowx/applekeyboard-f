@@ -1,9 +1,10 @@
 plugins {
-//    kotlin("plugin.serialization")
+    kotlin("plugin.serialization")
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
 //    id ("dagger.hilt.android.plugin")
 //    id("kotlin-parcelize")
+    id("com.google.protobuf")
     id("com.google.devtools.ksp")
     id("androidx.baselineprofile")
 }
@@ -13,6 +14,7 @@ val composeVersion = "1.6.0"
 val lifecycleVersion = "2.7.0"
 val archVersion = "2.2.0"
 val roomVersion = "2.6.1"
+val voyagerVersion = "1.0.0"
 
 android {
     namespace = "com.optiflowx.optikeysx"
@@ -22,8 +24,8 @@ android {
         applicationId = "com.optiflowx.optikeysx"
         minSdk = 24
         targetSdk = 34
-        versionCode = 3
-        versionName = "1.0.3"
+        versionCode = 1
+        versionName = "1.0.0-alpha"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -32,10 +34,10 @@ android {
     }
 
     buildTypes {
-        getByName("release") {
+        release {
             isMinifyEnabled = true
             isShrinkResources = true
-            isProfileable = true //TO BE FALSE
+            isProfileable = false //TO BE FALSE
             isCrunchPngs = true
             isDebuggable = false
 
@@ -43,17 +45,6 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            signingConfig = signingConfigs.getByName("debug")
-        }
-
-        getByName("debug") {
-            isMinifyEnabled = false
-            isShrinkResources = false
-            isProfileable = true
-            isCrunchPngs = false
-            isDebuggable = true
-            isJniDebuggable = true
-
             signingConfig = signingConfigs.getByName("debug")
         }
     }
@@ -88,14 +79,28 @@ dependencies {
     implementation("androidx.constraintlayout:constraintlayout-core:1.0.4")
     androidTestImplementation("androidx.test:runner:1.5.2")
 
-//    implementation ("io.qonversion.android.sdk:sdk:7.1.0") // Qonversion SDK
+    implementation("dev.patrickgold.jetpref:jetpref-datastore-model:0.1.0-beta14")
+    implementation("dev.patrickgold.jetpref:jetpref-datastore-ui:0.1.0-beta14")
+    implementation("dev.patrickgold.jetpref:jetpref-material-ui:0.1.0-beta14")
 
-//    implementation("io.github.hokofly:hoko-blur:1.5.3")
+    implementation ("org.burnoutcrew.composereorderable:reorderable:0.9.6")
 
     //Destinations
-    implementation("io.github.raamcosta.compose-destinations:core:1.10.0")
+//    implementation("io.github.raamcosta.compose-destinations:core:1.10.0")
     "baselineProfile"(project(":baselineprofiles"))
-    ksp("io.github.raamcosta.compose-destinations:ksp:1.10.0")
+//    ksp("io.github.raamcosta.compose-destinations:ksp:1.10.0")
+
+    // Navigator
+    implementation("cafe.adriel.voyager:voyager-navigator:$voyagerVersion")
+
+    // Screen Model
+    implementation("cafe.adriel.voyager:voyager-screenmodel:$voyagerVersion")
+
+    // LiveData integration
+    implementation("cafe.adriel.voyager:voyager-livedata:$voyagerVersion")
+
+    // Transitions
+    implementation("cafe.adriel.voyager:voyager-transitions:$voyagerVersion")
 
     implementation("org.jetbrains.kotlin:kotlin-stdlib:1.9.22")
     implementation("androidx.appcompat:appcompat:1.6.1")
@@ -116,12 +121,22 @@ dependencies {
     implementation("com.louiscad.splitties:splitties-systemservices:3.0.0")
     implementation("com.louiscad.splitties:splitties-views:3.0.0")
 
-    // Compose Preview
+    // Compose Preview and Tests
     implementation(platform("androidx.compose:compose-bom:2024.01.00"))
     implementation("androidx.test.ext:junit-ktx:1.1.5")
     implementation("androidx.test:monitor:1.6.1")
     debugImplementation("androidx.compose.ui:ui-tooling")
     implementation("androidx.compose.ui:ui-tooling-preview")
+
+    //Voice
+    implementation("net.java.dev.jna:jna:5.13.0@aar")
+    implementation("com.alphacephei:vosk-android:0.3.32")
+    implementation("org.greenrobot:eventbus:3.3.1")
+    implementation("dev.gustavoavila:java-android-websocket-client:2.0.1")
+    implementation("io.grpc:grpc-okhttp:1.52.0")
+    implementation("io.grpc:grpc-protobuf-lite:1.52.0")
+    implementation("io.grpc:grpc-stub:1.52.0")
+    compileOnly("org.apache.tomcat:annotations-api:6.0.53") // necessary for Java 9+
 
     //Constraint Layout
     implementation("androidx.constraintlayout:constraintlayout-compose:1.1.0-alpha13")
@@ -142,8 +157,8 @@ dependencies {
 
     //Local Storage
 //    implementation("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.7")
-    implementation("androidx.datastore:datastore-preferences:1.1.0-beta01")
-//    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2")
+//    implementation("androidx.datastore:datastore-preferences:1.1.0-beta01")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2")
 
     //Room database
     implementation("androidx.room:room-runtime:$roomVersion")

@@ -26,7 +26,7 @@ fun FrenchKeyboardView(
     keyHeight: Dp = 42.dp,
     rowHeight: Dp = 56.dp,
 ) {
-    val locale = viewModel.locale.collectAsState().value
+    val locale = viewModel.keyboardData.collectAsState().value.locale
     val keyboardLocale = KeyboardLocale(locale)
     val constraintSets = FrenchConstraintSets(keyHeight, rowHeight)
     val nRowKeys = FrenchRowKeys()

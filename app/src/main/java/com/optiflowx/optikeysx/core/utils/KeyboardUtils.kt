@@ -52,11 +52,11 @@ fun Modifier.draw9Patch(
 }
 
 @Stable
-fun appFontType(fontType: String?): FontFamily {
+fun appFontType(fontType: KeyboardFontType?): FontFamily {
     return when(fontType) {
-        KeyboardFontType.Bold.name -> bold
-        KeyboardFontType.Medium.name -> medium
-        KeyboardFontType.Regular.name -> regular
+        KeyboardFontType.Bold -> bold
+        KeyboardFontType.Medium -> medium
+        KeyboardFontType.Regular -> regular
         else -> regular
     }
 }

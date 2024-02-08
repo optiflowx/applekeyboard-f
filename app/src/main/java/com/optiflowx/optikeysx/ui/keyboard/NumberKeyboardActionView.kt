@@ -24,10 +24,11 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
+import com.optiflowx.optikeysx.core.enums.KeyboardFontType
 import com.optiflowx.optikeysx.core.utils.KeyboardLocale
 import com.optiflowx.optikeysx.core.utils.appFontType
 import com.optiflowx.optikeysx.core.utils.nonScaledSp
-import com.optiflowx.optikeysx.services.IMEService
+import com.optiflowx.optikeysx.ime.IMEService
 import io.github.alexzhirkevich.cupertino.icons.CupertinoIcons
 import io.github.alexzhirkevich.cupertino.icons.outlined.ChevronDown
 import io.github.alexzhirkevich.cupertino.icons.outlined.ChevronUp
@@ -79,7 +80,7 @@ fun NumberKeyboardActionView(locale: String, viewWidth: Dp) {
                     it.uppercase()
                 },
                 style = TextStyle(
-                    fontFamily = appFontType("Bold"),
+                    fontFamily = appFontType(KeyboardFontType.Bold),
                     color = CupertinoColors.systemBlue,
                     fontSize = TextUnit(16f, TextUnitType.Sp).nonScaledSp,
                     platformStyle = PlatformTextStyle(includeFontPadding = false)

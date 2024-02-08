@@ -28,7 +28,7 @@ fun StandardKeyboardView(
     keyHeight: Dp,
     rowHeight: Dp,
 ) {
-    val locale = viewModel.locale.collectAsState().value
+    val locale = viewModel.keyboardData.collectAsState().value.locale
     val keyboardLocale = KeyboardLocale(locale)
     val constraintSets = StandardConstraintSets(keyHeight, rowHeight)
     val nRowKeys = StandardRowKeys()

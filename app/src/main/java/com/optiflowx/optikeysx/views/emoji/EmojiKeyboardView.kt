@@ -15,7 +15,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -26,12 +25,11 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import com.optiflowx.optikeysx.core.model.frequentlyUsedEmoji
-import com.optiflowx.optikeysx.core.preferences.PrefsConstants
-import com.optiflowx.optikeysx.core.preferences.rememberPreference
 import com.optiflowx.optikeysx.core.utils.appFontType
 import com.optiflowx.optikeysx.core.utils.handleTitle
 import com.optiflowx.optikeysx.core.utils.nonScaledSp
 import com.optiflowx.optikeysx.viewmodels.KeyboardViewModel
+import dev.patrickgold.jetpref.datastore.model.observeAsState
 import io.github.alexzhirkevich.cupertino.theme.CupertinoColors
 import io.github.alexzhirkevich.cupertino.theme.systemGray
 
@@ -46,10 +44,10 @@ fun EmojiKeyboardView(
     
     val defaultViewPort = (viewWidth)
     val freqViewPort = (viewWidth * 0.76f)
-    val locale = viewModel.locale.collectAsState().value
+    val locale = viewModel.keyboardData.collectAsState().value.locale
 //    val isESearch = viewModel.isEmojiSearch.collectAsState()
     val frequentEmojis = viewModel.frequentlyUsedEmojis.observeAsState().value?.reversed()
-    val fontType by rememberPreference(PrefsConstants.FONT_TYPE_KEY, "Regular")
+    val fontType = viewModel.prefs.keyboardFontType.observeAsState().value
 
     val emojiViewPager = arrayListOf(
         hashMapOf("Frequently Used" to listOf()),

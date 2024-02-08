@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
 import com.optiflowx.optikeysx.MainActivity
+import com.optiflowx.optikeysx.core.enums.KeyboardFontType
 import com.optiflowx.optikeysx.core.enums.KeyboardType
 import com.optiflowx.optikeysx.core.utils.KeyboardLocale
 import com.optiflowx.optikeysx.core.utils.appFontType
@@ -48,7 +49,7 @@ import io.github.alexzhirkevich.cupertino.theme.systemBlue
 @Composable
 fun KeyboardGlobalOptions(
     viewModel: KeyboardViewModel,
-    fontType: String,
+    fontType: KeyboardFontType,
     width: Dp,
     itemHeight: Int = 45,
     itemTextSize: Int = 15,
@@ -68,7 +69,7 @@ fun KeyboardGlobalOptions(
 
     val isShowOptions = viewModel.isShowOptions.collectAsState().value
     val options = listOf("Keyboard Settings", "Language", "Clipboard")
-    val locale = viewModel.locale.collectAsState().value
+    val locale = viewModel.keyboardData.collectAsState().value.locale
     val keyboardLocale = KeyboardLocale(locale)
 
     AnimatedVisibility(isShowOptions) {

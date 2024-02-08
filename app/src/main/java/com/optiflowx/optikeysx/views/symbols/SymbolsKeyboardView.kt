@@ -29,7 +29,7 @@ fun SymbolsKeyboardView(
     
     val isSymbol = viewModel.isNumberSymbol.collectAsState().value
     val symbolConst = SymbolConstraintSet(keyHeight, rowHeight)
-    val locale = viewModel.locale.collectAsState().value
+    val locale = viewModel.keyboardData.collectAsState().value.locale
     val keyboardLocale = KeyboardLocale(locale)
     val symbolRowKeys = SymbolRowKeys()
 

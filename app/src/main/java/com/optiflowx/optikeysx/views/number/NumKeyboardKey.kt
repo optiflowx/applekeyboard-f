@@ -8,7 +8,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -21,12 +20,11 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import com.optiflowx.optikeysx.R
 import com.optiflowx.optikeysx.core.model.Key
-import com.optiflowx.optikeysx.core.preferences.PrefsConstants
-import com.optiflowx.optikeysx.core.preferences.rememberPreference
 import com.optiflowx.optikeysx.core.utils.appFontType
 import com.optiflowx.optikeysx.ui.keyboard.EraseButton
 import com.optiflowx.optikeysx.ui.keyboard.KeyButton
 import com.optiflowx.optikeysx.viewmodels.KeyboardViewModel
+import dev.patrickgold.jetpref.datastore.model.observeAsState
 
 @Composable
 fun NumKeyboardKey(key: Key, viewModel: KeyboardViewModel) {
@@ -34,7 +32,7 @@ fun NumKeyboardKey(key: Key, viewModel: KeyboardViewModel) {
     val colorScheme = MaterialTheme.colorScheme
     val isPeriod: Boolean = key.id == "period"
     val isErase: Boolean = key.id == "delete"
-    val fontType  by rememberPreference(PrefsConstants.FONT_TYPE_KEY, "Regular")
+    val fontType = viewModel.prefs.keyboardFontType.observeAsState().value
 
 
     if (isErase) {
@@ -61,6 +59,7 @@ fun NumKeyboardKey(key: Key, viewModel: KeyboardViewModel) {
         color = (if (isPeriod) Color.Transparent else colorScheme.secondary),
         id = key.id,
         showPopup = false,
+        prefs = viewModel.prefs,
         onClick = {
             viewModel.onNumKeyClick(key, ctx)
             viewModel.playSound(key)

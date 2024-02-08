@@ -27,20 +27,19 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.sp
 import com.optiflowx.optikeysx.R
 import com.optiflowx.optikeysx.core.model.Key
-import com.optiflowx.optikeysx.core.preferences.PrefsConstants
-import com.optiflowx.optikeysx.core.preferences.rememberPreference
 import com.optiflowx.optikeysx.core.utils.KeyboardLocale
 import com.optiflowx.optikeysx.core.utils.appFontType
 import com.optiflowx.optikeysx.core.utils.nonScaledSp
-import com.optiflowx.optikeysx.services.IMEService
+import com.optiflowx.optikeysx.ime.IMEService
 import com.optiflowx.optikeysx.viewmodels.KeyboardViewModel
+import dev.patrickgold.jetpref.datastore.model.observeAsState
 
 @Composable
 fun KeyboardKey(key: Key, viewModel: KeyboardViewModel) {
     val ctx = LocalContext.current
     val view = LocalView.current
     
-    val locale = viewModel.locale.collectAsState().value
+    val locale = viewModel.keyboardData.collectAsState().value.locale
     val keyboardLocale = KeyboardLocale(locale)
     val colorScheme = MaterialTheme.colorScheme
 
@@ -55,15 +54,15 @@ fun KeyboardKey(key: Key, viewModel: KeyboardViewModel) {
     val colorD = colorScheme.primary
 
 
-    val isAllCaps = viewModel.isAllCaps.collectAsState().value
+    val isAllCaps = viewModel.prefs.isAllCaps.observeAsState().value
     val isNumberSymbol = viewModel.isNumberSymbol.collectAsState().value
-    val isCapsLock = viewModel.isCapsLock.collectAsState().value
+    val isCapsLock = viewModel.prefs.isCapsLock.observeAsState().value
     val buttonColor = viewModel.keyActionButtonColor.collectAsState().value
     val textColor = viewModel.keyActionTextColor.collectAsState().value
     val text = viewModel.keyActionText.collectAsState().value
 
     var keyValue by rememberSaveable { mutableStateOf(key.value) }
-    val fontType by rememberPreference(PrefsConstants.FONT_TYPE_KEY, "Regular")
+    val fontType = viewModel.prefs.keyboardFontType.observeAsState().value
 
     LaunchedEffect(isAllCaps) {
         keyValue = if (isAllCaps) {
@@ -159,6 +158,7 @@ fun KeyboardKey(key: Key, viewModel: KeyboardViewModel) {
                 color = (if (isShift && isAllCaps) colorScheme.surface else colorC),
                 id = key.id,
                 showPopup = false,
+                prefs = viewModel.prefs,
                 onClick = {
                     viewModel.onIKeyClick(key, ctx).let {
                         viewModel.playSound(key)
@@ -185,6 +185,7 @@ fun KeyboardKey(key: Key, viewModel: KeyboardViewModel) {
             KeyButton(
                 color = this,
                 id = key.id,
+                prefs = viewModel.prefs,
                 text = keyValue,
                 popupWidth = popupWidth,
                 showPopup = !(key.id == "123" || key.id == "ABC" || key.id == "action" || key.id == "space"),

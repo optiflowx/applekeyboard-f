@@ -11,14 +11,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.optiflowx.optikeysx.ui.keyboard.NumberKeyboardActionView
 import com.optiflowx.optikeysx.viewmodels.KeyboardViewModel
 
 @Composable
-fun NumberLandscapeKeyboard(viewModel: KeyboardViewModel, locale: String) {
+fun NumberLandscapeKeyboard(viewModel: KeyboardViewModel) {
     val screenWidth = LocalConfiguration.current.screenWidthDp
     val viewWidth = (screenWidth * 0.8).dp
     val sideWidth = (screenWidth * 0.1)
+    val locale = viewModel.keyboardData.collectAsStateWithLifecycle().value.locale
     
 
     Column(

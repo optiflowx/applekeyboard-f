@@ -16,8 +16,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.unit.dp
-import com.optiflowx.optikeysx.core.preferences.PrefsConstants
-import com.optiflowx.optikeysx.core.preferences.rememberPreference
+import com.optiflowx.optikeysx.AppPrefs
+import dev.patrickgold.jetpref.datastore.model.observeAsState
 
 @Composable
 fun KeyButton(
@@ -28,15 +28,15 @@ fun KeyButton(
     id: String,
     popupWidth: Float = 0f,
     showPopup: Boolean,
+    prefs: AppPrefs,
     onClick: () -> Unit,
     content: @Composable () -> Unit,
-
-    ) {
+) {
     val isIgnoreElevation = (id == "switch" || id == "period")
 
     val interactionSource = remember { MutableInteractionSource() }
 
-    val isCharacterPreview = rememberPreference(PrefsConstants.CHARACTER_PREVIEW_KEY, false)
+    val isCharacterPreview = prefs.isCharacterPreview.observeAsState().value
 
     val pressed = interactionSource.collectIsPressedAsState()
 
@@ -46,7 +46,7 @@ fun KeyButton(
             .layoutId(id)
             .fillMaxSize()
     ) {
-        if(!isIgnoreElevation) {
+        if (!isIgnoreElevation) {
             Surface(
                 color = MaterialTheme.colorScheme.tertiaryContainer,
                 shape = RoundedCornerShape(5.5.dp),
@@ -66,7 +66,7 @@ fun KeyButton(
             modifier = modifier.matchParentSize()
         ) {
             Box(contentAlignment = Alignment.Center) {
-                if (pressed.value && showPopup && isCharacterPreview.value) {
+                if (pressed.value && showPopup && isCharacterPreview) {
                     KeyButtonPopup(popupWidth.dp, text)
                 }
 

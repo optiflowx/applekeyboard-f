@@ -5,17 +5,15 @@ import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
-import com.optiflowx.optikeysx.core.preferences.PrefsConstants
-import com.optiflowx.optikeysx.core.preferences.rememberPreference
 import com.optiflowx.optikeysx.core.utils.OPTIMIZATION_STANDARDIZED
 import com.optiflowx.optikeysx.viewmodels.KeyboardViewModel
+import dev.patrickgold.jetpref.datastore.model.observeAsState
 
 @Composable
 fun SuggestionView(viewModel: KeyboardViewModel, textSize: Float, boxScope: BoxScope) {
@@ -34,7 +32,7 @@ fun SuggestionView(viewModel: KeyboardViewModel, textSize: Float, boxScope: BoxS
         mutableStateOf(if (suggestions.size >= 3) suggestions.elementAt(2) else "")
     }
 
-    val fontType by rememberPreference(PrefsConstants.FONT_TYPE_KEY, "Regular")
+    val fontType = viewModel.prefs.keyboardFontType.observeAsState().value
 
 
     val constraints = ConstraintSet {
