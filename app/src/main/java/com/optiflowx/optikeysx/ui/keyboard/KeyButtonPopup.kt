@@ -1,5 +1,6 @@
 package com.optiflowx.optikeysx.ui.keyboard
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -21,8 +23,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Popup
-import androidx.compose.ui.window.PopupProperties
 import com.optiflowx.optikeysx.core.enums.KeyboardFontType
 import com.optiflowx.optikeysx.core.utils.appFontType
 import com.optiflowx.optikeysx.core.utils.nonScaledSp
@@ -30,61 +30,64 @@ import com.optiflowx.optikeysx.ui.keyShapeValue
 
 @Preview
 @Composable
-fun KeyButtonPopup(width: Dp = 56.dp, text: String = "M") {
+fun KeyButtonPopup(width: Dp = 52.dp, text: String = "M", id: String = "") {
     val height: Dp = 96.dp
     val previewWidth: Dp = ((width.value * 0.6) + width.value).dp
 
-    Popup(
-        alignment = Alignment.BottomCenter,
-        properties = PopupProperties(
-            focusable = false,
-            clippingEnabled = false,
-        )
+//    Popup(
+//        alignment = Alignment.BottomCenter,
+//        properties = PopupProperties(
+//            focusable = false,
+//            clippingEnabled = false,
+//        )
+//    ) {
+    Column(
+        modifier = Modifier.layoutId(id).fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
+//        modifier =
     ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally
+        Surface(
+            color = MaterialTheme.colorScheme.secondary,
+            shape = RoundedCornerShape(
+                topStart = 13.dp,
+                topEnd = 13.dp,
+                bottomStart = 15.dp,
+                bottomEnd = 15.dp,
+            ),
+            modifier = Modifier
+                .size(previewWidth, height * 0.54f)
+                .shadow(7.5.dp)
         ) {
-            Surface(
-                color = MaterialTheme.colorScheme.secondary,
-                shape = RoundedCornerShape(
-                    topStart = 13.dp,
-                    topEnd = 13.dp,
-                    bottomStart = 15.dp,
-                    bottomEnd = 15.dp,
-                ),
-                modifier = Modifier
-                    .size(previewWidth, height * 0.54f)
-                    .shadow(7.5.dp)
+            Box(
+                Modifier.fillMaxSize(), Alignment.Center
             ) {
-                Box(
-                    Modifier.fillMaxSize(), Alignment.Center
-                ) {
-                    Text(
-                        text = text,
-                        textAlign = TextAlign.Center,
-                        style = TextStyle(
-                            fontWeight = FontWeight.Light,
-                            fontFamily = appFontType(KeyboardFontType.Regular),
-                            platformStyle = PlatformTextStyle(includeFontPadding = false),
-                            fontSize = TextUnit(24f, TextUnitType.Sp).nonScaledSp,
-                        ),
-                        color = MaterialTheme.colorScheme.primary,
-                    )
-                }
+                Text(
+                    text = text,
+                    textAlign = TextAlign.Center,
+                    style = TextStyle(
+                        fontWeight = FontWeight.Light,
+                        fontFamily = appFontType(KeyboardFontType.Regular),
+                        platformStyle = PlatformTextStyle(includeFontPadding = false),
+                        fontSize = TextUnit(24f, TextUnitType.Sp).nonScaledSp,
+                    ),
+                    color = MaterialTheme.colorScheme.primary,
+                )
             }
-
-            Surface(
-                color = MaterialTheme.colorScheme.secondary,
-                shape = RoundedCornerShape(
-                    topStart = 0.dp,
-                    topEnd = 0.dp,
-                    bottomStart = keyShapeValue,
-                    bottomEnd = keyShapeValue,
-                ),
-                modifier = Modifier.size(width, height * 0.46f)
-            ) {}
         }
+
+        Surface(
+            color = MaterialTheme.colorScheme.secondary,
+            shape = RoundedCornerShape(
+                topStart = 0.dp,
+                topEnd = 0.dp,
+                bottomStart = keyShapeValue,
+                bottomEnd = keyShapeValue,
+            ),
+            modifier = Modifier.size(width, height * 0.46f)
+        ) {}
     }
+//    }
 }
 //
 //@Preview(showBackground = true)

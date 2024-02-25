@@ -18,6 +18,7 @@ fun InteractionsSection(
     val prefs by optikeysxPreferences()
     val isSoundOnKeypress = prefs.isSoundOnKeypress.observeAsState().value
     val isVibrateOnKeypress = prefs.isVibrateOnKeypress.observeAsState().value
+    val isAutoSwitchBackToNormal = prefs.autoSwitchIBackIME.observeAsState().value
 
     CupertinoSection(
         title = { CupertinoText("INTERACTIONS", style = titleTextStyle) },
@@ -38,6 +39,11 @@ fun InteractionsSection(
             },
             checked = isVibrateOnKeypress,
             onCheckedChange = { prefs.isVibrateOnKeypress.set(it) }
+        )
+        switch(
+            title = { CupertinoText("Auto Switch Back To Normal") },
+            checked = isAutoSwitchBackToNormal,
+            onCheckedChange = { prefs.autoSwitchIBackIME.set(it) }
         )
     }
 }

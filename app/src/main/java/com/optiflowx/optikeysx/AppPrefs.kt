@@ -25,6 +25,11 @@ class AppPrefs : PreferenceModel("optikeysx-app-preferences") {
         default = KeepScreenAwakeMode.NEVER
     )
 
+    val isAuthenticated = boolean(
+        key = "is_user_authenticated",
+        default = false,
+    )
+
     val keyboardFontType = enum(
         key = "keyboard_font_type",
         default = KeyboardFontType.Regular

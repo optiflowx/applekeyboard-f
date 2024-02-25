@@ -24,7 +24,7 @@ fun SymbolsKeyboardView(
     viewModel: KeyboardViewModel,
     viewWidth: Dp,
     keyHeight: Dp = 42.dp,
-    rowHeight: Dp = 56.dp,
+    rowHeight: Dp = 52.dp,
 ) {
     
     val isSymbol = viewModel.isNumberSymbol.collectAsState().value

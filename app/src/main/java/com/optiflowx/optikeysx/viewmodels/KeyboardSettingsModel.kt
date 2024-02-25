@@ -1,28 +1,31 @@
 package com.optiflowx.optikeysx.viewmodels
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.provider.Settings
 import cafe.adriel.voyager.core.model.ScreenModel
-import com.optiflowx.optikeysx.core.downloader.messages.ModelInfo
-import com.optiflowx.optikeysx.core.model.DownloadProgress
+import cafe.adriel.voyager.core.model.screenModelScope
+import com.google.firebase.auth.FirebaseAuth
+import com.optiflowx.optikeysx.core.model.Response
 import com.optiflowx.optikeysx.ime.recognizers.providers.Providers
 import com.optiflowx.optikeysx.optikeysxPreferences
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 
 
 class KeyboardSettingsModel : ScreenModel {
     val prefs by optikeysxPreferences()
-
-    val modelsPendingDownloadLD = MutableStateFlow<List<ModelInfo>>(mutableListOf())
-    private val modelsPendingDownload = mutableListOf<ModelInfo>()
-    val currentDownloadingModel = MutableStateFlow<DownloadProgress?>(null)
-
+    private var auth : FirebaseAuth = FirebaseAuth.getInstance()
     private lateinit var recognizerSourceProviders: Providers
 
-    fun initRecognizerSourceProviders(activity: Activity) {
-        recognizerSourceProviders = Providers(activity)
+    fun initRecognizerSourceProviders(context: Context) {
+        recognizerSourceProviders = Providers(context)
     }
 
     fun reloadModels() {
@@ -51,7 +54,60 @@ class KeyboardSettingsModel : ScreenModel {
         context.startActivity(intent);
     }
 
-    override fun onDispose() {
-        super.onDispose()
+    fun firebaseSignUpWithEmailAndPassword(
+        email: String, password: String
+    ) = screenModelScope.launch(Dispatchers.IO) {
+        try {
+            auth.createUserWithEmailAndPassword(email, password).await()
+            Response.Success(true)
+        } catch (e: Exception) {
+            Response.Failure(e)
+        }
     }
+
+    fun sendEmailVerification() = screenModelScope.launch(Dispatchers.IO) {
+        try {
+            auth.currentUser?.sendEmailVerification()?.await()
+            Response.Success(true)
+        } catch (e: Exception) {
+            Response.Failure(e)
+        }
+    }
+
+    fun firebaseSignInWithEmailAndPassword(
+        email: String, password: String
+    ) = screenModelScope.launch(Dispatchers.IO) {
+        try {
+            auth.signInWithEmailAndPassword(email, password).await().also {
+                auth.currentUser?.reload()?.await()
+            }
+            Response.Success(true)
+            prefs.isAuthenticated.set(true)
+        } catch (e: Exception) {
+            Response.Failure(e)
+        }
+    }
+
+    fun reloadFirebaseUser() = screenModelScope.launch(Dispatchers.IO) {
+        try {
+            auth.currentUser?.reload()?.await()
+            Response.Success(true)
+        } catch (e: Exception) {
+            Response.Failure(e)
+        }
+    }
+
+    fun signOut() = auth.signOut()
+
+
+    fun getAuthState(viewModelScope: CoroutineScope) = callbackFlow {
+        val authStateListener = FirebaseAuth.AuthStateListener { auth ->
+            trySend(auth.currentUser == null)
+        }
+
+        auth.addAuthStateListener(authStateListener)
+        awaitClose {
+            auth.removeAuthStateListener(authStateListener)
+        }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), auth.currentUser == null)
 }

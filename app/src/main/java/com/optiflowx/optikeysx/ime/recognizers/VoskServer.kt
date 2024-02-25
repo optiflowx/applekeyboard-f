@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import com.google.protobuf.ByteString
 import com.optiflowx.optikeysx.core.data.VoskServerData
+import com.optiflowx.optikeysx.core.enums.RecognizerState
 import io.grpc.ManagedChannelBuilder
 import io.grpc.stub.StreamObserver
 import vosk.stt.v1.SttServiceGrpc
@@ -88,7 +89,9 @@ class VoskServer(private val data: VoskServerData) : RecognizerSource {
         override fun acceptWaveForm(buffer: ShortArray?, nread: Int): Boolean {
             if (closed) return false
             val bb = ByteBuffer.allocate(nread * 2)
-            bb.asShortBuffer().put(buffer, 0, nread)
+            if (buffer != null) {
+                bb.asShortBuffer().put(buffer, 0, nread)
+            }
             requestStream.onNext(
                 StreamingRecognitionRequest.newBuilder()
                     .setAudioContent(ByteString.copyFrom(bb))

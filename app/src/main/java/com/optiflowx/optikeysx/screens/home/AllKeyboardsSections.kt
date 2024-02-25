@@ -8,9 +8,6 @@ import io.github.alexzhirkevich.cupertino.CupertinoText
 import io.github.alexzhirkevich.cupertino.ExperimentalCupertinoApi
 import io.github.alexzhirkevich.cupertino.section.CupertinoSection
 import io.github.alexzhirkevich.cupertino.section.switch
-import io.github.alexzhirkevich.cupertino.theme.CupertinoColors
-import io.github.alexzhirkevich.cupertino.theme.systemOrange
-import io.github.alexzhirkevich.cupertino.theme.systemYellow
 
 @OptIn(ExperimentalCupertinoApi::class)
 @Composable
@@ -45,28 +42,28 @@ fun AllKeyboardsSection(
             checked = isAutoCapitalization,
             onCheckedChange = { prefs.isAutoCapitalisation.set(it) }
         )
-        this.switch(
-            title = {
-                CupertinoText(
-                    text = "Auto-Correction",
-                    color = CupertinoColors.systemOrange,
-                    style = tileTextStyle
-                )
-            },
-            checked = isAutoCorrect,
-            onCheckedChange = { prefs.isAutoCorrect.set(it) }
-        )
-        this.switch(
-            title = {
-                CupertinoText(
-                    text = "Check Spelling",
-                    color = CupertinoColors.systemOrange,
-                    style = tileTextStyle
-                )
-            },
-            checked = isCheckSpelling,
-            onCheckedChange = { prefs.isCheckSpelling.set(it) }
-        )
+//        this.switch(
+//            title = {
+//                CupertinoText(
+//                    text = "Auto-Correction",
+//                    color = CupertinoColors.systemOrange,
+//                    style = tileTextStyle
+//                )
+//            },
+//            checked = isAutoCorrect,
+//            onCheckedChange = { prefs.isAutoCorrect.set(it) }
+//        )
+//        this.switch(
+//            title = {
+//                CupertinoText(
+//                    text = "Check Spelling",
+//                    color = CupertinoColors.systemOrange,
+//                    style = tileTextStyle
+//                )
+//            },
+//            checked = isCheckSpelling,
+//            onCheckedChange = { prefs.isCheckSpelling.set(it) }
+//        )
         this.switch(
             title = {
                 CupertinoText("Enable Caps Lock", style = tileTextStyle)
@@ -81,17 +78,17 @@ fun AllKeyboardsSection(
             checked = isPredictive,
             onCheckedChange = { prefs.isPredictive.set(it) }
         )
-        this.switch(
-            title = {
-                CupertinoText(
-                    text = "Character Preview",
-                    color = CupertinoColors.systemYellow,
-                    style = tileTextStyle
-                )
-            },
-            checked = isCharacterPreview,
-            onCheckedChange = { prefs.isCharacterPreview.set(it) }
-        )
+//        this.switch(
+//            title = {
+//                CupertinoText(
+//                    text = "Character Preview",
+//                    color = CupertinoColors.systemYellow,
+//                    style = tileTextStyle
+//                )
+//            },
+//            checked = isCharacterPreview,
+//            onCheckedChange = { prefs.isCharacterPreview.set(it) }
+//        )
         this.switch(
             title = {
                 CupertinoText("\".\" Shortcut", style = tileTextStyle)

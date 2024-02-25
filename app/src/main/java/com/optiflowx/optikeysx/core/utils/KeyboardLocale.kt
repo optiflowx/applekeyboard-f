@@ -37,8 +37,8 @@ class KeyboardLocale(val locale: String) {
     }
 
     @Stable
-    fun emptyClipboard() : String {
-        return when(locale) {
+    fun emptyClipboard(): String {
+        return when (locale) {
             "ru" -> "Буфер обмена пуст.\nСкопируйте данные, чтобы начать сохранение."
             "fr-FR" -> "Le presse-papiers est vide.\nCopiez des données pour commencer à enregistrer."
             "es" -> "El portapapeles está vacío.\nCopie datos para comenzar a guardar."
@@ -52,7 +52,113 @@ class KeyboardLocale(val locale: String) {
     }
 
     @Stable
-    fun clear() : String {
+    fun noModel(): String {
+        return when (locale) {
+            "ru" -> "Модели не найдены. Пожалуйста, загрузите голосовую модель для вашего языка в настройках речи клавиатуры."
+            "fr-FR" -> "Aucun modèle trouvé. Veuillez télécharger un modèle vocal pour votre langue dans les paramètres de la parole du clavier."
+            "es" -> "No se encontraron modelos. Descargue un modelo de voz para su idioma en la configuración de voz del teclado."
+            "pt-PT" -> "Nenhum modelo encontrado. Por favor, baixe um modelo de voz para o seu idioma nas configurações de voz do teclado."
+            "pt-BR" -> "Nenhum modelo encontrado. Por favor, baixe um modelo de voz para o seu idioma nas configurações de voz do teclado."
+            "it" -> "Nessun modello trovato. Si prega di scaricare un modello vocale per la propria lingua nelle impostazioni della voce della tastiera."
+            "nl" -> "Geen modellen gevonden. Download een spraakmodel voor uw taal in de spraakinstellingen van het toetsenbord."
+            "de" -> "Keine Modelle gefunden. Bitte laden Sie ein Sprachmodell für Ihre Sprache in den Tastatureinstellungen herunter."
+            else -> "No models found. Please download a voice model  for your language in the keyboard speech settings."
+        }
+    }
+
+    @Stable
+    fun recognizerError() : String {
+        return when (locale) {
+            "ru" -> "Ошибка распознавания"
+            "fr-FR" -> "Erreur de reconnaissance"
+            "es" -> "Error de reconocimiento"
+            "pt-PT" -> "Erro de reconhecimento"
+            "pt-BR" -> "Erro de reconhecimento"
+            "it" -> "Errore di riconoscimento"
+            "nl" -> "Herkenningsfout"
+            "de" -> "Erkennungsfehler"
+            else -> "Recognition error"
+        }
+    }
+
+    @Stable
+    fun startingInAMoment() : String {
+        return when (locale) {
+            "ru" -> "Начнется через мгновение..."
+            "fr-FR" -> "Commencera dans un instant..."
+            "es" -> "Comenzará en un momento..."
+            "pt-PT" -> "Começará em um momento..."
+            "pt-BR" -> "Começará em um momento..."
+            "it" -> "Inizierà tra un momento..."
+            "nl" -> "Begint over een ogenblik..."
+            "de" -> "Beginnt in einem Moment..."
+            else -> "Starting in a moment..."
+        }
+    }
+
+    @Stable
+    fun loading() : String {
+        return when (locale) {
+            "ru" -> "Загрузка..."
+            "fr-FR" -> "Chargement..."
+            "es" -> "Cargando..."
+            "pt-PT" -> "Carregando..."
+            "pt-BR" -> "Carregando..."
+            "it" -> "Caricamento..."
+            "nl" -> "Laden..."
+            "de" -> "Laden..."
+            else -> "Loading..."
+        }
+    }
+
+    @Stable
+    fun initializing() : String {
+        return when (locale) {
+            "ru" -> "Инициализация..."
+            "fr-FR" -> "Initialisation..."
+            "es" -> "Inicializando..."
+            "pt-PT" -> "Inicializando..."
+            "pt-BR" -> "Inicializando..."
+            "it" -> "Inizializzazione..."
+            "nl" -> "Initialiseren..."
+            "de" -> "Initialisierung..."
+            else -> "Initializing..."
+        }
+    }
+
+    @Stable
+    fun noMicPermission() : String {
+        return when (locale) {
+            "ru" -> "Нет разрешения на микрофон"
+            "fr-FR" -> "Pas de permission pour le microphone"
+            "es" -> "Sin permiso para el micrófono"
+            "pt-PT" -> "Sem permissão para o microfone"
+            "pt-BR" -> "Sem permissão para o microfone"
+            "it" -> "Nessun permesso per il microfono"
+            "nl" -> "Geen microfoonrechten"
+            "de" -> "Keine Mikrofonberechtigung"
+            else -> "No microphone permission"
+        }
+    }
+
+    @Stable
+    fun authentication(): String {
+        return when (locale) {
+            "en" -> "You are not authenticated.\nSign in to your account to start using this keyboard."
+            "ru" -> "Вы не аутентифицированы.\nВойдите в свою учетную запись, чтобы начать использовать эту клавиатуру."
+            "fr-FR" -> "Vous n'êtes pas authentifié.\nConnectez-vous à votre compte pour commencer à utiliser ce clavier."
+            "es" -> "No estás autenticado.\nInicia sesión en tu cuenta para comenzar a usar este teclado."
+            "pt-PT" -> "Você não está autenticado.\nFaça login na sua conta para começar a usar este teclado."
+            "pt-BR" -> "Você não está autenticado.\nFaça login na sua conta para começar a usar este teclado."
+            "it" -> "Non sei autenticato.\nAccedi al tuo account per iniziare a utilizzare questa tastiera."
+            "nl" -> "Je bent niet geauthenticeerd.\nMeld je aan bij je account om deze toetsenbord te gaan gebruiken."
+            "de" -> "Sie sind nicht authentifiziert.\nMelden Sie sich bei Ihrem Konto an, um mit dieser Tastatur zu beginnen."
+            else -> "You are not authenticated.\nSign in to your account to start using this keyboard."
+        }
+    }
+
+    @Stable
+    fun clear(): String {
         return when (locale) {
             "ru" -> "Очистить"
             "fr-FR" -> "Effacer"
@@ -82,8 +188,8 @@ class KeyboardLocale(val locale: String) {
     }
 
     @Stable
-    fun back() : String {
-        return when(locale) {
+    fun back(): String {
+        return when (locale) {
             "ru" -> "Назад"
             "fr-FR" -> "Retour"
             "es" -> "Atrás"

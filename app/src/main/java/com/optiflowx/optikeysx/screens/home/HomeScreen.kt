@@ -16,7 +16,6 @@ import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.core.screen.uniqueScreenKey
@@ -25,7 +24,6 @@ import com.optiflowx.optikeysx.screens.components.TopBar
 import com.optiflowx.optikeysx.ui.bold
 import com.optiflowx.optikeysx.ui.cupertino.CopyrightBottomSheet
 import com.optiflowx.optikeysx.ui.regular
-import com.optiflowx.optikeysx.viewmodels.KeyboardSettingsModel
 import io.github.alexzhirkevich.cupertino.CupertinoBottomSheetScaffold
 import io.github.alexzhirkevich.cupertino.CupertinoBottomSheetScaffoldDefaults
 import io.github.alexzhirkevich.cupertino.CupertinoNavigationTitle
@@ -48,9 +46,6 @@ data class HomeScreen(val activity: Activity) : Screen {
     @Composable
     @OptIn(ExperimentalCupertinoApi::class, ExperimentalComposeUiApi::class)
     override fun Content() {
-        val screenModel = rememberScreenModel(tag = TAG) { KeyboardSettingsModel() }
-
-        screenModel.initRecognizerSourceProviders(activity)
 
         val tileTextStyle = TextStyle(
             fontSize = 17.sp.nonScaledSp,

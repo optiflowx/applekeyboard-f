@@ -2,12 +2,10 @@ package com.optiflowx.optikeysx.ime
 
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.view.KeyEvent
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.ExtractedTextRequest
 import android.view.inputmethod.InputMethodManager
-import android.widget.Toast
 import com.optiflowx.optikeysx.MainActivity
 
 class ActionManager(private val ime: IMEService) {
@@ -73,17 +71,6 @@ class ActionManager(private val ime: IMEService) {
             }
         } else {
             ic.performEditorAction(ime.keyboardData.enterAction)
-        }
-    }
-
-    fun switchToLastIme(showError: Boolean) {
-        val result: Boolean = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            ime.switchToPreviousInputMethod()
-        } else {
-            mInputMethodManager.switchToLastInputMethod(ime.token)
-        }
-        if (!result && showError) {
-            Toast.makeText(ime, "There is no previous ime", Toast.LENGTH_SHORT).show()
         }
     }
 

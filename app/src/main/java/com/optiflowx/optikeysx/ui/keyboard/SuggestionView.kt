@@ -15,25 +15,15 @@ import com.optiflowx.optikeysx.core.utils.OPTIMIZATION_STANDARDIZED
 import com.optiflowx.optikeysx.viewmodels.KeyboardViewModel
 import dev.patrickgold.jetpref.datastore.model.observeAsState
 
+
 @Composable
 fun SuggestionView(viewModel: KeyboardViewModel, textSize: Float, boxScope: BoxScope) {
     val context = LocalContext.current
+
     val suggestions = viewModel.wordsDictionary.collectAsState().value
-
-    val suggestion1 = remember(suggestions) {
-        mutableStateOf(if (suggestions.isNotEmpty()) suggestions.elementAt(0) else "")
-    }
-
-    val suggestion2 = remember(suggestions) {
-        mutableStateOf(if (suggestions.size >= 2) suggestions.elementAt(1) else "")
-    }
-
-    val suggestion3 = remember(suggestions) {
-        mutableStateOf(if (suggestions.size >= 3) suggestions.elementAt(2) else "")
-    }
-
     val fontType = viewModel.prefs.keyboardFontType.observeAsState().value
-
+    val isAllCaps = viewModel.prefs.isAllCaps.observeAsState().value
+    val isCapsLock = viewModel.prefs.isCapsLock.observeAsState().value
 
     val constraints = ConstraintSet {
         val firstSuggestion = createRefFor("sug1")
@@ -78,6 +68,18 @@ fun SuggestionView(viewModel: KeyboardViewModel, textSize: Float, boxScope: BoxS
         }
     }
 
+    val suggestion1 = remember(suggestions) {
+        mutableStateOf(if (suggestions.isNotEmpty()) suggestions.elementAt(0) else "")
+    }
+
+    val suggestion2 = remember(suggestions) {
+        mutableStateOf(if (suggestions.size >= 2) suggestions.elementAt(1) else "")
+    }
+
+    val suggestion3 = remember(suggestions) {
+        mutableStateOf(if (suggestions.size >= 3) suggestions.elementAt(2) else "")
+    }
+
     LaunchedEffect(suggestions) {
         if (suggestions.isNotEmpty()) {
             suggestions.forEachIndexed { index, element ->
@@ -87,6 +89,22 @@ fun SuggestionView(viewModel: KeyboardViewModel, textSize: Float, boxScope: BoxS
                     2 -> suggestion3.value = element
                 }
             }
+        }
+    }
+
+    LaunchedEffect(isAllCaps) {
+        if (suggestions.isNotEmpty()) {
+            suggestion1.value = viewModel.handleAllCaps(suggestion1.value)
+            suggestion2.value = viewModel.handleAllCaps(suggestion2.value)
+            suggestion3.value = viewModel.handleAllCaps(suggestion3.value)
+        }
+    }
+
+    LaunchedEffect(isCapsLock) {
+        if (suggestions.isNotEmpty()) {
+            suggestion1.value = viewModel.handleCapsLock(suggestion1.value)
+            suggestion2.value = viewModel.handleCapsLock(suggestion2.value)
+            suggestion3.value = viewModel.handleCapsLock(suggestion3.value)
         }
     }
 

@@ -81,6 +81,8 @@ class StandardConstraintSets(
         val o = createRefFor("o")
         val p = createRefFor("p")
 
+        val superLetter = createRefsFor()
+
         val gap = createRefFor("gap")
         val gap2 = createRefFor("gap2")
         val gap3 = createRefFor("gap3")

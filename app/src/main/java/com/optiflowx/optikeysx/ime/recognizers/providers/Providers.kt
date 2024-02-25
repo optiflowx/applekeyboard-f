@@ -23,7 +23,6 @@ class Providers(context: Context) {
     fun recognizerSourceForModel(localModel: InstalledModelReference): RecognizerSource? {
         return when (localModel.type) {
             ModelType.VoskLocal -> voskLocalProvider.recognizerSourceForModel(localModel)
-            else -> null
         }
     }
 

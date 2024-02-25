@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
@@ -24,7 +25,7 @@ fun StandardKeyboardView(
     viewModel: KeyboardViewModel,
     viewWidth: Dp,
     keyHeight: Dp = 42.dp,
-    rowHeight: Dp = 56.dp,
+    rowHeight: Dp = 52.dp,
 ) {
     val locale = viewModel.keyboardData.collectAsState().value.locale
     val keyboardLocale = KeyboardLocale(locale)
@@ -34,7 +35,7 @@ fun StandardKeyboardView(
 
     ConstraintLayout(
         constraintSet = constraintSets.constraints,
-        modifier = Modifier.width(viewWidth),
+        modifier = Modifier.width(viewWidth).graphicsLayer(clip = false),
         optimizationLevel = OPTIMIZATION_STANDARDIZED,
         animateChanges = true,
         
@@ -45,7 +46,8 @@ fun StandardKeyboardView(
                 modifier = Modifier
                     .width(viewWidth)
                     .padding(start = 2.dp, end = 3.5.dp)
-                    .align(Alignment.Center),
+                    .align(Alignment.Center)
+                    .graphicsLayer(clip = false),
                 optimizationLevel = OPTIMIZATION_STANDARDIZED,
                 animateChanges = true,
                 
@@ -59,7 +61,8 @@ fun StandardKeyboardView(
                 modifier = Modifier
                     .width(viewWidth)
                     .padding(start = 2.dp, end = 3.5.dp)
-                    .align(Alignment.Center),
+                    .align(Alignment.Center)
+                    .graphicsLayer(clip = false),
                 optimizationLevel = OPTIMIZATION_STANDARDIZED,
                 animateChanges = true,
                 
@@ -73,7 +76,8 @@ fun StandardKeyboardView(
                 modifier = Modifier
                     .width(viewWidth)
                     .padding(start = 2.dp, end = 3.5.dp)
-                    .align(Alignment.Center),
+                    .align(Alignment.Center)
+                    .graphicsLayer(clip = false),
                 optimizationLevel = OPTIMIZATION_STANDARDIZED,
                 animateChanges = true,
                 
@@ -87,7 +91,8 @@ fun StandardKeyboardView(
                 modifier = Modifier
                     .width(viewWidth)
                     .padding(start = 2.dp, end = 3.5.dp)
-                    .align(Alignment.Center),
+                    .align(Alignment.Center)
+                    .graphicsLayer(clip = false),
                 optimizationLevel = OPTIMIZATION_STANDARDIZED,
                 animateChanges = true,
             ) {

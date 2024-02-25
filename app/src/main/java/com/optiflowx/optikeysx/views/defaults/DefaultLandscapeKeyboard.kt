@@ -28,7 +28,7 @@ import androidx.constraintlayout.compose.ConstraintSet
 import com.optiflowx.optikeysx.R
 import com.optiflowx.optikeysx.core.enums.KeyboardType
 import com.optiflowx.optikeysx.core.utils.OPTIMIZATION_STANDARDIZED
-import com.optiflowx.optikeysx.ui.cupertino.KeyboardGlobalOptions
+import com.optiflowx.optikeysx.ui.keyboard.KeyboardGlobalOptions
 import com.optiflowx.optikeysx.ui.keyboard.KeyboardTopView
 import com.optiflowx.optikeysx.viewmodels.KeyboardViewModel
 import com.optiflowx.optikeysx.views.clipboard.ClipboardKeyboardView
@@ -38,15 +38,17 @@ import com.optiflowx.optikeysx.views.keyboards.portuguese.PortugueseKeyboardView
 import com.optiflowx.optikeysx.views.keyboards.russian.RussianKeyboardView
 import com.optiflowx.optikeysx.views.keyboards.spanish.SpanishKeyboardView
 import com.optiflowx.optikeysx.views.keyboards.standard.StandardKeyboardView
+import com.optiflowx.optikeysx.views.recognition.VoiceRecognitionView
 import com.optiflowx.optikeysx.views.symbols.SymbolsKeyboardView
 import dev.patrickgold.jetpref.datastore.model.observeAsState
 
 @Composable
 fun DefaultLandscapeKeyboard(
-    viewModel: KeyboardViewModel
+    vM: KeyboardViewModel
 ) {
     val screenWidth = LocalConfiguration.current.screenWidthDp
-    val viewWidth = (screenWidth * 0.76).dp
+    val isPredictive = vM.prefs.isPredictive.observeAsState().value
+    val vW = (screenWidth * 0.76).dp
 
     val constraintsSet = ConstraintSet {
         val topView = createRefFor("topView")
@@ -66,9 +68,9 @@ fun DefaultLandscapeKeyboard(
         }
     }
 
-    val fontType = viewModel.prefs.keyboardFontType.observeAsState().value
-    val keyboardType = viewModel.keyboardType.collectAsState()
-    val locale = viewModel.keyboardData.collectAsState().value.locale
+    val fontType = vM.prefs.keyboardFontType.observeAsState().value
+    val keyboardType = vM.keyboardType.collectAsState()
+    val locale = vM.keyboardData.collectAsState().value.locale
 
     ConstraintLayout(
         constraintSet = constraintsSet,
@@ -77,15 +79,10 @@ fun DefaultLandscapeKeyboard(
             .wrapContentSize(),
         optimizationLevel = OPTIMIZATION_STANDARDIZED,
         animateChanges = true,
-
-        ) {
-        KeyboardTopView(
-            viewModel = viewModel,
-            viewWidth = viewWidth,
-            topViewHeight = 32,
-            textSize = 14f,
-            searchIconSize = 16,
-        )
+    ) {
+        if(isPredictive) {
+            KeyboardTopView(vM, vW, 32, 16, 14f)
+        }
 
         Row(
             verticalAlignment = Alignment.Bottom,
@@ -95,10 +92,10 @@ fun DefaultLandscapeKeyboard(
                 .padding(vertical = 2.dp)
         ) {
             Box {
-                KeyboardGlobalOptions(viewModel, fontType, viewWidth, 32, 14, 30)
+                KeyboardGlobalOptions(vM, fontType, vW, 32, 14, 30)
                 SideView(
                     icon = painterResource(R.drawable.globe_outline),
-                    onClick = { viewModel.updateIsShowOptions(true) }
+                    onClick = { vM.updateIsShowOptions(true) }
                 )
             }
 
@@ -108,20 +105,22 @@ fun DefaultLandscapeKeyboard(
                 when (keyboardType.value) {
                     KeyboardType.Normal -> {
                         when (locale) {
-                            "pt-BR" -> PortugueseKeyboardView(viewModel, viewWidth, 30.dp, 36.dp)
-                            "pt-PT" -> PortugueseKeyboardView(viewModel, viewWidth, 30.dp, 36.dp)
-                            "fr-FR" -> FrenchKeyboardView(viewModel, viewWidth, 30.dp, 36.dp)
-                            "es" -> SpanishKeyboardView(viewModel, viewWidth, 30.dp, 36.dp)
-                            "ru" -> RussianKeyboardView(viewModel, viewWidth, 30.dp, 36.dp)
-                            else -> StandardKeyboardView(viewModel, viewWidth, 30.dp, 36.dp)
+                            "pt-BR" -> PortugueseKeyboardView(vM, vW, 30.dp, 36.dp)
+                            "pt-PT" -> PortugueseKeyboardView(vM, vW, 30.dp, 36.dp)
+                            "fr-FR" -> FrenchKeyboardView(vM, vW, 30.dp, 36.dp)
+                            "es" -> SpanishKeyboardView(vM, vW, 30.dp, 36.dp)
+                            "ru" -> RussianKeyboardView(vM, vW, 30.dp, 36.dp)
+                            else -> StandardKeyboardView(vM, vW, 30.dp, 36.dp)
                         }
                     }
 
-                    KeyboardType.Symbol -> SymbolsKeyboardView(viewModel, viewWidth, 30.dp, 36.dp)
+                    KeyboardType.Symbol -> SymbolsKeyboardView(vM, vW, 30.dp, 36.dp)
 
-                    KeyboardType.Emoji -> EmojiKeyboardView(viewModel, viewWidth, 150.dp, 9)
+                    KeyboardType.Emoji -> EmojiKeyboardView(vM, vW, 150.dp, 9)
 
-                    KeyboardType.Clipboard -> ClipboardKeyboardView(viewModel, viewWidth, 150.dp)
+                    KeyboardType.Recognizer -> VoiceRecognitionView(vM, vW, 150.dp)
+
+                    KeyboardType.Clipboard -> ClipboardKeyboardView(vM, vW, 150.dp)
                 }
             }
 

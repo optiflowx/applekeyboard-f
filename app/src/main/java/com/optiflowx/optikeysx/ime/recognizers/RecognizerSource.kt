@@ -3,6 +3,7 @@ package com.optiflowx.optikeysx.ime.recognizers
 import androidx.annotation.StringRes
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
+import com.optiflowx.optikeysx.core.enums.RecognizerState
 import java.util.concurrent.Executor
 
 interface RecognizerSource {

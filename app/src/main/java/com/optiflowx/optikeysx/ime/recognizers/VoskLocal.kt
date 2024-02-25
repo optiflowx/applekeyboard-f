@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import com.optiflowx.optikeysx.core.data.VoskLocalModel
+import com.optiflowx.optikeysx.core.enums.RecognizerState
 import org.json.JSONException
 import org.json.JSONObject
 import org.vosk.Model

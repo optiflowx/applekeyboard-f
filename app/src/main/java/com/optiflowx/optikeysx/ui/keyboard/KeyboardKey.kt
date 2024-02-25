@@ -1,6 +1,5 @@
 package com.optiflowx.optikeysx.ui.keyboard
 
-import android.util.Log
 import android.view.inputmethod.EditorInfo
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -9,7 +8,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -20,7 +18,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.text.TextStyle
@@ -30,15 +27,12 @@ import com.optiflowx.optikeysx.core.model.Key
 import com.optiflowx.optikeysx.core.utils.KeyboardLocale
 import com.optiflowx.optikeysx.core.utils.appFontType
 import com.optiflowx.optikeysx.core.utils.nonScaledSp
-import com.optiflowx.optikeysx.ime.IMEService
 import com.optiflowx.optikeysx.viewmodels.KeyboardViewModel
 import dev.patrickgold.jetpref.datastore.model.observeAsState
 
 @Composable
 fun KeyboardKey(key: Key, viewModel: KeyboardViewModel) {
     val ctx = LocalContext.current
-    val view = LocalView.current
-    
     val locale = viewModel.keyboardData.collectAsState().value.locale
     val keyboardLocale = KeyboardLocale(locale)
     val colorScheme = MaterialTheme.colorScheme
@@ -60,6 +54,8 @@ fun KeyboardKey(key: Key, viewModel: KeyboardViewModel) {
     val buttonColor = viewModel.keyActionButtonColor.collectAsState().value
     val textColor = viewModel.keyActionTextColor.collectAsState().value
     val text = viewModel.keyActionText.collectAsState().value
+    val keyboardData = viewModel.keyboardData.collectAsState().value
+    val enterAction = keyboardData.enterAction
 
     var keyValue by rememberSaveable { mutableStateOf(key.value) }
     val fontType = viewModel.prefs.keyboardFontType.observeAsState().value
@@ -70,44 +66,30 @@ fun KeyboardKey(key: Key, viewModel: KeyboardViewModel) {
         } else key.value.lowercase()
     }
 
-    DisposableEffect(key.id) {
+    LaunchedEffect(key.id, keyboardData) {
         if (key.id == "action") {
-            view.addOnLayoutChangeListener { view, _, _, _, _, _, _, _, _ ->
-                view.isInLayout.let {visible ->
-                    val action =
-                        (ctx as IMEService).currentInputEditorInfo.imeOptions and EditorInfo.IME_MASK_ACTION
-                    if (visible) {
-                        when (action) {
-                            EditorInfo.IME_ACTION_DONE -> {
-                                viewModel.updateIMEActions(colorA, colorB, "done")
-                            }
-
-                            EditorInfo.IME_ACTION_GO -> {
-                                viewModel.updateIMEActions(colorA, colorB, "go")
-                            }
-
-                            EditorInfo.IME_ACTION_SEARCH -> {
-                                viewModel.updateIMEActions(colorA, colorB, "search")
-                            }
-
-                            EditorInfo.IME_ACTION_NEXT -> {
-                                viewModel.updateIMEActions(colorA, colorB, "next")
-                            }
-
-                            EditorInfo.IME_ACTION_SEND -> {
-                                viewModel.updateIMEActions(colorA, colorB, "send")
-                            }
-
-                            else -> viewModel.updateIMEActions(colorC, colorD, "return")
-                        }
-                    }
+            when (enterAction) {
+                EditorInfo.IME_ACTION_DONE -> {
+                    viewModel.updateIMEActions(colorA, colorB, "done")
                 }
-            }
-        }
 
-        onDispose {
-            view.removeOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
-                Log.v("KEYBOARD INFO", "onDispose: actionView Listener")
+                EditorInfo.IME_ACTION_GO -> {
+                    viewModel.updateIMEActions(colorA, colorB, "go")
+                }
+
+                EditorInfo.IME_ACTION_SEARCH -> {
+                    viewModel.updateIMEActions(colorA, colorB, "search")
+                }
+
+                EditorInfo.IME_ACTION_NEXT -> {
+                    viewModel.updateIMEActions(colorA, colorB, "next")
+                }
+
+                EditorInfo.IME_ACTION_SEND -> {
+                    viewModel.updateIMEActions(colorA, colorB, "send")
+                }
+
+                else -> viewModel.updateIMEActions(colorC, colorD, "return")
             }
         }
     }
@@ -182,35 +164,37 @@ fun KeyboardKey(key: Key, viewModel: KeyboardViewModel) {
         (if (key.id == "123" || key.id == "ABC" || key.id == "action") {
             if (key.id == "action") buttonColor else colorC
         } else colorScheme.secondary).apply {
-            KeyButton(
-                color = this,
-                id = key.id,
-                prefs = viewModel.prefs,
-                text = keyValue,
-                popupWidth = popupWidth,
-                showPopup = !(key.id == "123" || key.id == "ABC" || key.id == "action" || key.id == "space"),
-                onClick = {
-                    viewModel.onTKeyClick(key, ctx, text).let {
-                        viewModel.playSound(key)
-                        viewModel.vibrate()
+
+                KeyButton(
+                    color = this@apply,
+                    id = key.id,
+                    prefs = viewModel.prefs,
+                    text = keyValue,
+                    popupWidth = popupWidth,
+                    showPopup = !(key.id == "123" || key.id == "ABC" || key.id == "action" || key.id == "space"),
+                    onClick = {
+                        viewModel.onTKeyClick(key, ctx, text).let {
+                            viewModel.playSound(key)
+                            viewModel.vibrate()
+                        }
                     }
+                ) {
+                    Text(
+                        text = (if (key.id == "ABC" || key.id == "space" || key.id == "action") {
+                            if (key.id == "action") keyboardLocale.action(text)
+                            else key.value
+                        } else keyValue),
+                        maxLines = 1,
+                        style = TextStyle(
+                            fontFamily = appFontType(fontType),
+                            fontSize = (if (key.id == "123" || key.id == "ABC" || key.id == "action" || key.id == "space")
+                                15.sp else 22.5.sp).nonScaledSp,
+                            platformStyle = PlatformTextStyle(includeFontPadding = false)
+                        ),
+                        color = if (key.id == "action") textColor else colorD,
+                    )
                 }
-            ) {
-                Text(
-                    text = (if (key.id == "ABC" || key.id == "space" || key.id == "action") {
-                        if (key.id == "action") keyboardLocale.action(text)
-                        else key.value
-                    } else keyValue),
-                    maxLines = 1,
-                    style = TextStyle(
-                        fontFamily = appFontType(fontType),
-                        fontSize = (if (key.id == "123" || key.id == "ABC" || key.id == "action" || key.id == "space")
-                            15.sp else 22.5.sp).nonScaledSp,
-                        platformStyle = PlatformTextStyle(includeFontPadding = false)
-                    ),
-                    color = if (key.id == "action") textColor else colorD,
-                )
-            }
+
         }
     }
 }

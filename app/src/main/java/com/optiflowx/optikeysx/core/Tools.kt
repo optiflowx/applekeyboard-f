@@ -1,6 +1,5 @@
 package com.optiflowx.optikeysx.core
 
-import android.Manifest
 import android.app.Activity
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -9,11 +8,12 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.view.inputmethod.InputMethodManager
 import androidx.compose.runtime.Immutable
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.optiflowx.optikeysx.Constants
 import com.optiflowx.optikeysx.core.data.InstalledModelReference
 import com.optiflowx.optikeysx.core.data.VoskLocalModel
+import com.optiflowx.optikeysx.extension.getAudioPermission
+import com.optiflowx.optikeysx.extension.getNotificationPermission
 import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
@@ -27,29 +27,18 @@ object Tools {
     fun isMicrophonePermissionGranted(activity: Activity): Boolean {
         val permissionCheck = ContextCompat.checkSelfPermission(
             activity.applicationContext,
-            Manifest.permission.RECORD_AUDIO
+            getAudioPermission()
         )
-        return permissionCheck == PackageManager.PERMISSION_GRANTED
+        return (permissionCheck == PackageManager.PERMISSION_GRANTED)
     }
 
     @JvmStatic
     fun isNotificationAccessGranted(activity: Activity): Boolean {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            val permissionCheck = ContextCompat.checkSelfPermission(
-                activity.applicationContext, Manifest.permission.POST_NOTIFICATIONS
-            )
+        val permissionCheck = ContextCompat.checkSelfPermission(
+            activity.applicationContext, getNotificationPermission()
+        )
 
-            if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(
-                    activity, arrayOf(
-                        Manifest.permission.POST_NOTIFICATIONS
-                    ), 1
-                )
-            }
-
-            return permissionCheck == PackageManager.PERMISSION_GRANTED
-        }
-        return false
+        return (permissionCheck == PackageManager.PERMISSION_GRANTED)
     }
 
     @JvmStatic
@@ -66,18 +55,6 @@ object Tools {
         }
         return false
     }
-
-//    @JvmStatic
-//    fun isKeyboardSelected(activity: Activity): Boolean {
-//        val imeManager = activity
-//            .applicationContext
-//            .getSystemService(Context.INPUT_METHOD_SERVICE)
-//                as InputMethodManager
-//
-//        val mIMS = imeManager.currentInputMethodSubtype
-//
-//        return mIMS?.extraValue == activity.packageName
-//    }
 
     @JvmStatic
     fun deleteModel(model: InstalledModelReference, context: Context?) {

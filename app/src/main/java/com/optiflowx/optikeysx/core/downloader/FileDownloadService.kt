@@ -1,6 +1,5 @@
 package com.optiflowx.optikeysx.core.downloader
 
-import android.Manifest
 import android.app.Service
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -18,6 +17,7 @@ import com.optiflowx.optikeysx.Constants.getTemporaryUnzipLocation
 import com.optiflowx.optikeysx.R
 import com.optiflowx.optikeysx.core.Tools
 import com.optiflowx.optikeysx.core.downloader.messages.*
+import com.optiflowx.optikeysx.extension.getNotificationPermission
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -266,7 +266,7 @@ class FileDownloadService : Service() {
         }
 
         if (ActivityCompat.checkSelfPermission(
-                this, Manifest.permission.POST_NOTIFICATIONS
+                this, getNotificationPermission()
             ) == PackageManager.PERMISSION_GRANTED
         ) {
             notificationManager.notify(notificationId, notificationBuilder.build())

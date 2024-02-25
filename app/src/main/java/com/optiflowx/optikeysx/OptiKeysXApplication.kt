@@ -22,7 +22,5 @@ class OptiKeysXApplication : Application() {
 
         EventBus.builder().logNoSubscriberMessages(false).sendNoSubscriberEvent(false)
             .installDefaultEventBus()
-
-//        setAppCtx(this)
     }
 }

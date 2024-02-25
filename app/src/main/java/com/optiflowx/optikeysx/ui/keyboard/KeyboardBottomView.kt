@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,14 +24,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import com.optiflowx.optikeysx.R
-import com.optiflowx.optikeysx.ui.cupertino.KeyboardGlobalOptions
+import com.optiflowx.optikeysx.core.enums.KeyboardType
 import com.optiflowx.optikeysx.viewmodels.KeyboardViewModel
 import dev.patrickgold.jetpref.datastore.model.observeAsState
 
 @Composable
 fun KeyboardBottomView(viewModel: KeyboardViewModel) {
     val keyboardWidth = LocalConfiguration.current.screenWidthDp.dp
-
+    val keyboardType = viewModel.keyboardType.collectAsState().value
     val fontType = viewModel.prefs.keyboardFontType.observeAsState().value
 
     Box(
@@ -46,7 +47,7 @@ fun KeyboardBottomView(viewModel: KeyboardViewModel) {
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.Bottom,
             modifier = Modifier
-                .height(48.dp)
+                .height(44.dp)
                 .fillMaxWidth()
                 .fillMaxHeight()
         ) {
@@ -57,7 +58,7 @@ fun KeyboardBottomView(viewModel: KeyboardViewModel) {
                     contentDescription = "globe",
                     tint = MaterialTheme.colorScheme.scrim,
                     modifier = Modifier
-                        .size(30.dp)
+                        .size(28.dp)
                         .clickable(
                             indication = null,
                             interactionSource = remember { MutableInteractionSource() },
@@ -68,17 +69,25 @@ fun KeyboardBottomView(viewModel: KeyboardViewModel) {
 
             Icon(
                 painter = painterResource(
-                    if (isSystemInDarkTheme()) R.drawable.mic_fill else R.drawable.mic_outline
+                    if (keyboardType != KeyboardType.Recognizer) {
+                        if (isSystemInDarkTheme())
+                            R.drawable.mic_fill
+                        else R.drawable.mic_outline
+                    } else R.drawable.abc
                 ),
                 contentDescription = "microphone",
                 tint = MaterialTheme.colorScheme.scrim,
                 modifier = Modifier
-                    .size(30.dp)
+                    .size(28.dp)
                     .clickable(
                         indication = null,
                         interactionSource = remember { MutableInteractionSource() },
                         role = Role.Button,
-                    ) { }
+                    ) {
+                        if (keyboardType != KeyboardType.Recognizer) {
+                            viewModel.onUpdateKeyboardType(KeyboardType.Recognizer)
+                        } else viewModel.onUpdateKeyboardType(KeyboardType.Normal)
+                    }
             )
         }
     }

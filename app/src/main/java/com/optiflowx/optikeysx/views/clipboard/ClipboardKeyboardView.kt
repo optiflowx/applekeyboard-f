@@ -18,7 +18,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -33,7 +32,6 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.optiflowx.optikeysx.core.utils.KeyboardLocale
 import com.optiflowx.optikeysx.core.utils.appFontType
 import com.optiflowx.optikeysx.core.utils.nonScaledSp
 import com.optiflowx.optikeysx.viewmodels.KeyboardViewModel
@@ -48,9 +46,6 @@ fun ClipboardKeyboardView(
     viewHeight: Dp = 200.dp,
 ) {
     val context = LocalContext.current
-
-    val locale = viewModel.keyboardData.collectAsState().value.locale
-    val keyboardLocale = KeyboardLocale(locale)
 
     val clipDataList = viewModel.clipData.observeAsState().value?.reversed()
 
@@ -107,7 +102,7 @@ fun ClipboardKeyboardView(
                 }
             }
         } else Text(
-            keyboardLocale.emptyClipboard(),
+            viewModel.keyboardLocale.emptyClipboard(),
             textAlign = TextAlign.Center,
             style = TextStyle(
                 color = CupertinoColors.systemGray(isSystemInDarkTheme()),

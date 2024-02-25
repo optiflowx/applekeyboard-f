@@ -54,6 +54,7 @@ class KeyboardsScreen : Screen {
     override fun Content() {
         val context = LocalContext.current
         val navigator = LocalNavigator.currentOrThrow
+        val settingsModel = rememberScreenModel { KeyboardSettingsModel() }
 
         val tileTextStyle = TextStyle(
             fontSize = TextUnit(17f, TextUnitType.Sp).nonScaledSp,
@@ -72,9 +73,6 @@ class KeyboardsScreen : Screen {
             mutableStateOf(mIMM.currentInputMethodSubtype?.languageTag)
         }
 
-        val settingsModel = rememberScreenModel(TAG) {
-            KeyboardSettingsModel()
-        }
 
         CupertinoScaffold(
             containerColor = CupertinoSectionDefaults.containerColor(LocalSectionStyle.current),

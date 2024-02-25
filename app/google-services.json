@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "251423329907",
+    "project_id": "optikeysx-64892",
+    "storage_bucket": "optikeysx-64892.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:251423329907:android:b27f41a5222e98ee586406",
+        "android_client_info": {
+          "package_name": "com.optiflowx.optikeysx"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAR0hbxncxH-lHGNtz5AvJOiWSxntlHXdI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

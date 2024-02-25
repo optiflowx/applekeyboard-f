@@ -2,14 +2,12 @@ package com.optiflowx.optikeysx.viewmodels
 
 import android.content.ClipboardManager
 import android.content.Context
-import android.inputmethodservice.InputMethodService
 import android.media.AudioAttributes
 import android.media.SoundPool
 import android.os.Build
 import android.os.VibrationEffect
 import android.view.inputmethod.InputConnection
 import android.view.inputmethod.InputConnection.GET_TEXT_WITH_STYLES
-import android.view.inputmethod.InputMethodManager
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.LiveData
@@ -51,10 +49,10 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import splitties.systemservices.vibrator
+import java.util.Locale
 
 @Stable
 class KeyboardViewModel(context: Context) : ViewModel() {
-
     private val _keyboardType = MutableStateFlow(KeyboardType.Normal)
     val keyboardType = _keyboardType.asStateFlow()
 
@@ -109,7 +107,7 @@ class KeyboardViewModel(context: Context) : ViewModel() {
     private lateinit var _fuEmojiDB: FrequentlyUsedDatabase
     private lateinit var _clipboardDB: ClipboardDatabase
 
-    //Database Utils
+    //Database com.optiflowx.optikeysx.core.Utils
     lateinit var frequentlyUsedEmojis: LiveData<List<FrequentlyUsedEmoji>>
     lateinit var clipData: LiveData<List<ClipData>>
 
@@ -117,34 +115,16 @@ class KeyboardViewModel(context: Context) : ViewModel() {
     private lateinit var _dictationProcessor: DictationProcessor
     private lateinit var _dictionary: Set<String>
 
-    private val mIMM =
-        (context.getSystemService(InputMethodService.INPUT_METHOD_SERVICE) as InputMethodManager)
-
-    val mIMS = mIMM.currentInputMethodSubtype
-
     private val clipboardManager =
         context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
 
     //UI Locale
-    private val _keyboardLocale = KeyboardLocale(keyboardData.value.locale)
+    val keyboardLocale = KeyboardLocale(keyboardData.value.locale)
 
-     val prefs by optikeysxPreferences()
+    val prefs by optikeysxPreferences()
 
     init {
-        viewModelScope.launch(Dispatchers.IO) {
-            initSoundPool()
-            //Init Databases
-            _fuEmojiDB = FrequentlyUsedDatabase.getInstance(context)
-            _clipboardDB = ClipboardDatabase.getInstance(context)
-
-            //Init DAO
-            _fuEmojiDbDAO = _fuEmojiDB.fUsedEmojiDatabaseDAO()
-            _clipDataDbDAO = _clipboardDB.clipboardDAO()
-
-            //Init LiveData
-            frequentlyUsedEmojis = _fuEmojiDbDAO.getAllEmojis()
-            clipData = _clipDataDbDAO.getAllClipData()
-        }
+        initSoundPool()
 
         clipboardManager.addPrimaryClipChangedListener {
             val clipData = clipboardManager.primaryClip?.getItemAt(0)?.text
@@ -156,6 +136,20 @@ class KeyboardViewModel(context: Context) : ViewModel() {
                     _clipDataDbDAO.insert(ClipData(id, text))
                 }
             }
+        }
+
+        viewModelScope.launch(Dispatchers.IO) {
+            //Init Databases
+            _fuEmojiDB = FrequentlyUsedDatabase.getInstance(context)
+            _clipboardDB = ClipboardDatabase.getInstance(context)
+
+            //Init DAO
+            _fuEmojiDbDAO = _fuEmojiDB.fUsedEmojiDatabaseDAO()
+            _clipDataDbDAO = _clipboardDB.clipboardDAO()
+
+            //Init LiveData
+            frequentlyUsedEmojis = _fuEmojiDbDAO.getAllEmojis()
+            clipData = _clipDataDbDAO.getAllClipData()
         }
 
         viewModelScope.launch(Dispatchers.IO) {
@@ -174,32 +168,27 @@ class KeyboardViewModel(context: Context) : ViewModel() {
 
     override fun onCleared() {
         super.onCleared()
-
         _fuEmojiDB.close()
         _clipboardDB.close()
         _soundPool.release()
-
         clipboardManager.removePrimaryClipChangedListener {}
     }
 
+    @Stable
     fun initKeyboardData(data: KeyboardData) {
         viewModelScope.launch(Dispatchers.IO) {
             _keyboardData.value = data
         }
     }
 
-//    fun updateIsAllCaps(value: Boolean) {
-//        viewModelScope.launch {
-//            _isAllCaps.value = value
-//        }
-//    }
-
+    @Stable
     fun updateIsEmojiSearch(value: Boolean) {
         viewModelScope.launch(Dispatchers.IO) {
             _isEmojiSearch.value = value
         }
     }
 
+    @Stable
     fun updateIsShowOptions(value: Boolean) {
         viewModelScope.launch(Dispatchers.IO) {
             _isShowOptions.value = value
@@ -215,7 +204,8 @@ class KeyboardViewModel(context: Context) : ViewModel() {
         }
     }
 
-    private fun initSoundPool() = viewModelScope.launch(Dispatchers.IO) {
+    @Stable
+    private fun initSoundPool() = viewModelScope.launch {
         val audioAttributes = AudioAttributes.Builder()
             .setUsage(AudioAttributes.USAGE_ASSISTANCE_SONIFICATION)
             .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
@@ -229,7 +219,7 @@ class KeyboardViewModel(context: Context) : ViewModel() {
 
     @Stable
     fun initSoundIDs(context: Context) {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             _soundIDT.value = _soundPool.load(context, R.raw.standard, 1)
             _soundIDD.value = _soundPool.load(context, R.raw.delete, 1)
             _soundIDS.value = _soundPool.load(context, R.raw.spacebar, 1)
@@ -259,9 +249,8 @@ class KeyboardViewModel(context: Context) : ViewModel() {
         }
     }
 
-
     @Stable
-    fun playSound(key: Key) = viewModelScope.launch(Dispatchers.IO) {
+    fun playSound(key: Key) = viewModelScope.launch {
         val value: Boolean = prefs.isSoundOnKeypress.get()
         if (value && _isPoolLoaded.value) {
             when (key.id) {
@@ -285,9 +274,40 @@ class KeyboardViewModel(context: Context) : ViewModel() {
     }
 
     @Stable
+    fun handleCaps(text: String, isAllCaps: Boolean, isCapsLock: Boolean): String {
+        return when {
+            isAllCaps -> {
+                text.replaceFirstChar {
+                    if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString()
+                }
+            }
+
+            isCapsLock -> text.uppercase(Locale.getDefault())
+
+            else -> text.lowercase(Locale.getDefault())
+        }
+    }
+
+    @Stable
+    fun handleCapsLock(text: String): String {
+        return if (prefs.isAllCaps.get() && prefs.isCapsLock.get()) {
+            text.uppercase(Locale.getDefault())
+        } else text.lowercase(Locale.getDefault())
+    }
+
+    @Stable
+    fun handleAllCaps(text: String): String {
+        return if (prefs.isAllCaps.get()) {
+            text.replaceFirstChar {
+                if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString()
+            }
+        } else text.lowercase(Locale.getDefault())
+    }
+
+    @Stable
     fun pasteTextFromClipboard(text: String, context: Context) {
-        val connection = (context as IMEService).currentInputConnection
-        connection.commitText(text, text.length)
+        val ic = (context as IMEService).currentInputConnection
+        ic.commitText(text, text.length)
     }
 
     @Stable
@@ -300,22 +320,22 @@ class KeyboardViewModel(context: Context) : ViewModel() {
     }
 
     @Stable
-    private fun checkSpelling(connection: InputConnection) {
+    private fun checkSpelling(ic: InputConnection) {
         viewModelScope.launch(Dispatchers.IO) {
             val checkSpelling = prefs.isCheckSpelling.get()
             val autoCorrect = prefs.isAutoCorrect.get()
             //Remove the space first
             if (checkSpelling && autoCorrect) {
                 this.launch(Dispatchers.IO) {
-                    connection.deleteSurroundingText(1, 0).let {
-                        val tBC = connection.getTextBeforeCursor(12, GET_TEXT_WITH_STYLES)
+                    ic.deleteSurroundingText(1, 0).let {
+                        val tBC = ic.getTextBeforeCursor(12, GET_TEXT_WITH_STYLES)
                         if (tBC != null) {
                             val lastWord = tBC.split(" ").last()
 
                             this.launch(Dispatchers.IO) {
                                 val correction = _dictationProcessor.correct(lastWord)
-                                connection.deleteSurroundingText(lastWord.length, 0).let { value ->
-                                    if (value) connection.commitText("$correction ", 0)
+                                ic.deleteSurroundingText(lastWord.length, 0).let { value ->
+                                    if (value) ic.commitText("$correction ", 0)
                                 }
                             }
                         }
@@ -333,21 +353,20 @@ class KeyboardViewModel(context: Context) : ViewModel() {
     }
 
     @Stable
-    private suspend fun updateCapsLock() {
-        val value: Boolean = prefs.isAutoCapitalisation.get()
-        if (value) {
+    private fun updateCapsLock() {
+        if (prefs.isAutoCapitalisation.get()) {
             prefs.isAllCaps.set(true)
             prefs.isCapsLock.set(false)
         }
     }
 
     @Stable
-    private fun handleDotShortcut(connection: InputConnection) {
+    private fun handleDotShortcut(ic: InputConnection) {
         viewModelScope.launch {
             val value: Boolean = prefs.isDotShortcut.get()
             if (value) {
-                connection.deleteSurroundingText(1, 0).let {
-                    connection.commitText(". ", ". ".length)
+                ic.deleteSurroundingText(1, 0).let {
+                    ic.commitText(". ", ". ".length)
                 }
                 updateCapsLock()
             }
@@ -355,45 +374,71 @@ class KeyboardViewModel(context: Context) : ViewModel() {
     }
 
     @Stable
-    private fun capitalizeI(connection: InputConnection) {
+    private fun capitalizeI(ic: InputConnection) {
         viewModelScope.launch {
             val value: Boolean = prefs.isAutoCapitalisation.get()
             if (value) {
-                connection.deleteSurroundingText(2, 0).let {
-                    connection.commitText(" I ", " I ".length)
+                ic.deleteSurroundingText(2, 0).let {
+                    ic.commitText(" I ", " I ".length)
                 }
             }
         }
     }
 
     @Stable
-    private fun getNextSuggestions(connection: InputConnection) {
-        val charSequence = connection.getTextBeforeCursor(24, GET_TEXT_WITH_STYLES)
-        if (charSequence != null) {
-            val filterText = charSequence.split(" ").last()
-            _wordsDictionary.value = _dictionary.filter {
-                it.startsWith(filterText.lowercase())
+    fun updateSuggestionsState() {
+        viewModelScope.launch {
+            _wordsDictionary.value = wordsDictionary.value.map { value ->
+                if(prefs.isAllCaps.get() && !prefs.isCapsLock.get()) {
+                    value.replaceFirstChar { it.titlecase(Locale.getDefault()) }
+                } else if (prefs.isAllCaps.get() && prefs.isCapsLock.get()) {
+                    value.uppercase(Locale.getDefault())
+                } else value.lowercase(Locale.getDefault())
+            }
+        }
+    }
+
+    @Stable
+    private fun getNextSuggestions(ic: InputConnection) {
+        if(prefs.isPredictive.get()) {
+            val charSequence = ic.getTextBeforeCursor(24, GET_TEXT_WITH_STYLES)
+            if (charSequence != null) {
+                val filterText = charSequence.split(" ").last()
+
+                viewModelScope.launch {
+                    _wordsDictionary.value = _dictionary.filter {
+                        it.startsWith(filterText.lowercase())
+                    }.map { value ->
+                        if(prefs.isAllCaps.get() && !prefs.isCapsLock.get()) {
+                            value.replaceFirstChar { it.titlecase(Locale.getDefault()) }
+                        } else if (prefs.isAllCaps.get() && prefs.isCapsLock.get()) {
+                            value.uppercase(Locale.getDefault())
+                        } else value.lowercase(Locale.getDefault())
+                    }
+                }
             }
         }
     }
 
     @Stable
     fun onSuggestionClick(suggestion: String, context: Context) {
-        val connection = (context as IMEService).currentInputConnection
-        val charSequence = connection.getTextBeforeCursor(24, GET_TEXT_WITH_STYLES)
+        if (suggestion.isNotEmpty()) {
+            val ic = (context as IMEService).currentInputConnection
+            val charSequence = ic.getTextBeforeCursor(24, GET_TEXT_WITH_STYLES)
 
-        if (charSequence != null) {
-            val textToReplace = charSequence.split(" ").last()
-            connection.deleteSurroundingText(textToReplace.length, 0).let {
-                if (it) connection.commitText("$suggestion ", suggestion.length + 1)
+            if (charSequence != null) {
+                val textToReplace = charSequence.split(" ").last()
+                ic.deleteSurroundingText(textToReplace.length, 0).let {
+                    if (it) ic.commitText("$suggestion ", suggestion.length + 1)
+                }
             }
         }
     }
 
     @Stable
     fun onEmojiClick(context: Context, emoji: String, title: String) {
-        val connection = (context as IMEService).currentInputConnection
-        connection.commitText(emoji, emoji.length)
+        val ic = (context as IMEService).currentInputConnection
+        ic.commitText(emoji, emoji.length)
 
         viewModelScope.launch(Dispatchers.IO) {
             if (!title.lowercase().contains("frequently")) {
@@ -415,34 +460,34 @@ class KeyboardViewModel(context: Context) : ViewModel() {
 
     @Stable
     fun onTKeyClick(key: Key, context: Context, action: String = "return") {
-        val connection = (context as IMEService).currentInputConnection
+        val ic = (context as IMEService).currentInputConnection
 
         when (key.id) {
             "ABC" -> onUpdateKeyboardType(KeyboardType.Normal)
 
             "123" -> onUpdateKeyboardType(KeyboardType.Symbol)
 
-            "action" -> onAction(connection, context, action)
+            "action" -> onAction(ic, context, action)
 
-            "space" -> onSpace(connection)
+            "space" -> onSpace(ic)
 
-            else -> onText(connection, key)
+            else -> onText(ic, key)
         }
     }
 
     @Stable
     fun onNumKeyClick(key: Key, context: Context) {
-        val connection = (context as IMEService).currentInputConnection
+        val ic = (context as IMEService).currentInputConnection
         viewModelScope.launch(Dispatchers.IO) {
             when (key.value) {
-                "*" -> connection.commitText(key.value, key.value.length)
-                "#" -> connection.commitText(key.value, key.value.length)
-                "+" -> connection.commitText(key.value, key.value.length)
-                _keyboardLocale.wait() -> connection.commitText(";", ";".length)
-                _keyboardLocale.pause() -> connection.commitText(".", ".".length)
+                "*" -> ic.commitText(key.value, key.value.length)
+                "#" -> ic.commitText(key.value, key.value.length)
+                "+" -> ic.commitText(key.value, key.value.length)
+                keyboardLocale.wait() -> ic.commitText(";", ";".length)
+                keyboardLocale.pause() -> ic.commitText(".", ".".length)
                 else -> {
-                    if (key.id == "period") connection.commitText(".", ".".length)
-                    else connection.commitText(key.id, key.id.length)
+                    if (key.id == "period") ic.commitText(".", ".".length)
+                    else ic.commitText(key.id, key.id.length)
                 }
             }
         }
@@ -463,6 +508,10 @@ class KeyboardViewModel(context: Context) : ViewModel() {
 
     @Stable
     fun onUpdateKeyboardType(newType: KeyboardType) {
+        if(newType == KeyboardType.Normal) {
+            _wordsDictionary.value = listOf()
+        }
+
         _keyboardType.value = newType
     }
 
@@ -472,52 +521,57 @@ class KeyboardViewModel(context: Context) : ViewModel() {
     }
 
     @Stable
-    private fun onSpace(connection: InputConnection) {
-        val tBCA = connection.getTextBeforeCursor(1, GET_TEXT_WITH_STYLES)
-        val tBCB = connection.getTextBeforeCursor(2, GET_TEXT_WITH_STYLES)
+    private fun onSpace(ic: InputConnection) {
+        val tBCA = ic.getTextBeforeCursor(1, GET_TEXT_WITH_STYLES)
+        val tBCB = ic.getTextBeforeCursor(2, GET_TEXT_WITH_STYLES)
 
-        if (tBCA.toString() == " ") handleDotShortcut(connection)
-        else if (tBCB.toString() == " i") capitalizeI(connection)
+        if (tBCA.toString() == " ") handleDotShortcut(ic)
+        else if (tBCB.toString() == " i") capitalizeI(ic)
         else {
             //Handle Space and Spelling Checker
-            connection.commitText(" ", " ".length).let {
-                if (it) checkSpelling(connection)
+            ic.commitText(" ", " ".length).let {
+                if (it) checkSpelling(ic)
             }
         }
     }
 
     @Stable
-    private fun onText(connection: InputConnection, key: Key) {
-        connection.commitText(
+    private fun onText(ic: InputConnection, key: Key) {
+        ic.commitText(
             (if (prefs.isAllCaps.get()) {
                 key.value.uppercase()
             } else key.value.lowercase()), key.value.length
         )
-        getNextSuggestions(connection)
+        getNextSuggestions(ic)
         handleCapsLock()
     }
 
     @Stable
-    private fun onAction(connection: InputConnection, ctx: Context, action: String) {
+    private fun onAction(ic: InputConnection, ctx: Context, action: String) {
         if (action == "return") {
-            connection.commitText("\n", "\n".length)
+            ic.commitText("\n", "\n".length)
         } else (ctx as IMEService).sendDefaultEditorAction(false)
     }
 
     @Stable
     private fun onErase(context: Context) {
-        val connection = (context as IMEService).currentInputConnection
-        val selectedText = connection.getSelectedText(GET_TEXT_WITH_STYLES)
-        val text = connection.getTextBeforeCursor(16, 0)?.split(" ")?.last()
+        val ic = (context as IMEService).currentInputConnection
+        val selectedText = ic.getSelectedText(GET_TEXT_WITH_STYLES)
+        val text = ic.getTextBeforeCursor(16, 0)?.split(" ")?.last()
+        val data = ic.getTextBeforeCursor(2, 0)
 
-        if (selectedText != null) {
-            connection.commitText("", "".length)
-        } else if (text?.codePoints() != null && text.codePoints().toArray().isNotEmpty()) {
-            connection.deleteSurroundingTextInCodePoints(1, 0)
-        } else connection.deleteSurroundingText(1, 0)
+        if(data.isNullOrEmpty() || data == "") {
+            updateCapsLock()
+        } else {
+            if (selectedText != null) {
+                ic.commitText("", "".length)
+            } else if (text?.codePoints() != null && text.codePoints().toArray().isNotEmpty()) {
+                ic.deleteSurroundingTextInCodePoints(1, 0)
+            } else ic.deleteSurroundingText(1, 0)
 
-        getNextSuggestions(connection)
-        handleCapsLock()
+            getNextSuggestions(ic)
+            handleCapsLock()
+        }
     }
 
     @Stable

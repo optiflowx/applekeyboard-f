@@ -20,14 +20,15 @@ import com.optiflowx.optikeysx.views.emoji.EmojiSearchView
 @Composable
 fun KeyboardTopView(
     viewModel: KeyboardViewModel,
-    topViewHeight: Int = 48,
-    searchIconSize: Int = 20,
     viewWidth: Dp,
+    topViewHeight: Int = 46,
+    searchIconSize: Int = 20,
     textSize: Float = 16f,
 ) {
     val dH = 0
     val keyboardType = viewModel.keyboardType.collectAsState()
-    val isSymbol = (keyboardType.value == KeyboardType.Symbol)
+    val isSymbol = (keyboardType.value == KeyboardType.Symbol
+            || keyboardType.value == KeyboardType.Recognizer)
 
     Box(
         contentAlignment = Alignment.Center,
@@ -36,7 +37,7 @@ fun KeyboardTopView(
             .width(viewWidth)
             .height((if (isSymbol) dH else topViewHeight).dp)
     ) {
-        val boxScope = this
+        val boxScope = this@Box
 
         AnimatedContent(keyboardType.value, label = "KeyboardTopView") {
             when (it) {

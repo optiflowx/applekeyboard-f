@@ -6,8 +6,7 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.optiflowx.optikeysx.screens.KeyboardFontsScreen
 import com.optiflowx.optikeysx.screens.KeyboardsScreen
-import com.optiflowx.optikeysx.screens.SpeechKeyboardScreen
-import com.optiflowx.optikeysx.screens.TextReplacementScreen
+import com.optiflowx.optikeysx.screens.VoiceRecognitionSettingsScreen
 import io.github.alexzhirkevich.cupertino.CupertinoText
 import io.github.alexzhirkevich.cupertino.ExperimentalCupertinoApi
 import io.github.alexzhirkevich.cupertino.section.CupertinoSection
@@ -40,17 +39,17 @@ fun GeneralSection(
             key = 3,
             onClickLabel = "Speech Keyboard",
             title = { CupertinoText("Speech Keyboard", style = tileTextStyle) },
-            onClick = { navigator.push(SpeechKeyboardScreen()) }
+            onClick = { navigator.push(VoiceRecognitionSettingsScreen()) }
         )
-        this.link(
-            key = 4,
-            onClickLabel = "Text Replacement",
-            title = {
-                CupertinoText("Text Replacement", style = tileTextStyle)
-            },
-            onClick = {
-                navigator.push(TextReplacementScreen())
-            }
-        )
+//        this.link(
+//            key = 4,
+//            onClickLabel = "Text Replacement",
+//            title = {
+//                CupertinoText("Text Replacement", style = tileTextStyle)
+//            },
+//            onClick = {
+//                navigator.push(TextReplacementScreen())
+//            }
+//        )
     }
 }

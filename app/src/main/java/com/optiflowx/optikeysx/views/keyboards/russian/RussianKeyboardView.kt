@@ -24,7 +24,7 @@ fun RussianKeyboardView(
     viewModel: KeyboardViewModel,
     viewWidth: Dp,
     keyHeight: Dp = 42.dp,
-    rowHeight: Dp = 56.dp,
+    rowHeight: Dp = 52.dp,
 ) {
     val locale = viewModel.keyboardData.collectAsState().value.locale
     val keyboardLocale = KeyboardLocale(locale)

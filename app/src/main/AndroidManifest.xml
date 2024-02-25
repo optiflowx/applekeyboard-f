@@ -2,10 +2,18 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.VIBRATE" />
-    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="28" />
+<!--    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />-->
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
 
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <uses-permission
@@ -18,12 +26,14 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
+        android:extractNativeLibs="false"
+        android:requestLegacyExternalStorage="true"
         android:theme="@style/Theme.AppCompat.NoActionBar">
         <activity
             android:name=".MainActivity"
-            android:windowSoftInputMode="adjustResize"
+            android:exported="true"
             android:theme="@style/Theme.AppCompat.NoActionBar"
-            android:exported="true">
+            android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -37,9 +47,9 @@
 
         <service
             android:name=".ime.IMEService"
+            android:exported="false"
             android:label="@string/app_name"
-            android:permission="android.permission.BIND_INPUT_METHOD"
-            android:exported="false">
+            android:permission="android.permission.BIND_INPUT_METHOD">
 
             <intent-filter>
                 <action android:name="android.view.InputMethod" />
@@ -53,10 +63,8 @@
         <service
             android:name=".core.downloader.FileDownloadService"
             android:exported="true"
-            android:foregroundServiceType="dataSync" />
-
-
-
+            android:foregroundServiceType="dataSync"
+            android:permission="android.permission.FOREGROUND_SERVICE" />
 
     </application>
 

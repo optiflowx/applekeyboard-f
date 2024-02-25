@@ -14,6 +14,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.unit.dp
 import com.optiflowx.optikeysx.AppPrefs
@@ -40,11 +41,14 @@ fun KeyButton(
 
     val pressed = interactionSource.collectIsPressedAsState()
 
+
+
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier
             .layoutId(id)
             .fillMaxSize()
+            .graphicsLayer(clip = false)
     ) {
         if (!isIgnoreElevation) {
             Surface(
@@ -57,21 +61,23 @@ fun KeyButton(
             ) {}
         }
 
-        Surface(
-            color = color,
-            enabled = enabled,
-            shape = RoundedCornerShape((5.5).dp),
-            interactionSource = interactionSource,
-            onClick = onClick,
-            modifier = modifier.matchParentSize()
-        ) {
-            Box(contentAlignment = Alignment.Center) {
-                if (pressed.value && showPopup && isCharacterPreview) {
-                    KeyButtonPopup(popupWidth.dp, text)
-                }
+            Surface(
+                color = color,
+                enabled = enabled,
+                shape = RoundedCornerShape((5.5).dp),
+                interactionSource = interactionSource,
+                onClick = onClick,
+                modifier = modifier.matchParentSize().graphicsLayer(clip = false)
+            ) {
+                Box(contentAlignment = Alignment.Center) {
 
-                content()
+                    content()
+
+                    if (pressed.value && showPopup && isCharacterPreview) {
+                        KeyButtonPopup(popupWidth.dp, text)
+                    }
+                }
             }
-        }
+
     }
 }

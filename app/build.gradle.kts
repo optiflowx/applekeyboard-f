@@ -4,17 +4,19 @@ plugins {
     id("org.jetbrains.kotlin.android")
 //    id ("dagger.hilt.android.plugin")
 //    id("kotlin-parcelize")
-    id("com.google.protobuf")
+//    id("com.google.protobuf")
+    id("com.google.gms.google-services")
     id("com.google.devtools.ksp")
     id("androidx.baselineprofile")
 }
 
 val hiltVersion = "2.48"
-val composeVersion = "1.6.0"
+val composeVersion = "1.6.2"
 val lifecycleVersion = "2.7.0"
 val archVersion = "2.2.0"
 val roomVersion = "2.6.1"
-val voyagerVersion = "1.0.0"
+val voyagerVersion = "1.1.0-alpha02"
+val amplitudePackage = "2.2.2"
 
 android {
     namespace = "com.optiflowx.optikeysx"
@@ -79,6 +81,13 @@ dependencies {
     implementation("androidx.constraintlayout:constraintlayout-core:1.0.4")
     androidTestImplementation("androidx.test:runner:1.5.2")
 
+    //Firebase
+    implementation(platform("com.google.firebase:firebase-bom:32.7.2"))
+    implementation("com.google.firebase:firebase-analytics")
+    implementation("com.google.firebase:firebase-auth-ktx")
+
+    implementation("dev.chrisbanes.haze:haze-materials:0.5.2")
+
     implementation("dev.patrickgold.jetpref:jetpref-datastore-model:0.1.0-beta14")
     implementation("dev.patrickgold.jetpref:jetpref-datastore-ui:0.1.0-beta14")
     implementation("dev.patrickgold.jetpref:jetpref-material-ui:0.1.0-beta14")
@@ -88,6 +97,7 @@ dependencies {
     //Destinations
 //    implementation("io.github.raamcosta.compose-destinations:core:1.10.0")
     "baselineProfile"(project(":baselineprofiles"))
+    implementation(project(":audiowaveform"))
 //    ksp("io.github.raamcosta.compose-destinations:ksp:1.10.0")
 
     // Navigator
@@ -108,7 +118,7 @@ dependencies {
     //Compose Dependencies
     implementation("androidx.compose.ui:ui:$composeVersion")
     implementation("androidx.compose.ui:ui-tooling:$composeVersion")
-    implementation("androidx.compose.material3:material3:1.1.2")
+    implementation("androidx.compose.material3:material3:1.2.0")
     implementation("androidx.compose.foundation:foundation:$composeVersion")
     implementation("androidx.compose.runtime:runtime-livedata:$composeVersion")
 
@@ -122,7 +132,7 @@ dependencies {
     implementation("com.louiscad.splitties:splitties-views:3.0.0")
 
     // Compose Preview and Tests
-    implementation(platform("androidx.compose:compose-bom:2024.01.00"))
+    implementation(platform("androidx.compose:compose-bom:2024.02.01"))
     implementation("androidx.test.ext:junit-ktx:1.1.5")
     implementation("androidx.test:monitor:1.6.1")
     debugImplementation("androidx.compose.ui:ui-tooling")
@@ -156,8 +166,7 @@ dependencies {
     implementation("io.github.alexzhirkevich:cupertino-icons-extended:0.1.0-alpha03")
 
     //Local Storage
-//    implementation("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.7")
-//    implementation("androidx.datastore:datastore-preferences:1.1.0-beta01")
+    implementation("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.7")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2")
 
     //Room database
