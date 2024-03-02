@@ -47,7 +47,6 @@ fun DefaultLandscapeKeyboard(
     vM: KeyboardViewModel
 ) {
     val screenWidth = LocalConfiguration.current.screenWidthDp
-    val isPredictive = vM.prefs.isPredictive.observeAsState().value
     val vW = (screenWidth * 0.76).dp
 
     val constraintsSet = ConstraintSet {
@@ -80,9 +79,7 @@ fun DefaultLandscapeKeyboard(
         optimizationLevel = OPTIMIZATION_STANDARDIZED,
         animateChanges = true,
     ) {
-        if(isPredictive) {
-            KeyboardTopView(vM, vW, 32, 16, 14f)
-        }
+        KeyboardTopView(vM, vW, 32, 16, 14f)
 
         Row(
             verticalAlignment = Alignment.Bottom,

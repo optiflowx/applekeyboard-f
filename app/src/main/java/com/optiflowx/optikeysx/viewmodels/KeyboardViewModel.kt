@@ -6,6 +6,7 @@ import android.media.AudioAttributes
 import android.media.SoundPool
 import android.os.Build
 import android.os.VibrationEffect
+import android.util.Log
 import android.view.inputmethod.InputConnection
 import android.view.inputmethod.InputConnection.GET_TEXT_WITH_STYLES
 import androidx.compose.runtime.Stable
@@ -234,18 +235,16 @@ class KeyboardViewModel(context: Context) : ViewModel() {
     @Stable
     fun onDisposeSoundIDs() {
         viewModelScope.launch {
-            viewModelScope.launch {
-                _soundPool.unload(_soundIDT.value)
-                _soundPool.unload(_soundIDD.value)
-                _soundPool.unload(_soundIDS.value)
-                _soundPool.unload(_soundIDR.value)
-            }.invokeOnCompletion {
-                _isPoolLoaded.value = false
-                _soundIDT.value = 0
-                _soundIDD.value = 0
-                _soundIDS.value = 0
-                _soundIDR.value = 0
-            }
+            _soundPool.unload(_soundIDT.value)
+            _soundPool.unload(_soundIDD.value)
+            _soundPool.unload(_soundIDS.value)
+            _soundPool.unload(_soundIDR.value)
+        }.invokeOnCompletion {
+            _isPoolLoaded.value = false
+            _soundIDT.value = 0
+            _soundIDD.value = 0
+            _soundIDS.value = 0
+            _soundIDR.value = 0
         }
     }
 
@@ -271,37 +270,6 @@ class KeyboardViewModel(context: Context) : ViewModel() {
                 vibrator.vibrate(VibrationEffect.createOneShot(45, -1))
             } else vibrator.vibrate(45)
         }
-    }
-
-    @Stable
-    fun handleCaps(text: String, isAllCaps: Boolean, isCapsLock: Boolean): String {
-        return when {
-            isAllCaps -> {
-                text.replaceFirstChar {
-                    if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString()
-                }
-            }
-
-            isCapsLock -> text.uppercase(Locale.getDefault())
-
-            else -> text.lowercase(Locale.getDefault())
-        }
-    }
-
-    @Stable
-    fun handleCapsLock(text: String): String {
-        return if (prefs.isAllCaps.get() && prefs.isCapsLock.get()) {
-            text.uppercase(Locale.getDefault())
-        } else text.lowercase(Locale.getDefault())
-    }
-
-    @Stable
-    fun handleAllCaps(text: String): String {
-        return if (prefs.isAllCaps.get()) {
-            text.replaceFirstChar {
-                if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString()
-            }
-        } else text.lowercase(Locale.getDefault())
     }
 
     @Stable
@@ -346,25 +314,9 @@ class KeyboardViewModel(context: Context) : ViewModel() {
     }
 
     @Stable
-    private fun handleCapsLock() {
-        if (prefs.isAllCaps.get() && !prefs.isCapsLock.get()) {
-            prefs.isAllCaps.set(false)
-        }
-    }
-
-    @Stable
-    private fun updateCapsLock() {
-        if (prefs.isAutoCapitalisation.get()) {
-            prefs.isAllCaps.set(true)
-            prefs.isCapsLock.set(false)
-        }
-    }
-
-    @Stable
     private fun handleDotShortcut(ic: InputConnection) {
         viewModelScope.launch {
-            val value: Boolean = prefs.isDotShortcut.get()
-            if (value) {
+            if (prefs.isDotShortcut.get()) {
                 ic.deleteSurroundingText(1, 0).let {
                     ic.commitText(". ", ". ".length)
                 }
@@ -376,8 +328,7 @@ class KeyboardViewModel(context: Context) : ViewModel() {
     @Stable
     private fun capitalizeI(ic: InputConnection) {
         viewModelScope.launch {
-            val value: Boolean = prefs.isAutoCapitalisation.get()
-            if (value) {
+            if (prefs.isAutoCapitalisation.get()) {
                 ic.deleteSurroundingText(2, 0).let {
                     ic.commitText(" I ", " I ".length)
                 }
@@ -389,7 +340,7 @@ class KeyboardViewModel(context: Context) : ViewModel() {
     fun updateSuggestionsState() {
         viewModelScope.launch {
             _wordsDictionary.value = wordsDictionary.value.map { value ->
-                if(prefs.isAllCaps.get() && !prefs.isCapsLock.get()) {
+                if (prefs.isAllCaps.get() && !prefs.isCapsLock.get()) {
                     value.replaceFirstChar { it.titlecase(Locale.getDefault()) }
                 } else if (prefs.isAllCaps.get() && prefs.isCapsLock.get()) {
                     value.uppercase(Locale.getDefault())
@@ -400,7 +351,7 @@ class KeyboardViewModel(context: Context) : ViewModel() {
 
     @Stable
     private fun getNextSuggestions(ic: InputConnection) {
-        if(prefs.isPredictive.get()) {
+        if (prefs.isPredictive.get()) {
             val charSequence = ic.getTextBeforeCursor(24, GET_TEXT_WITH_STYLES)
             if (charSequence != null) {
                 val filterText = charSequence.split(" ").last()
@@ -409,7 +360,7 @@ class KeyboardViewModel(context: Context) : ViewModel() {
                     _wordsDictionary.value = _dictionary.filter {
                         it.startsWith(filterText.lowercase())
                     }.map { value ->
-                        if(prefs.isAllCaps.get() && !prefs.isCapsLock.get()) {
+                        if (prefs.isAllCaps.get() && !prefs.isCapsLock.get()) {
                             value.replaceFirstChar { it.titlecase(Locale.getDefault()) }
                         } else if (prefs.isAllCaps.get() && prefs.isCapsLock.get()) {
                             value.uppercase(Locale.getDefault())
@@ -478,17 +429,15 @@ class KeyboardViewModel(context: Context) : ViewModel() {
     @Stable
     fun onNumKeyClick(key: Key, context: Context) {
         val ic = (context as IMEService).currentInputConnection
-        viewModelScope.launch(Dispatchers.IO) {
-            when (key.value) {
-                "*" -> ic.commitText(key.value, key.value.length)
-                "#" -> ic.commitText(key.value, key.value.length)
-                "+" -> ic.commitText(key.value, key.value.length)
-                keyboardLocale.wait() -> ic.commitText(";", ";".length)
-                keyboardLocale.pause() -> ic.commitText(".", ".".length)
-                else -> {
-                    if (key.id == "period") ic.commitText(".", ".".length)
-                    else ic.commitText(key.id, key.id.length)
-                }
+        when (key.value) {
+            "*" -> ic.commitText(key.value, key.value.length)
+            "#" -> ic.commitText(key.value, key.value.length)
+            "+" -> ic.commitText(key.value, key.value.length)
+            keyboardLocale.wait() -> ic.commitText(";", ";".length)
+            keyboardLocale.pause() -> ic.commitText(".", ".".length)
+            else -> {
+                if (key.id == "period") ic.commitText(".", ".".length)
+                else ic.commitText(key.id, key.id.length)
             }
         }
     }
@@ -508,7 +457,7 @@ class KeyboardViewModel(context: Context) : ViewModel() {
 
     @Stable
     fun onUpdateKeyboardType(newType: KeyboardType) {
-        if(newType == KeyboardType.Normal) {
+        if (newType == KeyboardType.Normal) {
             _wordsDictionary.value = listOf()
         }
 
@@ -517,7 +466,9 @@ class KeyboardViewModel(context: Context) : ViewModel() {
 
     @Stable
     fun onPhoneSymbol() {
-        _isPhoneSymbol.value = !(_isPhoneSymbol.value)
+        viewModelScope.launch {
+            _isPhoneSymbol.value = !(_isPhoneSymbol.value)
+        }
     }
 
     @Stable
@@ -560,14 +511,22 @@ class KeyboardViewModel(context: Context) : ViewModel() {
         val text = ic.getTextBeforeCursor(16, 0)?.split(" ")?.last()
         val data = ic.getTextBeforeCursor(2, 0)
 
-        if(data.isNullOrEmpty() || data == "") {
+        if ((data.isNullOrEmpty() || text.isNullOrEmpty() || data == "") && selectedText.isNullOrEmpty()) {
+            Log.d("KeyboardViewModel", "onErase: No text to delete")
             updateCapsLock()
         } else {
             if (selectedText != null) {
+                Log.d("KeyboardViewModel", "onErase: Selected Text: $selectedText")
                 ic.commitText("", "".length)
-            } else if (text?.codePoints() != null && text.codePoints().toArray().isNotEmpty()) {
-                ic.deleteSurroundingTextInCodePoints(1, 0)
-            } else ic.deleteSurroundingText(1, 0)
+            } else if (text != null) {
+                if (text.codePoints().toArray().isNotEmpty()) {
+                    Log.d("KeyboardViewModel", "onErase: Text: $text")
+                    ic.deleteSurroundingTextInCodePoints(1, 0)
+                } else {
+                    Log.d("KeyboardViewModel", "onErase: Text: $text")
+                    ic.deleteSurroundingText(1, 0)
+                }
+            }
 
             getNextSuggestions(ic)
             handleCapsLock()
@@ -575,18 +534,55 @@ class KeyboardViewModel(context: Context) : ViewModel() {
     }
 
     @Stable
+    fun handleCapsLock(text: String): String {
+        return if (prefs.isAllCaps.get() && prefs.isCapsLock.get()) {
+            text.uppercase(Locale.getDefault())
+        } else text.lowercase(Locale.getDefault())
+    }
+
+    @Stable
+    fun handleAllCaps(text: String): String {
+        return if (prefs.isAllCaps.get()) {
+            text.replaceFirstChar {
+                it.titlecase(Locale.getDefault())
+            }
+        } else text.lowercase(Locale.getDefault())
+    }
+
+    @Stable
+    private fun handleCapsLock() {
+        viewModelScope.launch(Dispatchers.IO) {
+            if (prefs.isAllCaps.get() && !prefs.isCapsLock.get()) {
+                prefs.isAllCaps.set(false)
+            }
+        }
+    }
+
+    @Stable
+    private fun updateCapsLock() {
+        viewModelScope.launch(Dispatchers.IO) {
+            if (prefs.isAutoCapitalisation.get()) {
+                prefs.isAllCaps.set(true)
+                prefs.isCapsLock.set(false)
+            }
+        }
+    }
+
+    @Stable
     private fun onShift() {
-        if (prefs.isCapsLock.get()) {
-            prefs.isAllCaps.set(false)
-            prefs.isCapsLock.set(false)
-        } else if (prefs.isAllCaps.get() && !prefs.isCapsLock.get()) {
-            onCapsLock()
-        } else prefs.isAllCaps.set(!prefs.isAllCaps.get())
+        viewModelScope.launch(Dispatchers.IO) {
+            if (prefs.isCapsLock.get()) {
+                prefs.isAllCaps.set(false)
+                prefs.isCapsLock.set(false)
+            } else if (prefs.isAllCaps.get() && !prefs.isCapsLock.get()) {
+                onCapsLock()
+            } else prefs.isAllCaps.set(!prefs.isAllCaps.get())
+        }
     }
 
     @Stable
     private fun onCapsLock() {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             val value = prefs.isEnableCapsLock.get()
             if (value) prefs.isCapsLock.set(true)//isAllCaps is already true.
             else prefs.isAllCaps.set(false)

@@ -15,6 +15,7 @@ import com.optiflowx.optikeysx.core.enums.KeyboardType
 import com.optiflowx.optikeysx.viewmodels.KeyboardViewModel
 import com.optiflowx.optikeysx.views.clipboard.ClipboardKeyboardActionView
 import com.optiflowx.optikeysx.views.emoji.EmojiSearchView
+import dev.patrickgold.jetpref.datastore.model.observeAsState
 
 
 @Composable
@@ -29,8 +30,20 @@ fun KeyboardTopView(
     val keyboardType = viewModel.keyboardType.collectAsState()
     val isSymbol = (keyboardType.value == KeyboardType.Symbol
             || keyboardType.value == KeyboardType.Recognizer)
+    val isPredictive = viewModel.prefs.isPredictive.observeAsState().value
 
-    Box(
+
+    if (keyboardType.value == KeyboardType.Normal) {
+        if(isPredictive) {
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .layoutId("topView")
+                    .width(viewWidth)
+                    .height(topViewHeight.dp)
+            ) { SuggestionView(viewModel, textSize, this) }
+        }
+    } else Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier
             .layoutId("topView")
@@ -40,10 +53,10 @@ fun KeyboardTopView(
         val boxScope = this@Box
 
         AnimatedContent(keyboardType.value, label = "KeyboardTopView") {
-            when (it) {
-                KeyboardType.Emoji -> EmojiSearchView(viewModel, textSize, searchIconSize, boxScope)
-                KeyboardType.Clipboard -> ClipboardKeyboardActionView(viewModel, boxScope)
-                else -> SuggestionView(viewModel, textSize, boxScope)
+            if(it == KeyboardType.Emoji) {
+                EmojiSearchView(viewModel, textSize, searchIconSize, boxScope)
+            } else {
+                ClipboardKeyboardActionView(viewModel, boxScope)
             }
         }
     }

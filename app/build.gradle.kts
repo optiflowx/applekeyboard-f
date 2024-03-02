@@ -27,7 +27,7 @@ android {
         minSdk = 24
         targetSdk = 34
         versionCode = 1
-        versionName = "1.0.0-alpha"
+        versionName = "1.0.0-release"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -39,7 +39,7 @@ android {
         release {
             isMinifyEnabled = true
             isShrinkResources = true
-            isProfileable = false //TO BE FALSE
+            isProfileable = true //TO BE FALSE
             isCrunchPngs = true
             isDebuggable = false
 
@@ -90,7 +90,6 @@ dependencies {
 
     implementation("dev.patrickgold.jetpref:jetpref-datastore-model:0.1.0-beta14")
     implementation("dev.patrickgold.jetpref:jetpref-datastore-ui:0.1.0-beta14")
-    implementation("dev.patrickgold.jetpref:jetpref-material-ui:0.1.0-beta14")
 
     implementation ("org.burnoutcrew.composereorderable:reorderable:0.9.6")
 

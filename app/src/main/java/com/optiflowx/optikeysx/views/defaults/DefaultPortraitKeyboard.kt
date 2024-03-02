@@ -26,7 +26,6 @@ import com.optiflowx.optikeysx.views.keyboards.spanish.SpanishKeyboardView
 import com.optiflowx.optikeysx.views.keyboards.standard.StandardKeyboardView
 import com.optiflowx.optikeysx.views.recognition.VoiceRecognitionView
 import com.optiflowx.optikeysx.views.symbols.SymbolsKeyboardView
-import dev.patrickgold.jetpref.datastore.model.observeAsState
 
 @Composable
 fun DefaultPortraitKeyboard(
@@ -35,7 +34,6 @@ fun DefaultPortraitKeyboard(
     val vW = LocalConfiguration.current.screenWidthDp.dp
     val keyboardType = vM.keyboardType.collectAsState()
     val locale = vM.keyboardData.collectAsState().value.locale
-    val isPredictive = vM.prefs.isPredictive.observeAsState().value
 
     val constraintsSet = ConstraintSet {
         val topView = createRefFor("topView")
@@ -68,7 +66,7 @@ fun DefaultPortraitKeyboard(
         optimizationLevel = OPTIMIZATION_STANDARDIZED,
         animateChanges = true,
     ) {
-        if(isPredictive) KeyboardTopView(vM, viewWidth = vW)
+        KeyboardTopView(vM, viewWidth = vW)
 
         Box(
             modifier = Modifier
