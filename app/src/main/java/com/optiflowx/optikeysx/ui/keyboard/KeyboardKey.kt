@@ -1,7 +1,6 @@
 package com.optiflowx.optikeysx.ui.keyboard
 
 import android.view.inputmethod.EditorInfo
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Icon
@@ -133,12 +132,13 @@ fun KeyboardKey(key: Key, viewModel: KeyboardViewModel) {
             )
         } else {
             painterResource(
-                if (isSystemInDarkTheme()) R.drawable.emoji_fill else R.drawable.emoji_outline
+//                if (isSystemInDarkTheme()) R.drawable.emoji_fill else
+                    R.drawable.emoji_outline
             )
         }).apply {
             KeyButton(
                 color = (if (isShift && isAllCaps) colorScheme.surface else colorC),
-                id = key.id,
+                key = key,
                 showPopup = false,
                 prefs = viewModel.prefs,
                 onClick = {
@@ -164,12 +164,10 @@ fun KeyboardKey(key: Key, viewModel: KeyboardViewModel) {
         (if (key.id == "123" || key.id == "ABC" || key.id == "action") {
             if (key.id == "action") buttonColor else colorC
         } else colorScheme.secondary).apply {
-
                 KeyButton(
                     color = this@apply,
-                    id = key.id,
+                    key = key,
                     prefs = viewModel.prefs,
-                    text = keyValue,
                     popupWidth = popupWidth,
                     showPopup = !(key.id == "123" || key.id == "ABC" || key.id == "action" || key.id == "space"),
                     onClick = {
@@ -181,8 +179,7 @@ fun KeyboardKey(key: Key, viewModel: KeyboardViewModel) {
                 ) {
                     Text(
                         text = (if (key.id == "ABC" || key.id == "space" || key.id == "action") {
-                            if (key.id == "action") keyboardLocale.action(text)
-                            else key.value
+                            if (key.id == "action") keyboardLocale.action(text) else key.value
                         } else keyValue),
                         maxLines = 1,
                         style = TextStyle(

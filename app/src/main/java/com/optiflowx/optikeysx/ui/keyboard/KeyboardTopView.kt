@@ -32,32 +32,29 @@ fun KeyboardTopView(
             || keyboardType.value == KeyboardType.Recognizer)
     val isPredictive = viewModel.prefs.isPredictive.observeAsState().value
 
-
-    if (keyboardType.value == KeyboardType.Normal) {
-        if(isPredictive) {
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier
-                    .layoutId("topView")
-                    .width(viewWidth)
-                    .height(topViewHeight.dp)
-            ) { SuggestionView(viewModel, textSize, this) }
-        }
-    } else Box(
+    Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier
             .layoutId("topView")
             .width(viewWidth)
-            .height((if (isSymbol) dH else topViewHeight).dp)
+            .height(
+                (if (isSymbol) dH else {
+                    if (keyboardType.value == KeyboardType.Normal) {
+                        if (isPredictive) topViewHeight else 0
+                    } else topViewHeight
+                }).dp
+            )
     ) {
         val boxScope = this@Box
 
         AnimatedContent(keyboardType.value, label = "KeyboardTopView") {
-            if(it == KeyboardType.Emoji) {
+            if (it == KeyboardType.Emoji) {
                 EmojiSearchView(viewModel, textSize, searchIconSize, boxScope)
-            } else {
-                ClipboardKeyboardActionView(viewModel, boxScope)
-            }
+            } else if (it == KeyboardType.Normal) {
+                if (isPredictive) {
+                    SuggestionView(viewModel, textSize, boxScope)
+                }
+            } else ClipboardKeyboardActionView(viewModel, boxScope)
         }
     }
 }

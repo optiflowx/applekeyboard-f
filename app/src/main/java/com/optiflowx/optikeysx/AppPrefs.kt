@@ -90,6 +90,11 @@ class AppPrefs : PreferenceModel("optikeysx-app-preferences") {
         default = false,
     )
 
+    val isAccentsAllowed = boolean(
+        key = "is_accents_allowed",
+        default = true,
+    )
+
     val isPredictive = boolean(
         key = "is_predictive",
         default = false,

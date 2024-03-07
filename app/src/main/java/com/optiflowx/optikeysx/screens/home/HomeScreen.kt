@@ -1,6 +1,5 @@
 package com.optiflowx.optikeysx.screens.home
 
-import android.app.Activity
 import androidx.compose.foundation.layout.absolutePadding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -37,7 +36,7 @@ import io.github.alexzhirkevich.cupertino.rememberCupertinoSheetState
 import io.github.alexzhirkevich.cupertino.theme.CupertinoTheme
 
 
-data class HomeScreen(val activity: Activity) : Screen {
+ class HomeScreen : Screen {
     override val key: ScreenKey = uniqueScreenKey
     companion object {
         const val TAG = "HomeScreen"

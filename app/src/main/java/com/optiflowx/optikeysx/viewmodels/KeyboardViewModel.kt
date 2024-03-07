@@ -99,6 +99,8 @@ class KeyboardViewModel(context: Context) : ViewModel() {
 
     //Sound
     private lateinit var _soundPool: SoundPool
+    private val vol = 0.44f
+    private val rate = 1.1f
 
     //DAO
     private lateinit var _fuEmojiDbDAO: FrequentlyUsedEmojiDatabaseDAO
@@ -250,25 +252,23 @@ class KeyboardViewModel(context: Context) : ViewModel() {
 
     @Stable
     fun playSound(key: Key) = viewModelScope.launch {
-        val value: Boolean = prefs.isSoundOnKeypress.get()
-        if (value && _isPoolLoaded.value) {
+        if (prefs.isSoundOnKeypress.get() && _isPoolLoaded.value) {
             when (key.id) {
-                "delete" -> _soundPool.play(_soundIDD.value, 0.5f, 0.5f, 1, 0, 1.05f)
-                "return" -> _soundPool.play(_soundIDR.value, 0.5f, 0.5f, 1, 0, 1.05f)
-                "space" -> _soundPool.play(_soundIDS.value, 0.5f, 0.5f, 1, 0, 1.05f)
-                else -> _soundPool.play(_soundIDT.value, 0.5f, 0.5f, 1, 0, 1.05f)
+                "delete" -> _soundPool.play(_soundIDD.value, vol, vol, 1, 0, rate)
+                "return" -> _soundPool.play(_soundIDR.value, vol, vol, 1, 0, rate)
+                "space" -> _soundPool.play(_soundIDS.value, vol, vol, 2, 0, rate)
+                else -> _soundPool.play(_soundIDT.value, vol, vol, 3, 0, rate)
             }
         }
     }
 
     @Stable
     fun vibrate() = viewModelScope.launch(Dispatchers.IO) {
-        val value: Boolean = prefs.isVibrateOnKeypress.get()
-        if (value) {
+        if (prefs.isVibrateOnKeypress.get()) {
             @Suppress("DEPRECATION")
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                vibrator.vibrate(VibrationEffect.createOneShot(45, -1))
-            } else vibrator.vibrate(45)
+                vibrator.vibrate(VibrationEffect.createOneShot(35, -1))
+            } else vibrator.vibrate(35)
         }
     }
 

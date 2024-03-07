@@ -13,7 +13,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -30,7 +29,7 @@ import com.optiflowx.optikeysx.ui.keyShapeValue
 
 @Preview
 @Composable
-fun KeyButtonPopup(width: Dp = 52.dp, text: String = "M", id: String = "") {
+fun KeyButtonPopup(width: Dp = 52.dp, text: String = "M") {
     val height: Dp = 96.dp
     val previewWidth: Dp = ((width.value * 0.6) + width.value).dp
 
@@ -42,7 +41,7 @@ fun KeyButtonPopup(width: Dp = 52.dp, text: String = "M", id: String = "") {
 //        )
 //    ) {
     Column(
-        modifier = Modifier.layoutId(id).fillMaxSize(),
+        modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
 //        modifier =

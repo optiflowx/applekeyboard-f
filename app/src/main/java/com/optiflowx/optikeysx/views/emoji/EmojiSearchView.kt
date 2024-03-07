@@ -16,6 +16,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
@@ -25,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import com.optiflowx.optikeysx.core.utils.KeyboardLocale
 import com.optiflowx.optikeysx.core.utils.appFontType
 import com.optiflowx.optikeysx.core.utils.nonScaledSp
+import com.optiflowx.optikeysx.ime.IMEService
 import com.optiflowx.optikeysx.viewmodels.KeyboardViewModel
 import dev.patrickgold.jetpref.datastore.model.observeAsState
 import io.github.alexzhirkevich.cupertino.CupertinoIcon
@@ -44,18 +47,23 @@ fun EmojiSearchView(viewModel: KeyboardViewModel, textSize: Float, searchIconSiz
     val (text, onTextChange) = remember { mutableStateOf("") }
     val state = rememberCupertinoSearchTextFieldState()
     val focusRequester = remember { FocusRequester() }
+    val currentFocus = LocalFocusManager.current
 
     val fontType = viewModel.prefs.keyboardFontType.observeAsState().value
     val locale = viewModel.keyboardData.collectAsState().value.locale
     val keyboardLocale = KeyboardLocale(locale)
 
+    val context = LocalContext.current as IMEService
+
     LaunchedEffect(state.isFocused) {
         if (state.isFocused) {
-            focusRequester.requestFocus().let {
-                focusRequester.captureFocus()
+            currentFocus.clearFocus(true).also {
+                focusRequester.requestFocus()
             }
         } else focusRequester.freeFocus()
     }
+
+
 
     boxScope.apply {
         CupertinoSearchTextField(

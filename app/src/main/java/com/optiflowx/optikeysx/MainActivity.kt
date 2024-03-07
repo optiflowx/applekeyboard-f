@@ -120,7 +120,7 @@ class MainActivity : AppCompatActivity() {
                 ) {
                     if (isAuth) {
 //                        if (user.isEmailVerified) {
-                        Navigator(HomeScreen(this))
+                        Navigator(HomeScreen())
 //                        } else Navigator(VerifyEmailScreen())
                     } else {
                         Navigator(SignInScreen())

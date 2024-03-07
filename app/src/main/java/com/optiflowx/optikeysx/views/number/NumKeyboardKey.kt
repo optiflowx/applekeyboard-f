@@ -57,7 +57,7 @@ fun NumKeyboardKey(key: Key, viewModel: KeyboardViewModel) {
         }
     } else KeyButton(
         color = (if (isPeriod) Color.Transparent else colorScheme.secondary),
-        id = key.id,
+        key = key,
         showPopup = false,
         prefs = viewModel.prefs,
         onClick = {

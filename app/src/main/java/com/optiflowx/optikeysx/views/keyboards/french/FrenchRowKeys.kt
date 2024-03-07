@@ -6,21 +6,21 @@ import com.optiflowx.optikeysx.core.model.Key
 @Immutable
 class FrenchRowKeys {
     val row1Keys = arrayOf(
-        Key("a", "a"),
-        Key("z", "z"),
-        Key("e", "e"),
+        Key("a", "a", listOf("á", "à", "â", "ä", "æ", "ã", "å", "ā")),
+        Key("z", "z", listOf("ž", "ź", "ż")),
+        Key("e", "e", listOf("é", "è", "ê", "ë", "ē", "ė", "ę")),
         Key("r", "r"),
         Key("t", "t"),
-        Key("y", "y"),
-        Key("u", "u"),
-        Key("i", "i"),
-        Key("o", "o"),
+        Key("y", "y", listOf("ý", "ÿ")),
+        Key("u", "u", listOf("ú", "ù", "û", "ü", "ū", "ų")),
+        Key("i", "i", listOf("í", "ì", "î", "ï", "ī", "į", "ı")),
+        Key("o", "o", listOf("ó", "ò", "ô", "ö", "ø", "õ", "ō", "œ")),
         Key("p", "p")
     )
 
     val row2Keys = arrayOf(
         Key("q", "q"),
-        Key("s", "s"),
+        Key("s", "s", listOf("š", "ś", "ş", "ŝ", "š")),
         Key("d", "d"),
         Key("f", "f"),
         Key("g", "g"),
@@ -32,12 +32,12 @@ class FrenchRowKeys {
 
     val row3Keys = arrayOf(
         Key("shift", ""),
-        Key("z", "z"),
+        Key("w", "w"),
         Key("x", "x"),
-        Key("c", "c"),
+        Key("c", "c", listOf("ç")),
         Key("v", "v"),
         Key("b", "b"),
-        Key("n", "n"),
+        Key("n", "n", listOf("ñ", "ņ", "ň")),
         Key("m", "m"),
         Key("delete", "")
     )

@@ -29,6 +29,7 @@ import com.optiflowx.optikeysx.core.utils.appFontType
 import com.optiflowx.optikeysx.core.utils.handleTitle
 import com.optiflowx.optikeysx.core.utils.nonScaledSp
 import com.optiflowx.optikeysx.viewmodels.KeyboardViewModel
+import com.optiflowx.optikeysx.views.keyboards.standard.StandardKeyboardView
 import dev.patrickgold.jetpref.datastore.model.observeAsState
 import io.github.alexzhirkevich.cupertino.theme.CupertinoColors
 import io.github.alexzhirkevich.cupertino.theme.systemGray
@@ -45,7 +46,7 @@ fun EmojiKeyboardView(
     val defaultViewPort = (viewWidth)
     val freqViewPort = (viewWidth * 0.76f)
     val locale = viewModel.keyboardData.collectAsState().value.locale
-//    val isESearch = viewModel.isEmojiSearch.collectAsState()
+    val isESearch = viewModel.isEmojiSearch.collectAsState()
     val frequentEmojis = viewModel.frequentlyUsedEmojis.observeAsState().value?.reversed()
     val fontType = viewModel.prefs.keyboardFontType.observeAsState().value
 
@@ -62,9 +63,9 @@ fun EmojiKeyboardView(
     )
     val pagerState = rememberPagerState(pageCount = { emojiViewPager.size }, initialPage = 0)
 
-//    if (isESearch.value) StandardKeyboardView(viewModel, viewWidth)
-//    else
-    Column(
+    if (isESearch.value) {
+        StandardKeyboardView(viewModel, viewWidth)
+    } else Column(
         Modifier.width(viewWidth)
     ) {
         HorizontalPager(

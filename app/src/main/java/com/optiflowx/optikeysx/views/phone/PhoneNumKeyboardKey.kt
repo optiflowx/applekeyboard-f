@@ -76,7 +76,7 @@ fun PhoneNumKeyboardKey(key: Key, viewModel: KeyboardViewModel) {
         color = (if (isSwitch) Color.Transparent
         else if (keysToDisable && isPhoneSymbols) colorScheme.outline
         else colorScheme.secondary),
-        id = key.id,
+        key = key,
         showPopup = false,
         prefs = viewModel.prefs,
         enabled = !(isPhoneSymbols && keysToDisable),
