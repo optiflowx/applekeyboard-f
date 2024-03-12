@@ -8,7 +8,6 @@ import androidx.lifecycle.MutableLiveData
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseAuthException
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.optiflowx.optikeysx.core.enums.KeyboardFontType
@@ -36,6 +35,10 @@ class KeyboardSettingsModel : ScreenModel {
     private val auth = FirebaseAuth.getInstance()
     private val db = Firebase.firestore(auth.app)
     private lateinit var recognizerSourceProviders: Providers
+
+    companion object {
+        private const val TOASTLEN = Toast.LENGTH_LONG + 5
+    }
 
     init {
         db.persistentCacheIndexManager?.enableIndexAutoCreation()
@@ -111,16 +114,14 @@ class KeyboardSettingsModel : ScreenModel {
             .putExtra(Settings.EXTRA_INPUT_METHOD_ID, imId)
             .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             .putExtra(Intent.EXTRA_TITLE, "Add Keyboard")
-        context.startActivity(intent);
+        context.startActivity(intent)
     }
 
-    fun signOut() = auth.signOut()
+//    fun signOut() = auth.signOut()
 
     fun firebaseSignUpWithEmailAndPassword(context: Context, user: AppUserData) {
         if (user.name.isNotEmpty() && user.email.isNotEmpty() && user.password.isNotEmpty()) {
-            loader.postValue(true)
-
-            screenModelScope.launch(Dispatchers.IO) {
+            loader.postValue(true).apply {
                 auth.createUserWithEmailAndPassword(user.email, user.password)
                     .addOnSuccessListener {
                         val docID = it.user?.uid
@@ -133,13 +134,12 @@ class KeyboardSettingsModel : ScreenModel {
                         }
                     }
                     .addOnFailureListener {
-                        Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
-                        Response.Failure(it)
+                        Toast.makeText(context, it.message, TOASTLEN).show()
                     }
-                    .addOnCompleteListener {
-                        loader.postValue(false)
-                    }.await()
+                    .addOnCompleteListener { loader.postValue(false) }
             }
+        } else {
+            Toast.makeText(context, "The Fields Cannot Be Empty!", TOASTLEN).show()
         }
     }
 
@@ -150,7 +150,7 @@ class KeyboardSettingsModel : ScreenModel {
             }
             Response.Success(true)
         } catch (e: Exception) {
-            Toast.makeText(context, e.message, Toast.LENGTH_LONG).show()
+            Toast.makeText(context, e.message, TOASTLEN).show()
             Response.Failure(e)
         }
     }
@@ -160,34 +160,36 @@ class KeyboardSettingsModel : ScreenModel {
             auth.currentUser?.reload()?.addOnSuccessListener {
                 Response.Success(true)
             }?.addOnFailureListener {
-                Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
+                Toast.makeText(context, it.message, TOASTLEN).show()
                 Response.Failure(it)
             }
         }
     }
 
     fun firebaseSignInWithEmailAndPassword(email: String, password: String, context: Context) {
-        loader.postValue(true)
-        screenModelScope.launch {
-            auth.signInWithEmailAndPassword(email, password).addOnSuccessListener {
-                reloadFirebaseUser(context)
-                Response.Success(true)
-            }.addOnFailureListener {
-                Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
-                Response.Failure(it)
-            }.addOnCompleteListener {
-                loader.postValue(false)
-            }.await()
+        if (email.isNotEmpty() && password.isNotEmpty()) {
+            loader.postValue(true).apply {
+                auth.signInWithEmailAndPassword(email, password).addOnSuccessListener {
+                    reloadFirebaseUser(context)
+                }.addOnFailureListener {
+                    Toast.makeText(context, it.message, TOASTLEN).show()
+                }.addOnCompleteListener {
+                    loader.postValue(false)
+                }
+            }
+        } else {
+            Toast.makeText(context, "The Fields Cannot Be Empty!", TOASTLEN).show()
         }
     }
 
     private fun onFailureHandler(error: Exception, context: Context) {
-        Toast.makeText(context, error.message, Toast.LENGTH_LONG).show()
+        Toast.makeText(context, error.message, TOASTLEN).show()
 
         //Remove the already added user in authentication
         screenModelScope.launch(Dispatchers.IO) {
-            auth.currentUser?.delete()?.await()
-            prefs.isAuthenticated.set(false)
+            auth.currentUser?.delete()?.addOnSuccessListener {
+                prefs.isAuthenticated.set(false)
+            }
         }
     }
 
@@ -199,12 +201,10 @@ class KeyboardSettingsModel : ScreenModel {
             "isPaid" to user.isPaid
         )
 
-        screenModelScope.launch {
-            db.collection("users").document(docID).set(userData)
-                .addOnFailureListener { error ->
-                    onFailureHandler(error, context)
-                }
-        }
+        db.collection("users").document(docID).set(userData)
+            .addOnFailureListener { error ->
+                onFailureHandler(error, context)
+            }
     }
 
     private fun getUserId(): Flow<String> {
