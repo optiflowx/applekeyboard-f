@@ -12,8 +12,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
-import com.optiflowx.optikeysx.ui.iosEmojiFontFamily
 import com.optiflowx.optikeysx.core.utils.nonScaledSp
+import com.optiflowx.optikeysx.ui.iosEmojiFontFamily
 import com.optiflowx.optikeysx.viewmodels.KeyboardViewModel
 
 @Composable

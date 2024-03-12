@@ -18,10 +18,7 @@ import com.optiflowx.optikeysx.core.Tools
 import com.optiflowx.optikeysx.extension.getAudioPermission
 import com.optiflowx.optikeysx.extension.getNotificationPermission
 import com.optiflowx.optikeysx.screens.DeciderScreen
-import com.optiflowx.optikeysx.screens.home.HomeScreen
 import com.optiflowx.optikeysx.screens.permissions.PermissionsScreen
-import com.optiflowx.optikeysx.screens.sso.SignUpScreen
-import dev.patrickgold.jetpref.datastore.model.observeAsState
 import io.github.alexzhirkevich.cupertino.theme.CupertinoTheme
 import kotlinx.coroutines.flow.MutableStateFlow
 
@@ -31,7 +28,6 @@ class MainActivity : AppCompatActivity() {
     private val imeGranted = MutableStateFlow(false)
     private val notificationsGranted = MutableStateFlow(false)
     private val permissionsState = MutableStateFlow(0)
-    private val prefs by optikeysxPreferences()
 
     private fun onPermissionButtonClick(state: State<Int>) {
         when (state.value) {
