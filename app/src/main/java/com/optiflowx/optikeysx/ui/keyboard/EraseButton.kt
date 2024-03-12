@@ -2,7 +2,7 @@
 
 package com.optiflowx.optikeysx.ui.keyboard
 
-import android.view.MotionEvent
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.absoluteOffset
 import androidx.compose.foundation.layout.absolutePadding
@@ -19,15 +19,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.pointerInteropFilter
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun EraseButton(
     modifier: Modifier = Modifier,
@@ -37,7 +35,7 @@ fun EraseButton(
     applyShadow: Boolean = true,
     onClick: () -> Unit,
     onRepeatableClick: () -> Unit,
-    content: @Composable () -> Unit,
+    content: @Composable (Boolean) -> Unit,
 ) {
     val delayMillis = 115L
     var pressed by remember { mutableStateOf(false) }
@@ -45,7 +43,7 @@ fun EraseButton(
     val currentClickListener by rememberUpdatedState(onRepeatableClick)
     val currentSingleClickListener by rememberUpdatedState(onClick)
 
-    LaunchedEffect(pressed, enabled) {
+    LaunchedEffect(pressed) {
         while (enabled && pressed) {
             if (pressedCount < 1) {
                 pressedCount += 1
@@ -63,12 +61,16 @@ fun EraseButton(
         modifier = modifier
             .layoutId(id)
             .fillMaxSize()
-            .pointerInteropFilter {
-                pressed = when (it.action) {
-                    MotionEvent.ACTION_DOWN -> true
-                    else -> false
-                }
-                true
+            .pointerInput(Unit) {
+                detectTapGestures(
+                    onPress = {
+                        pressed = true
+
+                        if(tryAwaitRelease()) {
+                            pressed = false
+                        }
+                    }
+                )
             }
     ) {
         if(applyShadow) {
@@ -83,12 +85,12 @@ fun EraseButton(
         }
 
         Surface(
-            color = color,
+            color = if(pressed) MaterialTheme.colorScheme.surface else color,
             shape = RoundedCornerShape((5.5).dp),
             modifier = modifier.matchParentSize()
         ) {
             Box(contentAlignment = Alignment.Center) {
-                content()
+                content(pressed)
             }
         }
     }
