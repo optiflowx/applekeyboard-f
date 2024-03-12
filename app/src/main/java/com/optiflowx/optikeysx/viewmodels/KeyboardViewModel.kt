@@ -6,9 +6,9 @@ import android.media.AudioAttributes
 import android.media.SoundPool
 import android.os.Build
 import android.os.VibrationEffect
-import android.util.Log
+import android.text.TextUtils
+import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputConnection
-import android.view.inputmethod.InputConnection.GET_TEXT_WITH_STYLES
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.LiveData
@@ -263,7 +263,7 @@ class KeyboardViewModel(context: Context) : ViewModel() {
     }
 
     @Stable
-    fun vibrate() = viewModelScope.launch(Dispatchers.IO) {
+    fun vibrate() {
         if (prefs.isVibrateOnKeypress.get()) {
             @Suppress("DEPRECATION")
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -296,7 +296,7 @@ class KeyboardViewModel(context: Context) : ViewModel() {
             if (checkSpelling && autoCorrect) {
                 this.launch(Dispatchers.IO) {
                     ic.deleteSurroundingText(1, 0).let {
-                        val tBC = ic.getTextBeforeCursor(12, GET_TEXT_WITH_STYLES)
+                        val tBC = ic.getTextBeforeCursor(12, 0)
                         if (tBC != null) {
                             val lastWord = tBC.split(" ").last()
 
@@ -352,7 +352,7 @@ class KeyboardViewModel(context: Context) : ViewModel() {
     @Stable
     private fun getNextSuggestions(ic: InputConnection) {
         if (prefs.isPredictive.get()) {
-            val charSequence = ic.getTextBeforeCursor(24, GET_TEXT_WITH_STYLES)
+            val charSequence = ic.getTextBeforeCursor(24, 0)
             if (charSequence != null) {
                 val filterText = charSequence.split(" ").last()
 
@@ -375,12 +375,12 @@ class KeyboardViewModel(context: Context) : ViewModel() {
     fun onSuggestionClick(suggestion: String, context: Context) {
         if (suggestion.isNotEmpty()) {
             val ic = (context as IMEService).currentInputConnection
-            val charSequence = ic.getTextBeforeCursor(24, GET_TEXT_WITH_STYLES)
+            val charSequence = ic.getTextBeforeCursor(24, 0)
 
             if (charSequence != null) {
                 val textToReplace = charSequence.split(" ").last()
                 ic.deleteSurroundingText(textToReplace.length, 0).let {
-                    if (it) ic.commitText("$suggestion ", suggestion.length + 1)
+                    if (it) ic.commitText("$suggestion ",  suggestion.chars().count().toInt())
                 }
             }
         }
@@ -410,7 +410,7 @@ class KeyboardViewModel(context: Context) : ViewModel() {
     }
 
     @Stable
-    fun onTKeyClick(key: Key, context: Context, action: String = "return") {
+    fun onTKeyClick(key: Key, context: Context) {
         val ic = (context as IMEService).currentInputConnection
 
         when (key.id) {
@@ -418,7 +418,7 @@ class KeyboardViewModel(context: Context) : ViewModel() {
 
             "123" -> onUpdateKeyboardType(KeyboardType.Symbol)
 
-            "action" -> onAction(ic, context, action)
+            "action" -> onAction(ic)
 
             "space" -> onSpace(ic)
 
@@ -473,8 +473,8 @@ class KeyboardViewModel(context: Context) : ViewModel() {
 
     @Stable
     private fun onSpace(ic: InputConnection) {
-        val tBCA = ic.getTextBeforeCursor(1, GET_TEXT_WITH_STYLES)
-        val tBCB = ic.getTextBeforeCursor(2, GET_TEXT_WITH_STYLES)
+        val tBCA = ic.getTextBeforeCursor(1, 0)
+        val tBCB = ic.getTextBeforeCursor(2, 0)
 
         if (tBCA.toString() == " ") handleDotShortcut(ic)
         else if (tBCB.toString() == " i") capitalizeI(ic)
@@ -498,32 +498,34 @@ class KeyboardViewModel(context: Context) : ViewModel() {
     }
 
     @Stable
-    private fun onAction(ic: InputConnection, ctx: Context, action: String) {
-        if (action == "return") {
+    private fun onAction(ic: InputConnection) {
+        val EA: Int = keyboardData.value.enterAction
+        if ((EA == EditorInfo.IME_ACTION_UNSPECIFIED || EA == EditorInfo.IME_ACTION_NONE)) {
             ic.commitText("\n", "\n".length)
-        } else (ctx as IMEService).sendDefaultEditorAction(false)
+        } else {
+            ic.performEditorAction(EA)
+        }
     }
 
     @Stable
     private fun onErase(context: Context) {
         val ic = (context as IMEService).currentInputConnection
-        val selectedText = ic.getSelectedText(GET_TEXT_WITH_STYLES)
-        val text = ic.getTextBeforeCursor(16, 0)?.split(" ")?.last()
+        val text = ic.getTextBeforeCursor(12, 0)?.split(" ")?.last()
+        val selectedText = ic.getSelectedText(0)
         val data = ic.getTextBeforeCursor(2, 0)
 
-        if ((data.isNullOrEmpty() || data == "") && selectedText.isNullOrEmpty()) {
-            Log.d("KeyboardViewModel", "onErase: No text to delete")
+        if ((data.isNullOrEmpty() || data == "") && TextUtils.isEmpty(selectedText)) {
             updateCapsLock()
         } else {
-            if (selectedText != null) {
-                Log.d("KeyboardViewModel", "onErase: Selected Text: $selectedText")
-                ic.commitText("", "".length)
-            } else if (text != null) {
-                if (text.codePoints().toArray().isNotEmpty()) {
-                    Log.d("KeyboardViewModel", "onErase: Text: $text")
+            if (selectedText != null && !TextUtils.isEmpty(selectedText)) {
+                //Clear all the selected text
+                ic.commitText("", 1)
+            } else {
+                if (text != null && text.codePoints().toArray().isNotEmpty()) {
+                    //Delete Emojis or Any Special text with codepoints
                     ic.deleteSurroundingTextInCodePoints(1, 0)
                 } else {
-                    Log.d("KeyboardViewModel", "onErase: Text: $text")
+                    //Delete Characters
                     ic.deleteSurroundingText(1, 0)
                 }
             }
