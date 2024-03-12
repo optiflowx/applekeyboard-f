@@ -27,7 +27,7 @@ android {
         minSdk = 24
         targetSdk = 34
         versionCode = 1
-        versionName = "1.0.0-release"
+        versionName = "1.0.1-release"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -76,7 +76,6 @@ android {
 }
 
 dependencies {
-
     implementation("androidx.profileinstaller:profileinstaller:1.3.1")
     implementation("androidx.constraintlayout:constraintlayout-core:1.0.4")
     androidTestImplementation("androidx.test:runner:1.5.2")
@@ -92,13 +91,9 @@ dependencies {
     implementation("dev.patrickgold.jetpref:jetpref-datastore-model:0.1.0-beta14")
     implementation("dev.patrickgold.jetpref:jetpref-datastore-ui:0.1.0-beta14")
 
-    implementation ("org.burnoutcrew.composereorderable:reorderable:0.9.6")
-
     //Destinations
-//    implementation("io.github.raamcosta.compose-destinations:core:1.10.0")
     "baselineProfile"(project(":baselineprofiles"))
     implementation(project(":audiowaveform"))
-//    ksp("io.github.raamcosta.compose-destinations:ksp:1.10.0")
 
     // Navigator
     implementation("cafe.adriel.voyager:voyager-navigator:$voyagerVersion")
@@ -143,9 +138,6 @@ dependencies {
     implementation("com.alphacephei:vosk-android:0.3.32")
     implementation("org.greenrobot:eventbus:3.3.1")
     implementation("dev.gustavoavila:java-android-websocket-client:2.0.1")
-//    implementation("io.grpc:grpc-okhttp:1.57.2")
-//    implementation("io.grpc:grpc-protobuf-lite:1.57.2")
-//    implementation("io.grpc:grpc-stub:1.57.2")
     compileOnly("org.apache.tomcat:annotations-api:6.0.53") // necessary for Java 9+
 
     //Constraint Layout

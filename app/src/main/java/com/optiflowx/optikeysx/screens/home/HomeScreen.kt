@@ -15,6 +15,7 @@ import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.core.screen.uniqueScreenKey
@@ -38,7 +39,7 @@ import io.github.alexzhirkevich.cupertino.rememberCupertinoSheetState
 import io.github.alexzhirkevich.cupertino.theme.CupertinoTheme
 
 
-class HomeScreen(val viewModel: KeyboardSettingsModel) : Screen {
+class HomeScreen : Screen {
     override val key: ScreenKey = uniqueScreenKey
     companion object {
         const val TAG = "HomeScreen"
@@ -47,9 +48,11 @@ class HomeScreen(val viewModel: KeyboardSettingsModel) : Screen {
     @Composable
     @OptIn(ExperimentalCupertinoApi::class, ExperimentalComposeUiApi::class)
     override fun Content() {
+        val vM = rememberScreenModel { KeyboardSettingsModel() }
+
         val sheetSectionColor = CupertinoTheme.colorScheme.tertiarySystemBackground
 
-        val isPremium = viewModel.prefs.isPremium.observeAsState().value
+        val isPremium = vM.prefs.isPremium.observeAsState().value
 
         val focusManager = LocalFocusManager.current
 
@@ -87,7 +90,7 @@ class HomeScreen(val viewModel: KeyboardSettingsModel) : Screen {
         )
 
         LaunchedEffect(Unit) {
-            viewModel.loadUserData()
+            vM.loadUserData()
         }
 
         LaunchedEffect(lazyListState.isScrollInProgress) {

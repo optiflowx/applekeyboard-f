@@ -17,8 +17,10 @@ import com.google.firebase.ktx.Firebase
 import com.optiflowx.optikeysx.core.Tools
 import com.optiflowx.optikeysx.extension.getAudioPermission
 import com.optiflowx.optikeysx.extension.getNotificationPermission
-import com.optiflowx.optikeysx.screens.DeciderScreen
+import com.optiflowx.optikeysx.screens.home.HomeScreen
 import com.optiflowx.optikeysx.screens.permissions.PermissionsScreen
+import com.optiflowx.optikeysx.screens.sso.SignInScreen
+import dev.patrickgold.jetpref.datastore.model.observeAsState
 import io.github.alexzhirkevich.cupertino.theme.CupertinoTheme
 import kotlinx.coroutines.flow.MutableStateFlow
 
@@ -28,6 +30,7 @@ class MainActivity : AppCompatActivity() {
     private val imeGranted = MutableStateFlow(false)
     private val notificationsGranted = MutableStateFlow(false)
     private val permissionsState = MutableStateFlow(0)
+    private val prefs by optikeysxPreferences()
 
     private fun onPermissionButtonClick(state: State<Int>) {
         when (state.value) {
@@ -88,6 +91,7 @@ class MainActivity : AppCompatActivity() {
 
         setContent {
             CupertinoTheme {
+                val isAuth = prefs.isAuthenticated.observeAsState().value
                 val micGrantedState = micGranted.collectAsState()
                 val imeGrantedState = imeGranted.collectAsState()
                 val notificationsGrantedState = notificationsGranted.collectAsState()
@@ -98,7 +102,11 @@ class MainActivity : AppCompatActivity() {
                 if (micGrantedState.value && imeGrantedState.value &&
                     notificationsGrantedState.value && state.value == 3
                 ) {
-                    Navigator(screen = DeciderScreen())
+                    if (isAuth) {
+//                        if (user.isEmailVerified) {
+                        Navigator(HomeScreen())
+//                        } else VerifyEmailScreen()
+                    } else Navigator(SignInScreen())
                 } else PermissionsScreen(
                     micGranted = micGrantedState,
                     imeGranted = imeGrantedState,

@@ -50,7 +50,7 @@ import io.github.alexzhirkevich.cupertino.theme.systemBlue
 import kotlinx.coroutines.delay
 
 
-class SignInScreen(val viewModel: KeyboardSettingsModel) : Screen {
+class SignInScreen() : Screen {
     @OptIn(ExperimentalCupertinoApi::class)
     @Composable
     @ExperimentalComposeUiApi

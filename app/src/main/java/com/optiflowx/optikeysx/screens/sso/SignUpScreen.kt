@@ -34,6 +34,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
+import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
@@ -56,11 +57,12 @@ import io.github.alexzhirkevich.cupertino.Surface
 import io.github.alexzhirkevich.cupertino.theme.CupertinoColors
 import io.github.alexzhirkevich.cupertino.theme.systemBlue
 
-class SignUpScreen(val viewModel: KeyboardSettingsModel) : Screen {
+class SignUpScreen : Screen {
     @OptIn(ExperimentalCupertinoApi::class)
     @ExperimentalComposeUiApi
     @Composable
     override fun Content() {
+        val viewModel = rememberScreenModel { KeyboardSettingsModel() }
         val keyboard = LocalSoftwareKeyboardController.current
         val navigator = LocalNavigator.currentOrThrow
         val context = LocalContext.current
@@ -160,7 +162,7 @@ class SignUpScreen(val viewModel: KeyboardSettingsModel) : Screen {
                         Text("Already a user? ")
                         Text(
                             "Sign In", modifier = Modifier.clickable {
-                                navigator.push(SignInScreen(viewModel))
+                                navigator.push(SignInScreen())
                             }, style = TextStyle(
                                 fontWeight = FontWeight.Black,
                                 fontSize = 15.sp.nonScaledSp
