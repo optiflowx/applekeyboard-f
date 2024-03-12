@@ -117,7 +117,7 @@ fun KeyboardKey(key: Key, viewModel: KeyboardViewModel) {
                 modifier = Modifier
                     .fillMaxHeight(0.54f)
                     .fillMaxWidth(0.54f),
-                tint = colorScheme.primary,
+                tint = if(it) MaterialTheme.colorScheme.tertiaryContainer else colorD,
             )
         }
     } else if (isShift || isSymbols || isEmoji) {
@@ -133,7 +133,7 @@ fun KeyboardKey(key: Key, viewModel: KeyboardViewModel) {
         } else {
             painterResource(
 //                if (isSystemInDarkTheme()) R.drawable.emoji_fill else
-                    R.drawable.emoji_outline
+                R.drawable.emoji_outline
             )
         }).apply {
             KeyButton(
@@ -164,34 +164,33 @@ fun KeyboardKey(key: Key, viewModel: KeyboardViewModel) {
         (if (key.id == "123" || key.id == "ABC" || key.id == "action") {
             if (key.id == "action") buttonColor else colorC
         } else colorScheme.secondary).apply {
-                KeyButton(
-                    color = this@apply,
-                    key = key,
-                    prefs = viewModel.prefs,
-                    popupWidth = popupWidth,
-                    showPopup = !(key.id == "123" || key.id == "ABC" || key.id == "action" || key.id == "space"),
-                    onClick = {
-                        viewModel.onTKeyClick(key, ctx, text).let {
-                            viewModel.playSound(key)
-                            viewModel.vibrate()
-                        }
+            KeyButton(
+                color = this@apply,
+                key = key,
+                prefs = viewModel.prefs,
+                popupWidth = popupWidth,
+                showPopup = !(key.id == "123" || key.id == "ABC" || key.id == "action" || key.id == "space"),
+                onClick = {
+                    viewModel.onTKeyClick(key, ctx).let {
+                        viewModel.playSound(key)
+                        viewModel.vibrate()
                     }
-                ) {
-                    Text(
-                        text = (if (key.id == "ABC" || key.id == "space" || key.id == "action") {
-                            if (key.id == "action") keyboardLocale.action(text) else key.value
-                        } else keyValue),
-                        maxLines = 1,
-                        style = TextStyle(
-                            fontFamily = appFontType(fontType),
-                            fontSize = (if (key.id == "123" || key.id == "ABC" || key.id == "action" || key.id == "space")
-                                15.sp else 22.5.sp).nonScaledSp,
-                            platformStyle = PlatformTextStyle(includeFontPadding = false)
-                        ),
-                        color = if (key.id == "action") textColor else colorD,
-                    )
                 }
-
+            ) {
+                Text(
+                    text = (if (key.id == "ABC" || key.id == "space" || key.id == "action") {
+                        if (key.id == "action") keyboardLocale.action(text) else key.value
+                    } else keyValue),
+                    maxLines = 1,
+                    style = TextStyle(
+                        fontFamily = appFontType(fontType),
+                        fontSize = (if (key.id == "123" || key.id == "ABC" || key.id == "action" || key.id == "space")
+                            15.sp else 22.5.sp).nonScaledSp,
+                        platformStyle = PlatformTextStyle(includeFontPadding = false)
+                    ),
+                    color = if (key.id == "action") textColor else colorD,
+                )
+            }
         }
     }
 }
