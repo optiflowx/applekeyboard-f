@@ -68,7 +68,7 @@ fun KeyButton(
                     .matchParentSize()
                     .absoluteOffset(0.dp, 1.5.dp)
                     .absolutePadding(left = 0.75.dp, right = 0.5.dp)
-            ) {}
+            ) {  }
         }
 
         Surface(
@@ -77,14 +77,16 @@ fun KeyButton(
 //            interactionSource = interactionSource,
             modifier = modifier
                 .matchParentSize()
-                .graphicsLayer(clip = false)
                 .pointerInput(Unit) {
                     detectTapGestures(
                         onPress = {
                             isKeyPressed = true
+
                             onClick()
-                            tryAwaitRelease()
-                            isKeyPressed = false
+
+                            if (tryAwaitRelease()) {
+                                isKeyPressed = false
+                            }
                         },
                     )
                 }
@@ -100,7 +102,7 @@ fun KeyButton(
 //                }
 
 //                if (!isKeyPressed) {
-                    content()
+                content()
 //                }
 
             }
