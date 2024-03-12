@@ -27,6 +27,7 @@ import java.util.*
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 
+@Suppress("DEPRECATION")
 class FileDownloadService : Service() {
     private val executor: Executor = Executors.newSingleThreadExecutor()
     private lateinit var notificationManager: NotificationManagerCompat

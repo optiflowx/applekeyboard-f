@@ -51,7 +51,7 @@ fun KeyButton(
 
     var isKeyPressed by remember { mutableStateOf(false) }
 
-    val isAccentsAllowed = prefs.isAccentsAllowed.observeAsState().value
+    val isEnableAccents = prefs.isEnableAccents.observeAsState().value
 
     Box(
         contentAlignment = Alignment.Center,
@@ -83,24 +83,26 @@ fun KeyButton(
                         onPress = {
                             isKeyPressed = true
                             onClick()
-                            val success = tryAwaitRelease()
-                            isKeyPressed = if (success) false else false
+                            tryAwaitRelease()
+                            isKeyPressed = false
                         },
                     )
                 }
         ) {
             Box(contentAlignment = Alignment.Center) {
-                if (isKeyPressed && showPopup && isAccentsAllowed) {
+                if (isKeyPressed && showPopup && isEnableAccents) {
                     KeyAccentsPopup(popupWidth.dp, key)
                 }
 
-                if (!isKeyPressed) {
-                    content()
-                }
-//
+                //
 //                if (pressed.value && showPopup && isCharacterPreview) {
 //                    KeyButtonPopup(popupWidth.dp, key.value)
 //                }
+
+//                if (!isKeyPressed) {
+                    content()
+//                }
+
             }
         }
     }
@@ -125,7 +127,6 @@ fun PopupKey() {
 
     val tiltHeight = viewHeight - topExpandableViewHeight - bottomViewHeight
     val tiltWidth = viewWidth * 0.2.toFloat()
-
     val bottomLine = viewWidth * 0.8.toFloat()
 
     val tiltHeightInView = topExpandableViewHeight + tiltHeight
@@ -149,16 +150,7 @@ fun PopupKey() {
                     lineTo(bottomLine, viewHeight) //corner
                     lineTo(bottomLine, viewHeight - bottomViewHeight) //corner
                     lineTo(viewWidth, viewHeight - bottomViewHeight - tiltHeight) //corner
-
-//                    lineTo(viewWidth - cornerRadius, ) //corner last
-////                    lineTo() //corner
-//                    quadraticBezierTo(
-//                        viewWidth, 0f,
-//                        viewWidth, cornerRadius,
-//                    )
-
                     lineTo(viewWidth, 0f) //corner
-
 
                     close()
                 }

@@ -11,7 +11,7 @@ plugins {
 }
 
 val hiltVersion = "2.48"
-val composeVersion = "1.6.2"
+val composeVersion = "1.6.3"
 val lifecycleVersion = "2.7.0"
 val archVersion = "2.2.0"
 val roomVersion = "2.6.1"
@@ -82,9 +82,10 @@ dependencies {
     androidTestImplementation("androidx.test:runner:1.5.2")
 
     //Firebase
-    implementation(platform("com.google.firebase:firebase-bom:32.7.2"))
+    implementation(platform("com.google.firebase:firebase-bom:32.7.4"))
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-auth-ktx")
+    implementation("com.google.firebase:firebase-firestore")
 
     implementation("dev.chrisbanes.haze:haze-materials:0.5.2")
 
@@ -117,7 +118,7 @@ dependencies {
     //Compose Dependencies
     implementation("androidx.compose.ui:ui:$composeVersion")
     implementation("androidx.compose.ui:ui-tooling:$composeVersion")
-    implementation("androidx.compose.material3:material3:1.2.0")
+    implementation("androidx.compose.material3:material3:1.2.1")
     implementation("androidx.compose.foundation:foundation:$composeVersion")
     implementation("androidx.compose.runtime:runtime-livedata:$composeVersion")
 
@@ -131,7 +132,7 @@ dependencies {
     implementation("com.louiscad.splitties:splitties-views:3.0.0")
 
     // Compose Preview and Tests
-    implementation(platform("androidx.compose:compose-bom:2024.02.01"))
+    implementation(platform("androidx.compose:compose-bom:2024.02.02"))
     implementation("androidx.test.ext:junit-ktx:1.1.5")
     implementation("androidx.test:monitor:1.6.1")
     debugImplementation("androidx.compose.ui:ui-tooling")
@@ -142,9 +143,9 @@ dependencies {
     implementation("com.alphacephei:vosk-android:0.3.32")
     implementation("org.greenrobot:eventbus:3.3.1")
     implementation("dev.gustavoavila:java-android-websocket-client:2.0.1")
-    implementation("io.grpc:grpc-okhttp:1.52.0")
-    implementation("io.grpc:grpc-protobuf-lite:1.52.0")
-    implementation("io.grpc:grpc-stub:1.52.0")
+//    implementation("io.grpc:grpc-okhttp:1.57.2")
+//    implementation("io.grpc:grpc-protobuf-lite:1.57.2")
+//    implementation("io.grpc:grpc-stub:1.57.2")
     compileOnly("org.apache.tomcat:annotations-api:6.0.53") // necessary for Java 9+
 
     //Constraint Layout

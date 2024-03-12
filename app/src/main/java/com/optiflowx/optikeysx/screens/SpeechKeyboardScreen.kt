@@ -228,7 +228,7 @@ class VoiceRecognitionSettingsScreen : Screen {
                                     )
 
                                     IconButton(onClick = {
-                                        Tools.deleteModel(model, context)
+                                        Tools.deleteModel(model)
                                         settingsModel.reloadModels()
                                     }) {
                                         Icon(

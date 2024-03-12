@@ -20,13 +20,28 @@ class AppPrefs : PreferenceModel("optikeysx-app-preferences") {
         serializer = ModelListSerializer()
     )
 
+    val isPremium = boolean(
+        key = "is_premium",
+        default = false,
+    )
+
+    val isEnableMemoji = boolean(
+        key = "is_enable_memoji",
+        default = false,
+    )
+
+    val isEnableAccents = boolean(
+        key = "is_enable_accents",
+        default = false,
+    )
+
     val keepScreenAwake = enum(
         key = "e_keep_screen_awake",
         default = KeepScreenAwakeMode.NEVER
     )
 
     val isAuthenticated = boolean(
-        key = "is_user_authenticated",
+        key = "is_authenticated",
         default = false,
     )
 
@@ -90,11 +105,6 @@ class AppPrefs : PreferenceModel("optikeysx-app-preferences") {
         default = false,
     )
 
-    val isAccentsAllowed = boolean(
-        key = "is_accents_allowed",
-        default = true,
-    )
-
     val isPredictive = boolean(
         key = "is_predictive",
         default = false,
@@ -102,7 +112,7 @@ class AppPrefs : PreferenceModel("optikeysx-app-preferences") {
 
     val isEnableCapsLock = boolean(
         key = "is_enable_caps_lock",
-        default = false,
+        default = true,
     )
     
     val isAutoCorrection = boolean(

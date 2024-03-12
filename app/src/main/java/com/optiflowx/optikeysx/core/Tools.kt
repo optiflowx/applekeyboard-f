@@ -57,7 +57,7 @@ object Tools {
     }
 
     @JvmStatic
-    fun deleteModel(model: InstalledModelReference, context: Context?) {
+    fun deleteModel(model: InstalledModelReference) {
         val modelFile = File(model.path)
         if (modelFile.exists()) deleteRecursive(modelFile)
     }

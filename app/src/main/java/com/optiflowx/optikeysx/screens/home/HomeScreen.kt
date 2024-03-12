@@ -15,6 +15,7 @@ import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.core.screen.uniqueScreenKey
@@ -23,6 +24,8 @@ import com.optiflowx.optikeysx.screens.components.TopBar
 import com.optiflowx.optikeysx.ui.bold
 import com.optiflowx.optikeysx.ui.cupertino.CopyrightBottomSheet
 import com.optiflowx.optikeysx.ui.regular
+import com.optiflowx.optikeysx.viewmodels.KeyboardSettingsModel
+import dev.patrickgold.jetpref.datastore.model.observeAsState
 import io.github.alexzhirkevich.cupertino.CupertinoBottomSheetScaffold
 import io.github.alexzhirkevich.cupertino.CupertinoBottomSheetScaffoldDefaults
 import io.github.alexzhirkevich.cupertino.CupertinoNavigationTitle
@@ -36,7 +39,7 @@ import io.github.alexzhirkevich.cupertino.rememberCupertinoSheetState
 import io.github.alexzhirkevich.cupertino.theme.CupertinoTheme
 
 
- class HomeScreen : Screen {
+class HomeScreen(val viewModel: KeyboardSettingsModel) : Screen {
     override val key: ScreenKey = uniqueScreenKey
     companion object {
         const val TAG = "HomeScreen"
@@ -45,6 +48,11 @@ import io.github.alexzhirkevich.cupertino.theme.CupertinoTheme
     @Composable
     @OptIn(ExperimentalCupertinoApi::class, ExperimentalComposeUiApi::class)
     override fun Content() {
+        val sheetSectionColor = CupertinoTheme.colorScheme.tertiarySystemBackground
+
+        val isPremium = viewModel.prefs.isPremium.observeAsState().value
+
+        val focusManager = LocalFocusManager.current
 
         val tileTextStyle = TextStyle(
             fontSize = 17.sp.nonScaledSp,
@@ -79,9 +87,9 @@ import io.github.alexzhirkevich.cupertino.theme.CupertinoTheme
             )
         )
 
-        val sheetSectionColor = CupertinoTheme.colorScheme.tertiarySystemBackground
-
-        val focusManager = LocalFocusManager.current
+        LaunchedEffect(Unit) {
+            viewModel.loadUserData()
+        }
 
         LaunchedEffect(lazyListState.isScrollInProgress) {
             if (lazyListState.isScrollInProgress) {
@@ -130,6 +138,11 @@ import io.github.alexzhirkevich.cupertino.theme.CupertinoTheme
                         CupertinoText("OptiKeysX", style = navigationTextStyle)
                     }
                 }
+
+                item ("Premium Section") {
+                    PremiumSection(isPremium = isPremium)
+                }
+
                 item("Message Section") {
                     MessageSection()
                 }
@@ -145,6 +158,8 @@ import io.github.alexzhirkevich.cupertino.theme.CupertinoTheme
                     GeneralSection(
                         titleTextStyle = titleTextStyle,
                         tileTextStyle = tileTextStyle,
+                        isPremium = isPremium
+
                     )
                 }
 
@@ -152,6 +167,7 @@ import io.github.alexzhirkevich.cupertino.theme.CupertinoTheme
                     InteractionsSection(
                         titleTextStyle = titleTextStyle,
                         tileTextStyle = tileTextStyle,
+                        isPremium = isPremium
                     )
                 }
 
@@ -160,6 +176,7 @@ import io.github.alexzhirkevich.cupertino.theme.CupertinoTheme
                         titleTextStyle = titleTextStyle,
                         tileTextStyle = tileTextStyle,
                         descTextStyle = descTextStyle,
+                        isPremium = isPremium
                     )
                 }
 

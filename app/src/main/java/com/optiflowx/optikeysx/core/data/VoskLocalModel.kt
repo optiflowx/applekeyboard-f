@@ -12,11 +12,6 @@ data class VoskLocalModel(val path: String, val locale: Locale, val filename: St
                     "\", name:\"" + encode(model.filename) + "\"]"
         }
 
-        fun deserialize(serialized: String?): VoskLocalModel {
-
-            throw RuntimeException() // TODO: implement
-        }
-
         private fun encode(s: String?): String {
             val sb = StringBuilder()
             var c: Char

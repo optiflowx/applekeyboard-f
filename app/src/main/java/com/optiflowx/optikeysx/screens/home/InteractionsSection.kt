@@ -1,6 +1,7 @@
 package com.optiflowx.optikeysx.screens.home
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import com.optiflowx.optikeysx.optikeysxPreferences
 import dev.patrickgold.jetpref.datastore.model.observeAsState
@@ -13,7 +14,8 @@ import io.github.alexzhirkevich.cupertino.section.switch
 @Composable
 fun InteractionsSection(
     titleTextStyle: TextStyle,
-    tileTextStyle: TextStyle
+    tileTextStyle: TextStyle,
+    isPremium: Boolean,
 ) {
     val prefs by optikeysxPreferences()
     val isSoundOnKeypress = prefs.isSoundOnKeypress.observeAsState().value
@@ -27,22 +29,34 @@ fun InteractionsSection(
             title = {
                 CupertinoText(
                     text = "Sound On Key Press",
-                    style = tileTextStyle
+                    style = tileTextStyle,
+                    color = if (isPremium) Color.Unspecified else Color.Gray,
                 )
             },
+            enabled = isPremium,
             checked = isSoundOnKeypress,
             onCheckedChange = { prefs.isSoundOnKeypress.set(it) }
         )
         this.switch(
             title = {
-                CupertinoText("Vibrate On Key Press", style = tileTextStyle)
+                CupertinoText(
+                    "Vibrate On Key Press", style = tileTextStyle,
+                    color = if (isPremium) Color.Unspecified else Color.Gray,
+                )
             },
+            enabled = isPremium,
             checked = isVibrateOnKeypress,
             onCheckedChange = { prefs.isVibrateOnKeypress.set(it) }
         )
         switch(
-            title = { CupertinoText("Auto Switch Back To Normal") },
+            title = {
+                CupertinoText(
+                    "Auto Switch Back To Normal", style = tileTextStyle,
+                    color = if (isPremium) Color.Unspecified else Color.Gray,
+                )
+            },
             checked = isAutoSwitchBackToNormal,
+            enabled = isPremium,
             onCheckedChange = { prefs.autoSwitchIBackIME.set(it) }
         )
     }

@@ -4,6 +4,7 @@ import TopBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.platform.LocalContext
 import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
 import com.optiflowx.optikeysx.core.Constants.VERIFY_EMAIL_SCREEN
@@ -14,6 +15,7 @@ import kotlinx.coroutines.delay
 class VerifyEmailScreen : Screen {
     @Composable
     override fun Content() {
+        val context = LocalContext.current
         val viewModel = rememberScreenModel {
             KeyboardSettingsModel()
         }
@@ -21,7 +23,7 @@ class VerifyEmailScreen : Screen {
         LaunchedEffect(Unit) {
             while (true) {
                 delay(1000).run {
-                    viewModel.reloadFirebaseUser()
+                    viewModel.reloadFirebaseUser(context)
                 }
             }
         }
@@ -36,7 +38,7 @@ class VerifyEmailScreen : Screen {
                 VerifyEmailContent(
                     padding = padding,
                     reloadUser = {
-                        viewModel.sendEmailVerification()
+                        viewModel.sendEmailVerification(context)
                     }
                 )
             },

@@ -511,7 +511,7 @@ class KeyboardViewModel(context: Context) : ViewModel() {
         val text = ic.getTextBeforeCursor(16, 0)?.split(" ")?.last()
         val data = ic.getTextBeforeCursor(2, 0)
 
-        if ((data.isNullOrEmpty() || text.isNullOrEmpty() || data == "") && selectedText.isNullOrEmpty()) {
+        if ((data.isNullOrEmpty() || data == "") && selectedText.isNullOrEmpty()) {
             Log.d("KeyboardViewModel", "onErase: No text to delete")
             updateCapsLock()
         } else {

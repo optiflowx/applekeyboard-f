@@ -17,9 +17,10 @@ import com.google.firebase.ktx.Firebase
 import com.optiflowx.optikeysx.core.Tools
 import com.optiflowx.optikeysx.extension.getAudioPermission
 import com.optiflowx.optikeysx.extension.getNotificationPermission
+import com.optiflowx.optikeysx.screens.DeciderScreen
 import com.optiflowx.optikeysx.screens.home.HomeScreen
 import com.optiflowx.optikeysx.screens.permissions.PermissionsScreen
-import com.optiflowx.optikeysx.screens.sign_in.SignInScreen
+import com.optiflowx.optikeysx.screens.sso.SignUpScreen
 import dev.patrickgold.jetpref.datastore.model.observeAsState
 import io.github.alexzhirkevich.cupertino.theme.CupertinoTheme
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -66,17 +67,6 @@ class MainActivity : AppCompatActivity() {
         } else if (micGranted.value && imeGranted.value && notificationsGranted.value) {
             permissionsState.value = 3
         }
-
-        checkUser()
-    }
-
-    private fun checkUser() {
-        // Check if user is signed in (non-null) and update UI accordingly.
-        val currentUser = auth.currentUser
-        if (currentUser != null) {
-            auth.currentUser?.reload()
-            prefs.isAuthenticated.set(true)
-        }
     }
 
     override fun onResume() {
@@ -87,11 +77,6 @@ class MainActivity : AppCompatActivity() {
     override fun onPostResume() {
         super.onPostResume()
         checkPermissions()
-    }
-
-    public override fun onStart() {
-        super.onStart()
-        checkUser()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -111,20 +96,13 @@ class MainActivity : AppCompatActivity() {
                 val imeGrantedState = imeGranted.collectAsState()
                 val notificationsGrantedState = notificationsGranted.collectAsState()
                 val state = permissionsState.collectAsState()
-                val isAuth = prefs.isAuthenticated.observeAsState().value
 
                 isSystemInDarkTheme()
 
                 if (micGrantedState.value && imeGrantedState.value &&
                     notificationsGrantedState.value && state.value == 3
                 ) {
-                    if (isAuth) {
-//                        if (user.isEmailVerified) {
-                        Navigator(HomeScreen())
-//                        } else Navigator(VerifyEmailScreen())
-                    } else {
-                        Navigator(SignInScreen())
-                    }
+                    Navigator(screen = DeciderScreen())
                 } else PermissionsScreen(
                     micGranted = micGrantedState,
                     imeGranted = imeGrantedState,

@@ -1,6 +1,7 @@
 package com.optiflowx.optikeysx.screens.home
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
@@ -17,28 +18,37 @@ import io.github.alexzhirkevich.cupertino.section.link
 fun GeneralSection(
     titleTextStyle: TextStyle,
     tileTextStyle: TextStyle,
+    isPremium: Boolean,
 ) {
     val navigator = LocalNavigator.currentOrThrow
-    
+
     CupertinoSection(
         title = { CupertinoText("GENERAL", style = titleTextStyle) },
     ) {
         this.link(
             key = 0,
             onClickLabel = "Keyboards",
-            title = { CupertinoText("Keyboards", style = tileTextStyle) },
+            title = {
+                CupertinoText(
+                    "Keyboards", style = tileTextStyle,
+                )
+            },
             onClick = { navigator.push(KeyboardsScreen()) }
         )
         this.link(
             key = 1,
+            enabled = isPremium,
             onClickLabel = "Keyboard Fonts",
-            title = { CupertinoText("Keyboard Fonts", style = tileTextStyle) },
+            title = { CupertinoText("Keyboard Fonts", style = tileTextStyle,
+                color = if (isPremium) Color.Unspecified else Color.Gray,) },
             onClick = { navigator.push(KeyboardFontsScreen()) }
         )
         this.link(
             key = 3,
+            enabled = isPremium,
             onClickLabel = "Speech Keyboard",
-            title = { CupertinoText("Speech Keyboard", style = tileTextStyle) },
+            title = { CupertinoText("Speech Keyboard", style = tileTextStyle,
+                color = if (isPremium) Color.Unspecified else Color.Gray,) },
             onClick = { navigator.push(VoiceRecognitionSettingsScreen()) }
         )
 //        this.link(
