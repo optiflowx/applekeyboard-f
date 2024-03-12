@@ -62,7 +62,7 @@ class KeyboardLocale(val locale: String) {
             "it" -> "Nessun modello trovato. Si prega di scaricare un modello vocale per la propria lingua nelle impostazioni della voce della tastiera."
             "nl" -> "Geen modellen gevonden. Download een spraakmodel voor uw taal in de spraakinstellingen van het toetsenbord."
             "de" -> "Keine Modelle gefunden. Bitte laden Sie ein Sprachmodell für Ihre Sprache in den Tastatureinstellungen herunter."
-            else -> "No models found. Please download a voice model  for your language in the keyboard speech settings."
+            else -> "No models found. Please download a voice model  for your language in the keyboard voice settings."
         }
     }
 

@@ -1,5 +1,5 @@
 /*
- * org.vosk.SpeechService, extended to support other recognizers.
+ * org.vosk.VoiceService, extended to support other recognizers.
  */
 package com.optiflowx.optikeysx.ime
 

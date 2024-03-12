@@ -88,8 +88,8 @@ object Tools {
         // Create the NotificationChannel, but only on API 26+ because
         // the NotificationChannel class is new and not in the support library
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val name: CharSequence = "Speech Recognition Model Download"
-            val description = "Speech Recognition Model Download Notifications"
+            val name: CharSequence = "Voice Recognition Model Download"
+            val description = "Voice Recognition Model Download Notifications"
             val importance = NotificationManager.IMPORTANCE_LOW
             val channel = NotificationChannel(Constants.DOWNLOADER_CHANNEL_ID, name, importance)
             channel.description = description

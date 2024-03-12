@@ -46,8 +46,8 @@ fun GeneralSection(
         this.link(
             key = 3,
             enabled = isPremium,
-            onClickLabel = "Speech Keyboard",
-            title = { CupertinoText("Speech Keyboard", style = tileTextStyle,
+            onClickLabel = "Voice Keyboard",
+            title = { CupertinoText("Voice Keyboard", style = tileTextStyle,
                 color = if (isPremium) Color.Unspecified else Color.Gray,) },
             onClick = { navigator.push(VoiceRecognitionSettingsScreen()) }
         )

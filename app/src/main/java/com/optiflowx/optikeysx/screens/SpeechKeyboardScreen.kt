@@ -120,7 +120,7 @@ class VoiceRecognitionSettingsScreen : Screen {
                     },
                     title = {
                         CupertinoText(
-                            text = "Speech Recognition",
+                            text = "Voice Recognition",
                             fontFamily = bold,
                         )
                     },
