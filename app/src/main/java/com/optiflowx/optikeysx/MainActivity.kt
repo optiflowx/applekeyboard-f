@@ -11,26 +11,19 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.core.app.ActivityCompat
 import cafe.adriel.voyager.navigator.Navigator
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
 import com.optiflowx.optikeysx.core.Tools
 import com.optiflowx.optikeysx.extension.getAudioPermission
 import com.optiflowx.optikeysx.extension.getNotificationPermission
 import com.optiflowx.optikeysx.screens.home.HomeScreen
 import com.optiflowx.optikeysx.screens.permissions.PermissionsScreen
-import com.optiflowx.optikeysx.screens.sso.SignInScreen
-import dev.patrickgold.jetpref.datastore.model.observeAsState
 import io.github.alexzhirkevich.cupertino.theme.CupertinoTheme
 import kotlinx.coroutines.flow.MutableStateFlow
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var auth: FirebaseAuth
     private val micGranted = MutableStateFlow(false)
     private val imeGranted = MutableStateFlow(false)
     private val notificationsGranted = MutableStateFlow(false)
     private val permissionsState = MutableStateFlow(0)
-    private val prefs by optikeysxPreferences()
 
     private fun onPermissionButtonClick(state: State<Int>) {
         when (state.value) {
@@ -81,7 +74,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        auth = Firebase.auth
+//        auth = Firebase.auth
 
         Tools.createNotificationChannel(this)
 
@@ -91,7 +84,6 @@ class MainActivity : AppCompatActivity() {
 
         setContent {
             CupertinoTheme {
-                val isAuth = prefs.isAuthenticated.observeAsState().value
                 val micGrantedState = micGranted.collectAsState()
                 val imeGrantedState = imeGranted.collectAsState()
                 val notificationsGrantedState = notificationsGranted.collectAsState()
@@ -102,11 +94,7 @@ class MainActivity : AppCompatActivity() {
                 if (micGrantedState.value && imeGrantedState.value &&
                     notificationsGrantedState.value && state.value == 3
                 ) {
-                    if (isAuth) {
-//                        if (user.isEmailVerified) {
-                        Navigator(HomeScreen())
-//                        } else VerifyEmailScreen()
-                    } else Navigator(SignInScreen())
+                    Navigator(HomeScreen())
                 } else PermissionsScreen(
                     micGranted = micGrantedState,
                     imeGranted = imeGrantedState,

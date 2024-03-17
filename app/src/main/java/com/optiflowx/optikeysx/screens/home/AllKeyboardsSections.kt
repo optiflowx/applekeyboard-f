@@ -1,7 +1,6 @@
 package com.optiflowx.optikeysx.screens.home
 
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import com.optiflowx.optikeysx.optikeysxPreferences
 import dev.patrickgold.jetpref.datastore.model.observeAsState
@@ -18,7 +17,6 @@ fun AllKeyboardsSection(
     titleTextStyle: TextStyle,
     descTextStyle: TextStyle,
     tileTextStyle: TextStyle,
-    isPremium: Boolean,
 ) {
     val prefs by optikeysxPreferences()
     val isAutoCapitalization = prefs.isAutoCapitalisation.observeAsState().value
@@ -87,10 +85,8 @@ fun AllKeyboardsSection(
             title = {
                 CupertinoText(
                     "Predictive", style = tileTextStyle,
-                    color = if (isPremium) Color.Unspecified else Color.Gray,
                 )
             },
-            enabled = isPremium,
             checked = isPredictive,
             onCheckedChange = { prefs.isPredictive.set(it) }
         )
@@ -122,11 +118,9 @@ fun AllKeyboardsSection(
             title = {
                 CupertinoText(
                     text = "Character Preview",
-                    color = CupertinoColors.systemRed,
                     style = tileTextStyle,
                 )
             },
-            enabled = false,
             checked = isCharacterPreview,
             onCheckedChange = { prefs.isCharacterPreview.set(it) }
         )
@@ -134,11 +128,9 @@ fun AllKeyboardsSection(
             title = {
                 CupertinoText(
                     "\".\" Shortcut", style = tileTextStyle,
-                    color = if (isPremium) Color.Unspecified else Color.Gray
                 )
             },
             checked = isDotShortcut,
-            enabled = isPremium,
             onCheckedChange = { prefs.isDotShortcut.set(it) }
         )
     }

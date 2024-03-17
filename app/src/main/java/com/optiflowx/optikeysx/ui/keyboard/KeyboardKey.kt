@@ -1,6 +1,7 @@
 package com.optiflowx.optikeysx.ui.keyboard
 
 import android.view.inputmethod.EditorInfo
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Icon
@@ -117,7 +118,7 @@ fun KeyboardKey(key: Key, viewModel: KeyboardViewModel) {
                 modifier = Modifier
                     .fillMaxHeight(0.54f)
                     .fillMaxWidth(0.54f),
-                tint = if(it) MaterialTheme.colorScheme.tertiaryContainer else colorD,
+                tint = if (it) MaterialTheme.colorScheme.tertiaryContainer else colorD,
             )
         }
     } else if (isShift || isSymbols || isEmoji) {
@@ -132,8 +133,8 @@ fun KeyboardKey(key: Key, viewModel: KeyboardViewModel) {
             )
         } else {
             painterResource(
-//                if (isSystemInDarkTheme()) R.drawable.emoji_fill else
-                R.drawable.emoji_outline
+                if (isSystemInDarkTheme()) R.drawable.emoji_fill else
+                    R.drawable.emoji_outline
             )
         }).apply {
             KeyButton(
@@ -168,6 +169,7 @@ fun KeyboardKey(key: Key, viewModel: KeyboardViewModel) {
                 color = this@apply,
                 key = key,
                 prefs = viewModel.prefs,
+                popupText = keyValue,
                 popupWidth = popupWidth,
                 showPopup = !(key.id == "123" || key.id == "ABC" || key.id == "action" || key.id == "space"),
                 onClick = {

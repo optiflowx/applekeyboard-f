@@ -1,7 +1,7 @@
 package com.optiflowx.optikeysx.views.defaults
 
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.mandatorySystemGesturesPadding
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -62,11 +62,11 @@ fun DefaultPortraitKeyboard(
 
     ConstraintLayout(
         constraintSet = constraintsSet,
-        modifier = Modifier.mandatorySystemGesturesPadding(),
+        modifier = Modifier.navigationBarsPadding(),
         optimizationLevel = OPTIMIZATION_STANDARDIZED,
         animateChanges = true,
     ) {
-        KeyboardTopView(vM, viewWidth = vW)
+        KeyboardTopView(vM, vW)
 
         Box(
             modifier = Modifier
@@ -75,15 +75,13 @@ fun DefaultPortraitKeyboard(
             contentAlignment = Alignment.Center,
         ) {
             when (keyboardType.value) {
-                KeyboardType.Normal -> {
-                    when (locale) {
-                        "pt-BR" -> PortugueseKeyboardView(vM, vW)
-                        "pt-PT" -> PortugueseKeyboardView(vM, vW)
-                        "fr-FR" -> FrenchKeyboardView(vM, vW)
-                        "es" -> SpanishKeyboardView(vM, vW)
-                        "ru" -> RussianKeyboardView(vM, vW)
-                        else -> StandardKeyboardView(vM, vW)
-                    }
+                KeyboardType.Normal -> when (locale) {
+                    "pt-BR" -> PortugueseKeyboardView(vM, vW)
+                    "pt-PT" -> PortugueseKeyboardView(vM, vW)
+                    "fr-FR" -> FrenchKeyboardView(vM, vW)
+                    "es" -> SpanishKeyboardView(vM, vW)
+                    "ru" -> RussianKeyboardView(vM, vW)
+                    else -> StandardKeyboardView(vM, vW)
                 }
 
                 KeyboardType.Symbol -> SymbolsKeyboardView(vM, vW)

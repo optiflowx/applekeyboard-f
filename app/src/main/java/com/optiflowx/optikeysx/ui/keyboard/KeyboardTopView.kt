@@ -50,11 +50,15 @@ fun KeyboardTopView(
         AnimatedContent(keyboardType.value, label = "KeyboardTopView") {
             if (it == KeyboardType.Emoji) {
                 EmojiSearchView(viewModel, textSize, searchIconSize, boxScope)
-            } else if (it == KeyboardType.Normal) {
-                if (isPredictive) {
-                    SuggestionView(viewModel, textSize, boxScope)
-                }
-            } else ClipboardKeyboardActionView(viewModel, boxScope)
+            }
+
+            if (it == KeyboardType.Normal && isPredictive) {
+                SuggestionView(viewModel, textSize, boxScope)
+            }
+
+            if (it == KeyboardType.Clipboard) {
+                ClipboardKeyboardActionView(viewModel, boxScope)
+            }
         }
     }
 }

@@ -2,6 +2,7 @@
 
 package com.optiflowx.optikeysx.ui.keyboard
 
+import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.absoluteOffset
@@ -71,6 +72,16 @@ fun EraseButton(
                         }
                     }
                 )
+            }
+            .pointerInput(Unit) {
+                detectDragGestures(
+                    onDragEnd = {
+                        pressed = false
+                    },
+                    onDragCancel = {
+                        pressed = false
+                    }
+                ) { _, _ -> }
             }
     ) {
         if(applyShadow) {

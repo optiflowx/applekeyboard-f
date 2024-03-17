@@ -2,9 +2,18 @@ package com.optiflowx.optikeysx.views.keyboards.standard
 
 import androidx.compose.runtime.Immutable
 import com.optiflowx.optikeysx.core.model.Key
+import com.optiflowx.optikeysx.core.utils.KeyboardLocale
 
 @Immutable
 class StandardRowKeys {
+    val percent = 0.09f
+    val percentPopup = 0.092f
+    val gapW = 0.013f
+//    val gapM = 0.034f
+    val pBig = 0.45f
+    val pMedium = 0.25f
+    val pSmall = 0.115f
+
     val row1Keys = arrayOf(
         Key("q", "q"),
         Key("w", "w"),
@@ -34,11 +43,18 @@ class StandardRowKeys {
         Key("shift", ""),
         Key("z", "z", listOf("ž", "ź", "ż")),
         Key("x", "x"),
-        Key("c","c", listOf("ç")),
+        Key("c", "c", listOf("ç")),
         Key("v", "v"),
         Key("b", "b"),
         Key("n", "n", listOf("ñ", "ņ", "ň")),
         Key("m", "m"),
         Key("delete", "")
+    )
+
+    val row4Keys = arrayOf(
+        Key("123", "123"),
+        Key("emoji", "emoji"),
+        Key("space", KeyboardLocale("en-US").space()),
+        Key("action", KeyboardLocale("en-US").action("return"))
     )
 }

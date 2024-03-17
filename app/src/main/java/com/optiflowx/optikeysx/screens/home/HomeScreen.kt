@@ -25,7 +25,6 @@ import com.optiflowx.optikeysx.ui.bold
 import com.optiflowx.optikeysx.ui.cupertino.CopyrightBottomSheet
 import com.optiflowx.optikeysx.ui.regular
 import com.optiflowx.optikeysx.viewmodels.KeyboardSettingsModel
-import dev.patrickgold.jetpref.datastore.model.observeAsState
 import io.github.alexzhirkevich.cupertino.CupertinoBottomSheetScaffold
 import io.github.alexzhirkevich.cupertino.CupertinoBottomSheetScaffoldDefaults
 import io.github.alexzhirkevich.cupertino.CupertinoNavigationTitle
@@ -48,11 +47,7 @@ class HomeScreen : Screen {
     @Composable
     @OptIn(ExperimentalCupertinoApi::class, ExperimentalComposeUiApi::class)
     override fun Content() {
-        val vM = rememberScreenModel { KeyboardSettingsModel() }
-
         val sheetSectionColor = CupertinoTheme.colorScheme.tertiarySystemBackground
-
-        val isPremium = vM.prefs.isPremium.observeAsState().value
 
         val focusManager = LocalFocusManager.current
 
@@ -88,10 +83,6 @@ class HomeScreen : Screen {
                 )
             )
         )
-
-        LaunchedEffect(Unit) {
-            vM.loadUserData()
-        }
 
         LaunchedEffect(lazyListState.isScrollInProgress) {
             if (lazyListState.isScrollInProgress) {
@@ -141,10 +132,6 @@ class HomeScreen : Screen {
                     }
                 }
 
-                item ("Premium Section") {
-                    PremiumSection(isPremium = isPremium)
-                }
-
                 item("Message Section") {
                     MessageSection()
                 }
@@ -160,7 +147,6 @@ class HomeScreen : Screen {
                     GeneralSection(
                         titleTextStyle = titleTextStyle,
                         tileTextStyle = tileTextStyle,
-                        isPremium = isPremium
 
                     )
                 }
@@ -169,7 +155,6 @@ class HomeScreen : Screen {
                     InteractionsSection(
                         titleTextStyle = titleTextStyle,
                         tileTextStyle = tileTextStyle,
-                        isPremium = isPremium
                     )
                 }
 
@@ -178,7 +163,6 @@ class HomeScreen : Screen {
                         titleTextStyle = titleTextStyle,
                         tileTextStyle = tileTextStyle,
                         descTextStyle = descTextStyle,
-                        isPremium = isPremium
                     )
                 }
 

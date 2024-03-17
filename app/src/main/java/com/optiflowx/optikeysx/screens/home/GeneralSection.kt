@@ -18,7 +18,6 @@ import io.github.alexzhirkevich.cupertino.section.link
 fun GeneralSection(
     titleTextStyle: TextStyle,
     tileTextStyle: TextStyle,
-    isPremium: Boolean,
 ) {
     val navigator = LocalNavigator.currentOrThrow
 
@@ -37,29 +36,27 @@ fun GeneralSection(
         )
         this.link(
             key = 1,
-            enabled = isPremium,
             onClickLabel = "Keyboard Fonts",
-            title = { CupertinoText("Keyboard Fonts", style = tileTextStyle,
-                color = if (isPremium) Color.Unspecified else Color.Gray,) },
+            title = { CupertinoText("Keyboard Fonts", style = tileTextStyle) },
             onClick = { navigator.push(KeyboardFontsScreen()) }
         )
         this.link(
             key = 3,
-            enabled = isPremium,
             onClickLabel = "Voice Keyboard",
-            title = { CupertinoText("Voice Keyboard", style = tileTextStyle,
-                color = if (isPremium) Color.Unspecified else Color.Gray,) },
+            title = { CupertinoText("Voice Keyboard", style = tileTextStyle) },
             onClick = { navigator.push(VoiceRecognitionSettingsScreen()) }
         )
-//        this.link(
-//            key = 4,
-//            onClickLabel = "Text Replacement",
-//            title = {
-//                CupertinoText("Text Replacement", style = tileTextStyle)
-//            },
-//            onClick = {
+        this.link(
+            key = 4,
+            onClickLabel = "Text Replacement",
+            enabled = false,
+            title = {
+                CupertinoText("Text Replacement", style = tileTextStyle,
+                    color = Color.Red)
+            },
+            onClick = {
 //                navigator.push(TextReplacementScreen())
-//            }
-//        )
+            }
+        )
     }
 }

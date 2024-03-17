@@ -380,7 +380,7 @@ class KeyboardViewModel(context: Context) : ViewModel() {
             if (charSequence != null) {
                 val textToReplace = charSequence.split(" ").last()
                 ic.deleteSurroundingText(textToReplace.length, 0).let {
-                    if (it) ic.commitText("$suggestion ",  suggestion.chars().count().toInt())
+                    if (it) ic.commitText("$suggestion ", suggestion.chars().count().toInt())
                 }
             }
         }
@@ -499,11 +499,11 @@ class KeyboardViewModel(context: Context) : ViewModel() {
 
     @Stable
     private fun onAction(ic: InputConnection) {
-        val EA: Int = keyboardData.value.enterAction
-        if ((EA == EditorInfo.IME_ACTION_UNSPECIFIED || EA == EditorInfo.IME_ACTION_NONE)) {
+        val enterAction: Int = keyboardData.value.enterAction
+        if ((enterAction == EditorInfo.IME_ACTION_UNSPECIFIED || enterAction == EditorInfo.IME_ACTION_NONE)) {
             ic.commitText("\n", "\n".length)
         } else {
-            ic.performEditorAction(EA)
+            ic.performEditorAction(enterAction)
         }
     }
 

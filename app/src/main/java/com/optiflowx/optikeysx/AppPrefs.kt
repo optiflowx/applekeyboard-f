@@ -20,11 +20,6 @@ class AppPrefs : PreferenceModel("optikeysx-app-preferences") {
         serializer = ModelListSerializer()
     )
 
-    val isPremium = boolean(
-        key = "is_premium",
-        default = false,
-    )
-
     val isEnableMemoji = boolean(
         key = "is_enable_memoji",
         default = false,
@@ -38,11 +33,6 @@ class AppPrefs : PreferenceModel("optikeysx-app-preferences") {
     val keepScreenAwake = enum(
         key = "e_keep_screen_awake",
         default = KeepScreenAwakeMode.NEVER
-    )
-
-    val isAuthenticated = boolean(
-        key = "is_authenticated",
-        default = false,
     )
 
     val keyboardFontType = enum(

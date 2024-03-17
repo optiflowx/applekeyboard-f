@@ -3,87 +3,21 @@ package com.optiflowx.optikeysx.viewmodels
 import android.content.Context
 import android.content.Intent
 import android.provider.Settings
-import android.widget.Toast
-import androidx.lifecycle.MutableLiveData
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
-import com.optiflowx.optikeysx.core.enums.KeyboardFontType
-import com.optiflowx.optikeysx.core.model.AppUserData
-import com.optiflowx.optikeysx.core.model.FirebaseUserData
-import com.optiflowx.optikeysx.core.model.Response
 import com.optiflowx.optikeysx.ime.recognizers.providers.Providers
 import com.optiflowx.optikeysx.optikeysxPreferences
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
 
 
 class KeyboardSettingsModel : ScreenModel {
     val prefs by optikeysxPreferences()
-    val loader = MutableLiveData(false)
-    private val auth = FirebaseAuth.getInstance()
-    private val db = Firebase.firestore(auth.app)
+//    val loader = MutableLiveData(false)
+//    private val auth = FirebaseAuth.getInstance()
+//    private val db = Firebase.firestore(auth.app)
     private lateinit var recognizerSourceProviders: Providers
 
-    companion object {
-        private const val TOASTLEN = Toast.LENGTH_LONG + 5
-    }
-
-    init {
-        db.persistentCacheIndexManager?.enableIndexAutoCreation()
-
-        screenModelScope.launch(Dispatchers.IO) {
-            getAuthState().collectLatest {
-                if (it) {
-                    prefs.isAuthenticated.set(true)
-                    auth.currentUser?.reload()
-                } else {
-                    prefs.isAuthenticated.set(false)
-                    resetLocalDatabase()
-                }
-            }
-        }
-
-        loadUserData()
-    }
-
-    fun loadUserData() {
-        screenModelScope.launch(Dispatchers.IO) {
-            getUserData().collectLatest {
-                if (it.isPaid) {
-                    if (it.isPremium) {
-                        prefs.isPremium.set(true)
-                    } else resetLocalDatabase()
-                }
-            }
-        }
-    }
-
-    private fun resetLocalDatabase() {
-        prefs.isPremium.set(false)
-        prefs.isDotShortcut.set(false)
-        prefs.isEnableAccents.set(false)
-        prefs.isEnableMemoji.set(false)
-        prefs.isAutoCorrect.set(false)
-        prefs.isAutoCorrection.set(false)
-        prefs.isPredictive.set(false)
-        prefs.isVibrateOnKeypress.set(false)
-        prefs.isSoundOnKeypress.set(false)
-        prefs.autoSwitchIBackIME.set(false)
-        prefs.keepLanguageModelInMemory.set(false)
-        prefs.keyboardFontType.set(KeyboardFontType.Regular)
-    }
 
     fun initRecognizerSourceProviders(context: Context) {
         recognizerSourceProviders = Providers(context)
@@ -117,138 +51,186 @@ class KeyboardSettingsModel : ScreenModel {
         context.startActivity(intent)
     }
 
+    //
+//    companion object {
+//        private const val TOASTLEN = Toast.LENGTH_LONG + 5
+//    }
+
+//    init {
+//        db.persistentCacheIndexManager?.enableIndexAutoCreation()
+//
+//        screenModelScope.launch(Dispatchers.IO) {
+//            getAuthState().collectLatest {
+//                if (it) {
+//                    auth.currentUser?.reload()
+//                } else {
+//                    resetLocalDatabase()
+//                }
+//            }
+//        }
+//
+//        loadUserData()
+//    }
+
+//    fun loadUserData() {
+//        screenModelScope.launch(Dispatchers.IO) {
+//            getUserData().collectLatest {
+//                if (it.isPaid) {
+//                    if (it.isPremium) {
+//                        prefs.isPremium.set(true)
+//                    } else resetLocalDatabase()
+//                }
+//            }
+//        }
+//    }
+
+//    private fun resetLocalDatabase() {
+//        prefs.isPremium.set(false)
+//        prefs.isDotShortcut.set(false)
+//        prefs.isEnableAccents.set(false)
+//        prefs.isEnableMemoji.set(false)
+//        prefs.isAutoCorrect.set(false)
+//        prefs.isAutoCorrection.set(false)
+//        prefs.isPredictive.set(false)
+//        prefs.isVibrateOnKeypress.set(false)
+//        prefs.isSoundOnKeypress.set(false)
+//        prefs.autoSwitchIBackIME.set(false)
+//        prefs.keepLanguageModelInMemory.set(false)
+//        prefs.keyboardFontType.set(KeyboardFontType.Regular)
+//    }
+
 //    fun signOut() = auth.signOut()
 
-    fun firebaseSignUpWithEmailAndPassword(context: Context, user: AppUserData) {
-        if (user.name.isNotEmpty() && user.email.isNotEmpty() && user.password.isNotEmpty()) {
-            loader.postValue(true).apply {
-                auth.createUserWithEmailAndPassword(user.email, user.password)
-                    .addOnSuccessListener {
-                        val docID = it.user?.uid
+//    fun firebaseSignUpWithEmailAndPassword(context: Context, user: AppUserData) {
+//        if (user.name.isNotEmpty() && user.email.isNotEmpty() && user.password.isNotEmpty()) {
+//            loader.postValue(true).apply {
+//                auth.createUserWithEmailAndPassword(user.email, user.password)
+//                    .addOnSuccessListener {
+//                        val docID = it.user?.uid
+//
+//                        if (docID != null) {
+//                            addUserToDatabase(user, docID, context)
+//                        } else {
+//                            val error = Exception("User is null, Reverting all commits.")
+//                            onFailureHandler(error, context)
+//                        }
+//                    }
+//                    .addOnFailureListener {
+//                        Toast.makeText(context, it.message, TOASTLEN).show()
+//                    }
+//                    .addOnCompleteListener { loader.postValue(false) }
+//            }
+//        } else {
+//            Toast.makeText(context, "The Fields Cannot Be Empty!", TOASTLEN).show()
+//        }
+//    }
 
-                        if (docID != null) {
-                            addUserToDatabase(user, docID, context)
-                        } else {
-                            val error = Exception("User is null, Reverting all commits.")
-                            onFailureHandler(error, context)
-                        }
-                    }
-                    .addOnFailureListener {
-                        Toast.makeText(context, it.message, TOASTLEN).show()
-                    }
-                    .addOnCompleteListener { loader.postValue(false) }
-            }
-        } else {
-            Toast.makeText(context, "The Fields Cannot Be Empty!", TOASTLEN).show()
-        }
-    }
+//    fun sendEmailVerification(context: Context) {
+//        try {
+//            screenModelScope.launch {
+//                auth.currentUser?.sendEmailVerification()?.await()
+//            }
+//            Response.Success(true)
+//        } catch (e: Exception) {
+//            Toast.makeText(context, e.message, TOASTLEN).show()
+//            Response.Failure(e)
+//        }
+//    }
+//
+//    fun reloadFirebaseUser(context: Context) {
+//        screenModelScope.launch {
+//            auth.currentUser?.reload()?.addOnSuccessListener {
+//                Response.Success(true)
+//            }?.addOnFailureListener {
+//                Toast.makeText(context, it.message, TOASTLEN).show()
+//                Response.Failure(it)
+//            }
+//        }
+//    }
 
-    fun sendEmailVerification(context: Context) {
-        try {
-            screenModelScope.launch {
-                auth.currentUser?.sendEmailVerification()?.await()
-            }
-            Response.Success(true)
-        } catch (e: Exception) {
-            Toast.makeText(context, e.message, TOASTLEN).show()
-            Response.Failure(e)
-        }
-    }
+//    fun firebaseSignInWithEmailAndPassword(email: String, password: String, context: Context) {
+//        if (email.isNotEmpty() && password.isNotEmpty()) {
+//            loader.postValue(true).apply {
+//                auth.signInWithEmailAndPassword(email, password).addOnSuccessListener {
+//                    reloadFirebaseUser(context)
+//                }.addOnFailureListener {
+//                    Toast.makeText(context, it.message, TOASTLEN).show()
+//                }.addOnCompleteListener {
+//                    loader.postValue(false)
+//                }
+//            }
+//        } else {
+//            Toast.makeText(context, "The Fields Cannot Be Empty!", TOASTLEN).show()
+//        }
+//    }
 
-    fun reloadFirebaseUser(context: Context) {
-        screenModelScope.launch {
-            auth.currentUser?.reload()?.addOnSuccessListener {
-                Response.Success(true)
-            }?.addOnFailureListener {
-                Toast.makeText(context, it.message, TOASTLEN).show()
-                Response.Failure(it)
-            }
-        }
-    }
+//    private fun onFailureHandler(error: Exception, context: Context) {
+//        Toast.makeText(context, error.message, TOASTLEN).show()
+//
+//        //Remove the already added user in authentication
+//        screenModelScope.launch(Dispatchers.IO) {
+//            auth.currentUser?.delete()?.addOnSuccessListener {
+//                prefs.isAuthenticated.set(false)
+//            }
+//        }
+//    }
 
-    fun firebaseSignInWithEmailAndPassword(email: String, password: String, context: Context) {
-        if (email.isNotEmpty() && password.isNotEmpty()) {
-            loader.postValue(true).apply {
-                auth.signInWithEmailAndPassword(email, password).addOnSuccessListener {
-                    reloadFirebaseUser(context)
-                }.addOnFailureListener {
-                    Toast.makeText(context, it.message, TOASTLEN).show()
-                }.addOnCompleteListener {
-                    loader.postValue(false)
-                }
-            }
-        } else {
-            Toast.makeText(context, "The Fields Cannot Be Empty!", TOASTLEN).show()
-        }
-    }
+//    private fun addUserToDatabase(user: AppUserData, docID: String, context: Context) {
+//        val userData = hashMapOf(
+//            "name" to user.name,
+//            "email" to user.email,
+//            "isPremium" to user.isPremium,
+//            "isPaid" to user.isPaid
+//        )
+//
+//        db.collection("users").document(docID).set(userData)
+//            .addOnFailureListener { error ->
+//                onFailureHandler(error, context)
+//            }
+//    }
+//
+//    private fun getUserId(): Flow<String> {
+//        return flow {
+//            auth.currentUser?.uid?.let {
+//                emit(it)
+//            }
+//        }
+//    }
+//
+//    private fun getUserData() = callbackFlow {
+//        var data: FirebaseUserData
+//
+//        getUserId().collect { userID ->
+//            val snapshot = db.collection("users").document(userID)
+//
+//            snapshot.addSnapshotListener { value, error ->
+//                error?.let { e -> this.close(e) }
+//
+//                value?.let { doc ->
+//                    data = FirebaseUserData(
+//                        name = doc.getString("name")!!,
+//                        email = doc.getString("email")!!,
+//                        isPremium = doc.getBoolean("isPremium") ?: false,
+//                        isPaid = doc.getBoolean("isPaid") ?: false,
+//                    )
+//
+//                    this.trySend(data)
+//                }
+//            }
+//        }
+//
+//        awaitClose { this.cancel() }
+//    }
 
-    private fun onFailureHandler(error: Exception, context: Context) {
-        Toast.makeText(context, error.message, TOASTLEN).show()
-
-        //Remove the already added user in authentication
-        screenModelScope.launch(Dispatchers.IO) {
-            auth.currentUser?.delete()?.addOnSuccessListener {
-                prefs.isAuthenticated.set(false)
-            }
-        }
-    }
-
-    private fun addUserToDatabase(user: AppUserData, docID: String, context: Context) {
-        val userData = hashMapOf(
-            "name" to user.name,
-            "email" to user.email,
-            "isPremium" to user.isPremium,
-            "isPaid" to user.isPaid
-        )
-
-        db.collection("users").document(docID).set(userData)
-            .addOnFailureListener { error ->
-                onFailureHandler(error, context)
-            }
-    }
-
-    private fun getUserId(): Flow<String> {
-        return flow {
-            auth.currentUser?.uid?.let {
-                emit(it)
-            }
-        }
-    }
-
-    private fun getUserData() = callbackFlow {
-        var data: FirebaseUserData
-
-        getUserId().collect { userID ->
-            val snapshot = db.collection("users").document(userID)
-
-            snapshot.addSnapshotListener { value, error ->
-                error?.let { e -> this.close(e) }
-
-                value?.let { doc ->
-                    data = FirebaseUserData(
-                        name = doc.getString("name")!!,
-                        email = doc.getString("email")!!,
-                        isPremium = doc.getBoolean("isPremium") ?: false,
-                        isPaid = doc.getBoolean("isPaid") ?: false,
-                    )
-
-                    this.trySend(data)
-                }
-            }
-        }
-
-        awaitClose { this.cancel() }
-    }
-
-    private fun getAuthState() = callbackFlow {
-        val authStateListener = FirebaseAuth.AuthStateListener { auth ->
-            trySend(auth.currentUser != null)
-        }
-
-        auth.addAuthStateListener(authStateListener)
-
-        awaitClose {
-            auth.removeAuthStateListener(authStateListener)
-        }
-    }.stateIn(screenModelScope, SharingStarted.WhileSubscribed(), auth.currentUser != null)
+//    private fun getAuthState() = callbackFlow {
+//        val authStateListener = FirebaseAuth.AuthStateListener { auth ->
+//            trySend(auth.currentUser != null)
+//        }
+//
+//        auth.addAuthStateListener(authStateListener)
+//
+//        awaitClose {
+//            auth.removeAuthStateListener(authStateListener)
+//        }
+//    }.stateIn(screenModelScope, SharingStarted.WhileSubscribed(), auth.currentUser != null)
 }

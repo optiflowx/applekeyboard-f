@@ -4,7 +4,7 @@ plugins {
     id("org.jetbrains.kotlin.android")
 //    id ("dagger.hilt.android.plugin")
 //    id("kotlin-parcelize")
-//    id("com.google.protobuf")
+    id("com.google.protobuf")
     id("com.google.gms.google-services")
     id("com.google.devtools.ksp")
     id("androidx.baselineprofile")
@@ -17,6 +17,7 @@ val archVersion = "2.2.0"
 val roomVersion = "2.6.1"
 val voyagerVersion = "1.1.0-alpha02"
 val amplitudePackage = "2.2.2"
+val grpcVersion = "1.57.0"
 
 android {
     namespace = "com.optiflowx.optikeysx"
@@ -73,18 +74,45 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+
+    protobuf {
+        protoc {
+            artifact = "com.google.protobuf:protoc:4.26.0"
+        }
+        plugins {
+            create("grpc") {
+                artifact = "io.grpc:protoc-gen-grpc-java:$grpcVersion"
+            }
+        }
+        generateProtoTasks {
+            all().forEach {
+                it.plugins {
+                    create("grpc")
+                }
+                it.builtins {
+                    create("kotlin")
+                }
+            }
+        }
+    }
 }
 
 dependencies {
+    //
+    runtimeOnly("com.google.protobuf:protobuf-gradle-plugin:0.9.4")
+    implementation("io.grpc:grpc-protobuf:$grpcVersion")
+    implementation("io.grpc:grpc-stub:1.62.2")
+//    implementation("com.google.protobuf:protobuf-kotlin:0.9.1")
+
+
     implementation("androidx.profileinstaller:profileinstaller:1.3.1")
-    implementation("androidx.constraintlayout:constraintlayout-core:1.0.4")
     androidTestImplementation("androidx.test:runner:1.5.2")
 
     //Firebase
     implementation(platform("com.google.firebase:firebase-bom:32.7.4"))
     implementation("com.google.firebase:firebase-analytics")
-    implementation("com.google.firebase:firebase-auth-ktx")
-    implementation("com.google.firebase:firebase-firestore")
+//    implementation("com.google.firebase:firebase-auth-ktx")
+//    implementation("com.google.firebase:firebase-firestore")
 
     implementation("dev.chrisbanes.haze:haze-materials:0.5.2")
 
@@ -142,6 +170,7 @@ dependencies {
 
     //Constraint Layout
     implementation("androidx.constraintlayout:constraintlayout-compose:1.1.0-alpha13")
+    implementation("androidx.constraintlayout:constraintlayout-core:1.1.0-alpha13")
 
     // Lifecycle Dependencies
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion")
