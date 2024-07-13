@@ -1,9 +1,9 @@
 package com.optiflowx.optikeysx.screens
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.absolutePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -57,11 +57,11 @@ class TextReplacementScreen : Screen {
                 )
             }
         ) {
-            LazyColumn(
-                modifier = Modifier.statusBarsPadding().absolutePadding(top = 40.dp),
-                userScrollEnabled = true
+            Column(
+                modifier = Modifier
+                    .statusBarsPadding()
+                    .absolutePadding(top = 40.dp),
             ) {
-                item("Keyboard Fonts") {
 //                CupertinoSection {
 //                    fonts.forEachIndexed { index, font ->
 //                        this.link(
@@ -80,7 +80,7 @@ class TextReplacementScreen : Screen {
 //                        )
 //                    }
 //                }
-                }
+
             }
         }
 //    navigator: DestinationsNavigator

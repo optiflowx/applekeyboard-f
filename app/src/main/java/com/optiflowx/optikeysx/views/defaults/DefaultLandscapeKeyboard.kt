@@ -2,10 +2,9 @@ package com.optiflowx.optikeysx.views.defaults
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.mandatorySystemGesturesPadding
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -38,7 +37,6 @@ import com.optiflowx.optikeysx.views.keyboards.portuguese.PortugueseKeyboardView
 import com.optiflowx.optikeysx.views.keyboards.russian.RussianKeyboardView
 import com.optiflowx.optikeysx.views.keyboards.spanish.SpanishKeyboardView
 import com.optiflowx.optikeysx.views.keyboards.standard.StandardKeyboardView
-import com.optiflowx.optikeysx.views.recognition.VoiceRecognitionView
 import com.optiflowx.optikeysx.views.symbols.SymbolsKeyboardView
 import dev.patrickgold.jetpref.datastore.model.observeAsState
 
@@ -74,7 +72,7 @@ fun DefaultLandscapeKeyboard(
     ConstraintLayout(
         constraintSet = constraintsSet,
         modifier = Modifier
-            .mandatorySystemGesturesPadding()
+            .navigationBarsPadding()
             .wrapContentSize(),
         optimizationLevel = OPTIMIZATION_STANDARDIZED,
         animateChanges = true,
@@ -100,35 +98,45 @@ fun DefaultLandscapeKeyboard(
                 modifier = Modifier.wrapContentSize(), Alignment.Center
             ) {
                 when (keyboardType.value) {
-                    KeyboardType.Normal -> {
-                        when (locale) {
-                            "pt-BR" -> PortugueseKeyboardView(vM, vW, 30.dp, 36.dp)
-                            "pt-PT" -> PortugueseKeyboardView(vM, vW, 30.dp, 36.dp)
-                            "fr-FR" -> FrenchKeyboardView(vM, vW, 30.dp, 36.dp)
-                            "es" -> SpanishKeyboardView(vM, vW, 30.dp, 36.dp)
-                            "ru" -> RussianKeyboardView(vM, vW, 30.dp, 36.dp)
-                            else -> StandardKeyboardView(vM, vW, 30.dp, 36.dp)
-                        }
+                    KeyboardType.Normal -> when (locale) {
+                        "pt-BR" -> PortugueseKeyboardView(vM, vW, 30.dp, 36.dp)
+                        "pt-PT" -> PortugueseKeyboardView(vM, vW, 30.dp, 36.dp)
+                        "fr-FR" -> FrenchKeyboardView(vM, vW, 30.dp, 36.dp)
+                        "es" -> SpanishKeyboardView(vM, vW, 30.dp, 36.dp)
+                        "ru" -> RussianKeyboardView(vM, vW, 30.dp, 36.dp)
+                        else -> StandardKeyboardView(vM, vW, 30.dp, 36.dp)
                     }
 
                     KeyboardType.Symbol -> SymbolsKeyboardView(vM, vW, 30.dp, 36.dp)
 
                     KeyboardType.Emoji -> EmojiKeyboardView(vM, vW, 150.dp, 9)
 
-                    KeyboardType.Recognizer -> VoiceRecognitionView(vM, vW, 150.dp)
-
                     KeyboardType.Clipboard -> ClipboardKeyboardView(vM, vW, 150.dp)
                 }
             }
 
-            SideView(
-                icon = painterResource(
-                    if (isSystemInDarkTheme()) R.drawable.mic_fill else R.drawable.mic_outline
-                ),
-                onClick = {}
-            )
+            if (vM.prefs.isEnableSpeechRecognition.get()) {
+                SideView(
+                    icon = painterResource(R.drawable.mic_outline),
+                    onClick = {}
+                )
+            } else {
+                EmptySideView()
+            }
         }
     }
+}
+
+@Composable
+fun EmptySideView() {
+    val screenWidth = LocalConfiguration.current.screenWidthDp
+    val sideWidth = (screenWidth * 0.12).dp
+
+    Box(
+        modifier = Modifier
+            .width(sideWidth)
+            .padding(bottom = 2.dp)
+    )
 }
 
 @Composable

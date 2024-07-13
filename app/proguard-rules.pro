@@ -12,11 +12,18 @@
 #   public *;
 #}
 
--keepclassmembers class * extends androidx.datastore.preferences.protobuf.GeneratedMessageLite {
-    <fields>;
-}
+#-keepclassmembers class * extends androidx.datastore.preferences.protobuf.GeneratedMessageLite {
+#    <fields>;
+#}
 
 -keep class com.sun.jna.* { *; }
+-keep class io.grpc.* { *; }
+-keep class io.grpc.** { *; }
+
+-dontwarn com.squareup.okhttp.CipherSuite
+-dontwarn com.squareup.okhttp.ConnectionSpec
+-dontwarn com.squareup.okhttp.TlsVersion
+
 -keepclassmembers class * extends com.sun.jna.* { public *; }
 
 -dontwarn java.awt.Component

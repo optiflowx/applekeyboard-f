@@ -4,7 +4,6 @@ import android.os.Handler
 import android.os.Looper
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
 import com.optiflowx.optikeysx.core.data.VoskLocalModel
 import com.optiflowx.optikeysx.core.enums.RecognizerState
 import org.json.JSONException
@@ -21,14 +20,14 @@ class VoskLocal(private val localModel: VoskLocalModel) : RecognizerSource {
     override val recognizer: Recognizer
         get() = myRecognizer!!
     private var model: Model? = null
-    override fun initialize(executor: Executor, onLoaded: Observer<RecognizerSource?>) {
+
+    override fun initialize(executor: Executor) {
         stateMLD.postValue(RecognizerState.LOADING)
         val handler = Handler(Looper.getMainLooper())
         executor.execute {
             val model = Model(localModel.path)
             handler.post {
                 modelLoaded(model)
-                onLoaded.onChanged(this)
             }
         }
     }

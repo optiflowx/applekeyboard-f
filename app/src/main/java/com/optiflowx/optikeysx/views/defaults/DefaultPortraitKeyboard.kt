@@ -24,13 +24,10 @@ import com.optiflowx.optikeysx.views.keyboards.portuguese.PortugueseKeyboardView
 import com.optiflowx.optikeysx.views.keyboards.russian.RussianKeyboardView
 import com.optiflowx.optikeysx.views.keyboards.spanish.SpanishKeyboardView
 import com.optiflowx.optikeysx.views.keyboards.standard.StandardKeyboardView
-import com.optiflowx.optikeysx.views.recognition.VoiceRecognitionView
 import com.optiflowx.optikeysx.views.symbols.SymbolsKeyboardView
 
 @Composable
-fun DefaultPortraitKeyboard(
-    vM: KeyboardViewModel
-) {
+fun DefaultPortraitKeyboard(vM: KeyboardViewModel) {
     val vW = LocalConfiguration.current.screenWidthDp.dp
     val keyboardType = vM.keyboardType.collectAsState()
     val locale = vM.keyboardData.collectAsState().value.locale
@@ -90,7 +87,6 @@ fun DefaultPortraitKeyboard(
 
                 KeyboardType.Clipboard -> ClipboardKeyboardView(vM, vW)
 
-                KeyboardType.Recognizer -> VoiceRecognitionView(vM, vW)
             }
         }
 

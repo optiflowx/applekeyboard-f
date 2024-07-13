@@ -29,7 +29,7 @@ import com.optiflowx.optikeysx.R
 import com.optiflowx.optikeysx.core.enums.KeyboardType
 import com.optiflowx.optikeysx.core.model.Key
 import com.optiflowx.optikeysx.viewmodels.KeyboardViewModel
-import io.github.alexzhirkevich.cupertino.Surface
+import io.github.alexzhirkevich.cupertino.CupertinoSurface
 import io.github.alexzhirkevich.cupertino.theme.CupertinoColors
 import io.github.alexzhirkevich.cupertino.theme.systemGray
 import kotlinx.coroutines.launch
@@ -56,7 +56,7 @@ fun EmojiPagerActionView(pagerState: PagerState, viewModel: KeyboardViewModel) {
         R.drawable.flags
     )
 
-    Surface(
+    CupertinoSurface(
         color = Color.Transparent,
         modifier = Modifier
             .fillMaxWidth()

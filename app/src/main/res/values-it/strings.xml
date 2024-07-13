@@ -1,0 +1,80 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="app_name">OptiKeysX</string>
+    <string name="abc">ABC</string>
+    <string name="num">123</string>
+
+    <string name="experimental_feature_warning">Questa funzionalità è sperimentale e potrebbe causare perdite di memoria e arresti anomali.
+        Continua a tuo rischio e pericolo, puoi sempre disabilitarlo in seguito.
+        L\'APP SI RIAVVIERA\' AUTOMATICAMENTE DOPO LE MODIFICHE!</string>
+    <string name="caution_unofficial_sources">ATTENZIONE: l\'acquisizione di questa applicazione da fonti non ufficiali potrebbe esporti a
+        potenziali minacce malware. Pertanto, sconsiglio vivamente di accettarne o utilizzarne qualsiasi
+        versioni modificate di questa app. Scarica l\'app dal Google Play Store.</string>
+
+    <string name="back">Indietro</string>
+    <string name="test_keyboard">PROVA TASTIERA</string>
+    <string name="test_keyboard_description">Questa sezione serve per testare la tastiera.</string>
+    <string name="type_here" tools:ignore="TypographyEllipsis">Digitare qui...</string>
+    <string name="general">GENERALE</string>
+    <string name="keyboards">Tastiere</string>
+    <string name="keyboard_fonts">Caratteri della tastiera</string>
+    <string name="speech_keyboard">Riconoscimento vocale</string>
+    <string name="enable_speech_recognition">Abilita il riconoscimento vocale per utilizzare questa funzione</string>
+    <string name="interactions">INTERAZIONI</string>
+    <string name="sound_on_key_press">Suono alla pressione dei tasti</string>
+    <string name="vibrate_on_key_press">Vibrazione alla pressione del tasto</string>
+    <string name="all_keyboards">TUTTE LE TASTIERE</string>
+    <string name="double_tap_space_bar">Toccando due volte la barra spaziatrice verrà inserito un punto seguito da uno spazio.</string>
+    <string name="auto_capitalisation">Maiuscole automatiche</string>
+    <string name="auto_correction">Correzione automatica</string>
+    <string name="check_spelling">Controllo ortografico</string>
+    <string name="enable_speech_recognition_all">Abilita il riconoscimento vocale</string>
+    <string name="enable_caps_lock">Abilita il blocco maiuscole</string>
+    <string name="predictive">Predittivo</string>
+    <string name="enable_memoji">Abilita Memoji</string>
+    <string name="enable_accents">Abilita accenti</string>
+    <string name="character_preview">Anteprima del personaggio</string>
+    <string name="dot_shortcut">\".\" Scorciatoia</string>
+    <string name="app_information">INFORMAZIONI SULL\'APP</string>
+    <string name="version">Versione</string>
+    <string name="package_name">Nome del pacchetto</string>
+    <string name="build_version">Costruisci versione</string>
+    <string name="developer_section">SVILUPPATORE</string>
+    <string name="developer_section_description">Questa sezione contiene informazioni importanti dello sviluppatore.</string>
+    <string name="copyright_information">Informazioni sul diritto d\'autore</string>
+    <string name="join_support_channel">Unisciti al canale di supporto</string>
+    <string name="keyboard_fonts_general">Caratteri della tastiera</string>
+    <string name="keyboards_general">Tastiere</string>
+    <string name="add_keyboard">Aggiungi tastiera</string>
+    <string name="change_keyboard">Cambia tastiera</string>
+    <string name="system_default">Default del sistema</string>
+    <string name="do_you_want_to_continue">Vuoi continuare\?</string>
+
+    <string name="grant_microphone_permission">Concedere l\'autorizzazione al microfono</string>
+    <string name="grant_notification_access">Concedere l\'accesso alle notifiche</string>
+    <string name="enable_keyboard">Abilita tastiera</string>
+    <string name="continue_string">Continua</string>
+
+    <string name="model_download">Scarica modello</string>
+    <string name="enable_ime_services">L\'abilitazione di questa autorizzazione consente a OptiKeysX di utilizzare i servizi IME per offrire layout di tastiera e metodi di input alternativi.</string>
+
+    <string name="settings">IMPOSTAZIONI</string>
+    <string name="keep_model_in_memory">Mantieni il modello in memoria</string>
+    <string name="keep_model_in_memory_description">Conservare il modello in memoria per ridurre il tempo necessario per caricare il modello.</string>
+    <string name="keep_screen_awake">Mantieni lo schermo attivo</string>
+    <string name="downloaded_models">MODELLI SCARICATI</string>
+    <string name="microphone_permission_message">Consenti a OptiKeysX di accedere al microfono.</string>
+    <string name="microphone_access">Accesso al microfono</string>
+    <string name="microphone_access_description">Questa autorizzazione è necessaria per la funzionalità di input vocale.</string>
+    <string name="enable_microphone_access">L\'abilitazione dell\'accesso al microfono consente a OptiKeysX di fornire funzionalità di digitazione vocale.</string>
+    <string name="notification_access">Accesso alle notifiche</string>
+    <string name="notification_access_description">Questa autorizzazione è necessaria affinché OptiKeysX possa fornire notifiche.</string>
+    <string name="enable_notification_access">OptiKeysX utilizzerà le notifiche per download, aggiornamenti e annunci importanti.</string>
+    <string name="input_method_services">Servizi relativi ai metodi di input</string>
+    <string name="input_method_services_description">Questa autorizzazione è necessaria affinché OptiKeysX funzioni come tastiera.</string>
+    <string name="feature_request">Richiesta di funzionalità</string>
+    <string name="request">Richiesta</string>
+    <string name="request_description" translatable="false">This section is for requesting features, reporting bugs, and providing feedback.</string>
+    <string name="feature_request_placeholder">Scrivi la richiesta di funzionalità che hai per questa app</string>
+    <!--    <string name="feature_requests">Feature Requests</string>-->
+    <string name="feature_requests">Richieste di funzionalità</string>
+</resources>

@@ -28,8 +28,7 @@ fun KeyboardTopView(
 ) {
     val dH = 0
     val keyboardType = viewModel.keyboardType.collectAsState()
-    val isSymbol = (keyboardType.value == KeyboardType.Symbol
-            || keyboardType.value == KeyboardType.Recognizer)
+    val isSymbol = (keyboardType.value == KeyboardType.Symbol)
     val isPredictive = viewModel.prefs.isPredictive.observeAsState().value
 
     Box(

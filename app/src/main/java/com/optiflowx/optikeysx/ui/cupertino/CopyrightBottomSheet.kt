@@ -1,10 +1,11 @@
 package com.optiflowx.optikeysx.ui.cupertino
 
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
@@ -13,33 +14,37 @@ import com.optiflowx.optikeysx.ui.regular
 import io.github.alexzhirkevich.cupertino.CupertinoBottomSheetContent
 import io.github.alexzhirkevich.cupertino.CupertinoBottomSheetScaffoldState
 import io.github.alexzhirkevich.cupertino.CupertinoButton
-import io.github.alexzhirkevich.cupertino.CupertinoButtonDefaults
+import io.github.alexzhirkevich.cupertino.CupertinoButtonDefaults.plainButtonColors
 import io.github.alexzhirkevich.cupertino.CupertinoText
 import io.github.alexzhirkevich.cupertino.CupertinoTopAppBar
 import io.github.alexzhirkevich.cupertino.ExperimentalCupertinoApi
 import io.github.alexzhirkevich.cupertino.section.CupertinoSection
+import io.github.alexzhirkevich.cupertino.section.SectionItem
 import io.github.alexzhirkevich.cupertino.theme.CupertinoColors
+import io.github.alexzhirkevich.cupertino.theme.CupertinoTheme
 import io.github.alexzhirkevich.cupertino.theme.systemBlue
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalCupertinoApi::class)
 @Composable
 fun CopyrightBottomSheet(
-    scaffoldState : CupertinoBottomSheetScaffoldState,
-    sheetSectionColor : Color
+    scaffoldState: CupertinoBottomSheetScaffoldState
 ) {
-
     val coroutineScope = rememberCoroutineScope()
 
     CupertinoBottomSheetContent(
+        modifier = Modifier
+            .fillMaxWidth()
+            .layoutId("copyright"),
         topBar = {
             CupertinoTopAppBar(
+                isTransparent = true,
                 title = {
                     CupertinoText("COPYRIGHT NOTICE")
                 },
                 actions = {
                     CupertinoButton(
-                        colors = CupertinoButtonDefaults.borderlessButtonColors(),
+                        colors = plainButtonColors(),
                         onClick = {
                             coroutineScope.launch {
                                 scaffoldState.bottomSheetState.hide()
@@ -49,16 +54,14 @@ fun CopyrightBottomSheet(
                         CupertinoText("Done")
                     }
                 },
-                isTransparent = true
             )
         }
     ) { pv ->
         CupertinoSection(
             modifier = Modifier.padding(pv),
-            containerColor = Color.Transparent,
-            color = sheetSectionColor
+            color = CupertinoTheme.colorScheme.tertiarySystemBackground,
         ) {
-            item {
+            SectionItem {
                 CupertinoText(
                     "The keyboard design and certain associated resources within this application, " +
                             "identified by the application ID `com.optiflowx.optikeysx`, are based on or inspired by " +
@@ -79,10 +82,8 @@ fun CopyrightBottomSheet(
                         fontSize = TextUnit(14f, TextUnitType.Sp).nonScaledSp,
                         fontFamily = regular,
                     ),
-                    modifier = Modifier.padding(it)
                 )
             }
         }
     }
 }
-

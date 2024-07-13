@@ -30,6 +30,16 @@ class AppPrefs : PreferenceModel("optikeysx-app-preferences") {
         default = false,
     )
 
+    val isEnableSpeechRecognition = boolean(
+        key = "is_enable_speech_recognition",
+        default = false,
+    )
+
+    val recognitionState = int(
+        key = "recognition_state",
+        default = 0,
+    )
+
     val keepScreenAwake = enum(
         key = "e_keep_screen_awake",
         default = KeepScreenAwakeMode.NEVER
@@ -38,16 +48,6 @@ class AppPrefs : PreferenceModel("optikeysx-app-preferences") {
     val keyboardFontType = enum(
         key = "keyboard_font_type",
         default = KeyboardFontType.Regular
-    )
-
-    val startRecognitionInstantaneously = boolean(
-        key = "start_recognition_instantaneously",
-        default = true
-    )
-
-    val autoSwitchIBackIME = boolean(
-        key = "auto_switch_back_ime",
-        default = false
     )
 
     val keepLanguageModelInMemory = boolean(
@@ -103,11 +103,6 @@ class AppPrefs : PreferenceModel("optikeysx-app-preferences") {
     val isEnableCapsLock = boolean(
         key = "is_enable_caps_lock",
         default = true,
-    )
-    
-    val isAutoCorrection = boolean(
-        key = "is_auto_correction",
-        default = false,
     )
     
     val isDotShortcut = boolean(

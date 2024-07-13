@@ -19,6 +19,7 @@ object FileDownloader {
 
     const val UNZIP_URI = "unzip_uri"
     const val UNZIP_LOCALE = "unzip_locale"
+
     fun getInfoForIntent(intent: Intent): ModelInfo? {
         val url = intent.getStringExtra(DOWNLOAD_URL)
         val filename = intent.getStringExtra(DOWNLOAD_FILENAME)
@@ -38,6 +39,8 @@ object FileDownloader {
     fun downloadModel(model: ModelLink, context: Context) {
         val ctx = context.applicationContext
         val serviceIntent = Intent(ctx, FileDownloadService::class.java)
+
+        serviceIntent.putExtra(DOWNLOAD_FILENAME, model.name)
         serviceIntent.putExtra(ACTION, ACTION_DOWNLOAD)
         serviceIntent.putExtra(DOWNLOAD_URL, model.link)
         serviceIntent.putExtra(DOWNLOAD_FILENAME, model.filename)

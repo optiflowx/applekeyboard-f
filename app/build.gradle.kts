@@ -2,22 +2,22 @@ plugins {
     kotlin("plugin.serialization")
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
-//    id ("dagger.hilt.android.plugin")
-//    id("kotlin-parcelize")
-    id("com.google.protobuf")
+    id("com.google.firebase.crashlytics")
     id("com.google.gms.google-services")
     id("com.google.devtools.ksp")
     id("androidx.baselineprofile")
+//    id("com.google.protobuf")
 }
 
 val hiltVersion = "2.48"
-val composeVersion = "1.6.3"
-val lifecycleVersion = "2.7.0"
+val composeVersion = "1.6.8"
+val lifecycleVersion = "2.8.3"
 val archVersion = "2.2.0"
 val roomVersion = "2.6.1"
-val voyagerVersion = "1.1.0-alpha02"
-val amplitudePackage = "2.2.2"
-val grpcVersion = "1.57.0"
+val voyagerVersion = "1.1.0-beta02"
+val grpcVersion = "1.65.1"
+val jetprefVersion = "0.1.0"
+val cupertinoVersion = "0.1.0-alpha04"
 
 android {
     namespace = "com.optiflowx.optikeysx"
@@ -28,7 +28,7 @@ android {
         minSdk = 24
         targetSdk = 34
         versionCode = 1
-        versionName = "1.0.1-release"
+        versionName = "1.0.2-release"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -66,7 +66,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.8"
+        kotlinCompilerExtensionVersion = "1.5.14"
     }
 
     packaging {
@@ -75,68 +75,59 @@ android {
         }
     }
 
-    protobuf {
-        protoc {
-            artifact = "com.google.protobuf:protoc:4.26.0"
-        }
-        plugins {
-            create("grpc") {
-                artifact = "io.grpc:protoc-gen-grpc-java:$grpcVersion"
-            }
-        }
-        generateProtoTasks {
-            all().forEach {
-                it.plugins {
-                    create("grpc")
-                }
-                it.builtins {
-                    create("kotlin")
-                }
-            }
-        }
-    }
+//    protobuf {
+//        protoc {
+//            artifact = "com.google.protobuf:protoc:4.26.0"
+//        }
+//        plugins {
+//            create("grpc") {
+//                artifact = "io.grpc:protoc-gen-grpc-java:$grpcVersion"
+//            }
+//        }
+//        generateProtoTasks {
+//            all().forEach {
+//                it.plugins {
+//                    create("grpc")
+//                }
+//                it.builtins {
+//                    create("kotlin")
+//                }
+//            }
+//        }
+//    }
 }
 
 dependencies {
-    //
-    runtimeOnly("com.google.protobuf:protobuf-gradle-plugin:0.9.4")
-    implementation("io.grpc:grpc-protobuf:$grpcVersion")
-    implementation("io.grpc:grpc-stub:1.62.2")
-//    implementation("com.google.protobuf:protobuf-kotlin:0.9.1")
 
+    //GRPC
+    implementation("io.grpc:grpc-stub:$grpcVersion")
+    implementation("io.grpc:grpc-protobuf-lite:$grpcVersion")
+    implementation("io.grpc:grpc-okhttp:$grpcVersion")
+    implementation("io.grpc:grpc-android:$grpcVersion")
 
     implementation("androidx.profileinstaller:profileinstaller:1.3.1")
-    androidTestImplementation("androidx.test:runner:1.5.2")
+    androidTestImplementation("androidx.test:runner:1.6.1")
 
     //Firebase
-    implementation(platform("com.google.firebase:firebase-bom:32.7.4"))
+    implementation(platform("com.google.firebase:firebase-bom:33.1.2"))
     implementation("com.google.firebase:firebase-analytics")
-//    implementation("com.google.firebase:firebase-auth-ktx")
-//    implementation("com.google.firebase:firebase-firestore")
+    implementation("com.google.firebase:firebase-firestore")
+    implementation("com.google.firebase:firebase-crashlytics")
 
-    implementation("dev.chrisbanes.haze:haze-materials:0.5.2")
+    implementation("dev.patrickgold.jetpref:jetpref-datastore-model:$jetprefVersion")
+    implementation("dev.patrickgold.jetpref:jetpref-datastore-ui:$jetprefVersion")
 
-    implementation("dev.patrickgold.jetpref:jetpref-datastore-model:0.1.0-beta14")
-    implementation("dev.patrickgold.jetpref:jetpref-datastore-ui:0.1.0-beta14")
-
-    //Destinations
+    // Destinations
     "baselineProfile"(project(":baselineprofiles"))
-    implementation(project(":audiowaveform"))
 
-    // Navigator
+    // Voyager
     implementation("cafe.adriel.voyager:voyager-navigator:$voyagerVersion")
-
-    // Screen Model
     implementation("cafe.adriel.voyager:voyager-screenmodel:$voyagerVersion")
-
-    // LiveData integration
     implementation("cafe.adriel.voyager:voyager-livedata:$voyagerVersion")
-
-    // Transitions
     implementation("cafe.adriel.voyager:voyager-transitions:$voyagerVersion")
 
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.9.22")
-    implementation("androidx.appcompat:appcompat:1.6.1")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.9.24")
+    implementation("androidx.appcompat:appcompat:1.7.0")
 
     //Compose Dependencies
     implementation("androidx.compose.ui:ui:$composeVersion")
@@ -146,18 +137,18 @@ dependencies {
     implementation("androidx.compose.runtime:runtime-livedata:$composeVersion")
 
     //Activity Compose
-    implementation("androidx.activity:activity-compose:1.8.2")
+    implementation("androidx.activity:activity-compose:1.9.0")
 
-    implementation("androidx.core:core-ktx:1.12.0")
+    implementation("androidx.core:core-ktx:1.13.1")
 
     //Simplify the UI
     implementation("com.louiscad.splitties:splitties-systemservices:3.0.0")
     implementation("com.louiscad.splitties:splitties-views:3.0.0")
 
     // Compose Preview and Tests
-    implementation(platform("androidx.compose:compose-bom:2024.02.02"))
-    implementation("androidx.test.ext:junit-ktx:1.1.5")
-    implementation("androidx.test:monitor:1.6.1")
+    implementation(platform("androidx.compose:compose-bom:2024.06.00"))
+    implementation("androidx.test.ext:junit-ktx:1.2.1")
+    implementation("androidx.test:monitor:1.7.1")
     debugImplementation("androidx.compose.ui:ui-tooling")
     implementation("androidx.compose.ui:ui-tooling-preview")
 
@@ -183,12 +174,12 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-common-java8:$lifecycleVersion")
 
     //Cupertino
-    implementation("io.github.alexzhirkevich:cupertino:0.1.0-alpha03")
-    implementation("io.github.alexzhirkevich:cupertino-icons-extended:0.1.0-alpha03")
+    implementation("io.github.alexzhirkevich:cupertino:$cupertinoVersion")
+    implementation("io.github.alexzhirkevich:cupertino-icons-extended:$cupertinoVersion")
 
-    //Local Storage
+    //Jetbrains Libraries
     implementation("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.7")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
 
     //Room database
     implementation("androidx.room:room-runtime:$roomVersion")

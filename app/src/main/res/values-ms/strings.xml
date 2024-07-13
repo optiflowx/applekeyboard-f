@@ -1,0 +1,90 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="app_name">OptiKeysX</string>
+    <string name="abc">ABC</string>
+    <string name="num">123</string>
+
+    <string name="experimental_feature_warning">Ciri ini adalah percubaan dan ia boleh menyebabkan kebocoran dan ranap memori.
+        Teruskan atas risiko anda sendiri, anda sentiasa boleh melumpuhkannya kemudian.
+        APP AKAN MULA SEMULA SECARA AUTOMATIK SELEPAS PERUBAHAN!</string>
+    <string name="caution_unofficial_sources">PERHATIAN: Mendapatkan aplikasi ini daripada sumber tidak rasmi mungkin mendedahkan anda kepada
+        ancaman malware yang berpotensi. Oleh itu, saya amat menasihatkan agar tidak menerima atau menggunakan mana-mana
+        versi diubah suai apl ini. Muat turun apl daripada Gedung Google Play.</string>
+
+    <string name="back">belakang</string>
+    <string name="test_keyboard">PAPAN KEkunci UJI</string>
+    <string name="test_keyboard_description">Bahagian ini adalah untuk menguji papan kekunci.</string>
+    <string name="type_here" tools:ignore="TypographyEllipsis">Taip di sini...</string>
+    <string name="general">UMUM</string>
+    <string name="keyboards">Papan kekunci</string>
+    <string name="keyboard_fonts">Fon Papan Kekunci</string>
+    <string name="speech_keyboard">Pengenalan suara</string>
+    <string name="enable_speech_recognition">Dayakan Pengecaman Pertuturan untuk menggunakan ciri ini</string>
+    <string name="interactions">INTERAKSI</string>
+    <string name="sound_on_key_press">Bunyi Pada Tekan Kekunci</string>
+    <string name="vibrate_on_key_press">Bergetar Pada Tekan Kekunci</string>
+    <string name="all_keyboards">SEMUA PAPAN KEkunci</string>
+    <string name="double_tap_space_bar">Ketik dua kali pada bar ruang akan memasukkan noktah diikuti dengan ruang.</string>
+    <string name="auto_capitalisation">Auto-Modal</string>
+    <string name="auto_correction">Auto-Pembetulan</string>
+    <string name="check_spelling">Semak ejaan</string>
+    <string name="enable_speech_recognition_all">Dayakan Pengecaman Pertuturan</string>
+    <string name="enable_caps_lock">Dayakan Caps Lock</string>
+    <string name="predictive">Ramalan</string>
+    <string name="enable_memoji">Dayakan Memoji</string>
+    <string name="enable_accents">Dayakan Aksen</string>
+    <string name="character_preview">Pratonton Watak</string>
+    <string name="dot_shortcut">\".\" Jalan pintas</string>
+    <string name="app_information">MAKLUMAT APP</string>
+    <string name="version">Versi</string>
+    <string name="package_name">Nama Pakej</string>
+    <string name="build_version">Versi Binaan</string>
+    <string name="developer_section">PEMAJU</string>
+    <string name="developer_section_description">Bahagian ini mengandungi maklumat penting daripada pembangun.</string>
+    <string name="copyright_information">Maklumat Hak Cipta</string>
+    <string name="join_support_channel">Sertai Saluran Sokongan</string>
+    <string name="keyboard_fonts_general">Fon Papan Kekunci</string>
+    <string name="keyboards_general">Papan kekunci</string>
+    <string name="add_keyboard">Tambah Papan Kekunci</string>
+    <string name="change_keyboard">Tukar Papan Kekunci</string>
+    <string name="system_default">Lalai Sistem</string>
+    <string name="do_you_want_to_continue">Adakah anda mahu meneruskan\?</string>
+
+    <string name="grant_microphone_permission">Berikan Kebenaran Mikrofon</string>
+    <string name="grant_notification_access">Berikan Akses Pemberitahuan</string>
+    <string name="enable_keyboard">Dayakan Papan Kekunci</string>
+    <string name="continue_string">teruskan</string>
+
+    <string name="model_download">Muat Turun Model</string>
+    <string name="enable_ime_services">
+        Enabling this permission allows OptiKeysX to use IME Services to offer alternative keyboard layouts and input methods.
+    </string>
+
+    <string name="settings">TETAPAN</string>
+    <string name="keep_model_in_memory">Simpan Model Dalam Ingatan</string>
+    <string name="keep_model_in_memory_description">Simpan model dalam ingatan untuk mengurangkan masa yang diperlukan untuk memuatkan model.</string>
+    <string name="keep_screen_awake">Pastikan Skrin Terjaga</string>
+    <string name="downloaded_models">MODEL YANG DIMUAT TURUN</string>
+    <string name="microphone_permission_message">Benarkan OptiKeysX Mengakses Mikrofon Anda.</string>
+    <string name="microphone_access">Akses Mikrofon</string>
+    <string name="microphone_access_description">
+        This permission is necessary for voice input functionality.
+    </string>
+    <string name="enable_microphone_access">
+        Enabling microphone access allows OptiKeysX to provide voice typing capabilities.
+    </string>
+    <string name="notification_access">Notification Access</string>
+    <string name="notification_access_description">
+        This permission is necessary for OptiKeysX to provide notifications.
+    </string>
+    <string name="enable_notification_access">
+        OptiKeysX will use notifications for downloads, updates, and important announcements.
+    </string>
+    <string name="input_method_services">Input Method Services</string>
+    <string name="input_method_services_description">
+        This permission is necessary for OptiKeysX to function as a keyboard.
+    </string>
+    <string name="feature_request">Permintaan Ciri</string>
+    <string name="request">Permintaan</string>
+    <string name="feature_request_placeholder">Write out the feature request you have for this app</string>
+    <string name="feature_requests">Permintaan Ciri</string>
+</resources>

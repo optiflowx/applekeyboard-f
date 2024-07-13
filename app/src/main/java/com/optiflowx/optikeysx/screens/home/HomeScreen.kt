@@ -1,28 +1,45 @@
 package com.optiflowx.optikeysx.screens.home
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.absolutePadding
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.core.screen.uniqueScreenKey
+import com.optiflowx.optikeysx.R
 import com.optiflowx.optikeysx.core.utils.nonScaledSp
+import com.optiflowx.optikeysx.optikeysxPreferences
 import com.optiflowx.optikeysx.screens.components.TopBar
+import com.optiflowx.optikeysx.screens.home.components.AllKeyboardsSection
+import com.optiflowx.optikeysx.screens.home.components.AppInformationSection
+import com.optiflowx.optikeysx.screens.home.components.DeveloperSection
+import com.optiflowx.optikeysx.screens.home.components.GeneralSection
+import com.optiflowx.optikeysx.screens.home.components.InteractionsSection
+import com.optiflowx.optikeysx.screens.home.components.MessageSection
+import com.optiflowx.optikeysx.screens.home.components.TestKeyboardSection
 import com.optiflowx.optikeysx.ui.bold
 import com.optiflowx.optikeysx.ui.cupertino.CopyrightBottomSheet
+import com.optiflowx.optikeysx.ui.cupertino.JetPrefCupertinoAlertDialog
 import com.optiflowx.optikeysx.ui.regular
 import com.optiflowx.optikeysx.viewmodels.KeyboardSettingsModel
 import io.github.alexzhirkevich.cupertino.CupertinoBottomSheetScaffold
@@ -35,11 +52,16 @@ import io.github.alexzhirkevich.cupertino.PresentationDetent
 import io.github.alexzhirkevich.cupertino.PresentationStyle
 import io.github.alexzhirkevich.cupertino.rememberCupertinoBottomSheetScaffoldState
 import io.github.alexzhirkevich.cupertino.rememberCupertinoSheetState
+import io.github.alexzhirkevich.cupertino.section.CupertinoSectionDefaults
+import io.github.alexzhirkevich.cupertino.section.LocalSectionStyle
 import io.github.alexzhirkevich.cupertino.theme.CupertinoTheme
 
 
 class HomeScreen : Screen {
     override val key: ScreenKey = uniqueScreenKey
+
+    private val prefs by optikeysxPreferences()
+
     companion object {
         const val TAG = "HomeScreen"
     }
@@ -47,8 +69,8 @@ class HomeScreen : Screen {
     @Composable
     @OptIn(ExperimentalCupertinoApi::class, ExperimentalComposeUiApi::class)
     override fun Content() {
-        val sheetSectionColor = CupertinoTheme.colorScheme.tertiarySystemBackground
-
+        val settingsModel = rememberScreenModel { KeyboardSettingsModel() }
+        val context = LocalContext.current
         val focusManager = LocalFocusManager.current
 
         val tileTextStyle = TextStyle(
@@ -71,7 +93,9 @@ class HomeScreen : Screen {
             fontFamily = regular,
         )
 
-        val lazyListState = rememberLazyListState()
+        val scrollState = rememberScrollState()
+
+        val showSpeechAlertDialog = remember { mutableStateOf(false) }
 
         val scaffoldState = rememberCupertinoBottomSheetScaffoldState(
             rememberCupertinoSheetState(
@@ -84,10 +108,28 @@ class HomeScreen : Screen {
             )
         )
 
-        LaunchedEffect(lazyListState.isScrollInProgress) {
-            if (lazyListState.isScrollInProgress) {
-                focusManager.clearFocus(force = true)
+        if (showSpeechAlertDialog.value) {
+            JetPrefCupertinoAlertDialog(
+                title = stringResource(R.string.do_you_want_to_continue),
+                onDismiss = { showSpeechAlertDialog.value = false },
+                onOutsideDismissal = { showSpeechAlertDialog.value = false },
+                onConfirm = {
+                    showSpeechAlertDialog.value = false
+                    prefs.isEnableSpeechRecognition.set(true).apply {
+                        settingsModel.resetApplication(context)
+                    }
+                },
+            ) {
+                CupertinoText(
+                    stringResource(R.string.experimental_feature_warning),
+                    textAlign = TextAlign.Center,
+                    style = descTextStyle
+                )
             }
+        }
+
+        LaunchedEffect(scrollState.isScrollInProgress) {
+            focusManager.clearFocus(force = true)
         }
 
         LaunchedEffect(scaffoldState.bottomSheetState.targetValue) {
@@ -102,84 +144,69 @@ class HomeScreen : Screen {
                 testTagsAsResourceId = true
             },
             colors = CupertinoBottomSheetScaffoldDefaults.colors(
+                containerColor = CupertinoSectionDefaults.containerColor(LocalSectionStyle.current),
                 sheetContainerColor = CupertinoTheme.colorScheme
                     .secondarySystemBackground,
             ),
             sheetContent = {
                 CopyrightBottomSheet(
-                    scaffoldState = scaffoldState,
-                    sheetSectionColor = sheetSectionColor
+                    scaffoldState = scaffoldState
                 )
             },
             scaffoldState = scaffoldState,
             topBar = {
                 TopBar(
-                    lazyListState = lazyListState,
+                    lazyListState = rememberLazyListState(),
                     title = "OptiKeysX"
                 )
             },
         ) {
-            LazyColumn(
+            Column(
                 modifier = Modifier
                     .statusBarsPadding()
                     .absolutePadding(top = 40.dp)
+                    .verticalScroll(scrollState)
                     .testTag("home_screen_list"),
-                userScrollEnabled = true
             ) {
-                item {
-                    CupertinoNavigationTitle {
-                        CupertinoText("OptiKeysX", style = navigationTextStyle)
-                    }
+                CupertinoNavigationTitle {
+                    CupertinoText("OptiKeysX", style = navigationTextStyle)
                 }
 
-                item("Message Section") {
-                    MessageSection()
-                }
+                MessageSection()
 
-                item("Test Keyboard") {
-                    TestKeyboardSection(
-                        titleTextStyle = titleTextStyle,
-                        descTextStyle = descTextStyle,
-                    )
-                }
+                TestKeyboardSection(
+                    titleTextStyle = titleTextStyle,
+                    descTextStyle = descTextStyle,
+                )
 
-                item("General Section") {
-                    GeneralSection(
-                        titleTextStyle = titleTextStyle,
-                        tileTextStyle = tileTextStyle,
+                GeneralSection(
+                    titleTextStyle = titleTextStyle,
+                    tileTextStyle = tileTextStyle,
+                )
 
-                    )
-                }
+                InteractionsSection(
+                    titleTextStyle = titleTextStyle,
+                    tileTextStyle = tileTextStyle,
+                )
 
-                item("Interactions") {
-                    InteractionsSection(
-                        titleTextStyle = titleTextStyle,
-                        tileTextStyle = tileTextStyle,
-                    )
-                }
+                AllKeyboardsSection(
+                    titleTextStyle = titleTextStyle,
+                    tileTextStyle = tileTextStyle,
+                    descTextStyle = descTextStyle,
+                    showSpeechAlertDialog = showSpeechAlertDialog,
+                    settingsModel = settingsModel
+                )
 
-                item("All Keyboards Section") {
-                    AllKeyboardsSection(
-                        titleTextStyle = titleTextStyle,
-                        tileTextStyle = tileTextStyle,
-                        descTextStyle = descTextStyle,
-                    )
-                }
+                AppInformationSection(
+                    titleTextStyle = titleTextStyle
+                )
 
-                item("App Information Section") {
-                    AppInformationSection(
-                        titleTextStyle = titleTextStyle
-                    )
-                }
-
-                item("Developer Section") {
-                    DeveloperSection(
-                        titleTextStyle = titleTextStyle,
-                        tileTextStyle = tileTextStyle,
-                        descTextStyle = descTextStyle,
-                        scaffoldState = scaffoldState,
-                    )
-                }
+                DeveloperSection(
+                    titleTextStyle = titleTextStyle,
+                    tileTextStyle = tileTextStyle,
+                    descTextStyle = descTextStyle,
+                    scaffoldState = scaffoldState,
+                )
             }
         }
     }

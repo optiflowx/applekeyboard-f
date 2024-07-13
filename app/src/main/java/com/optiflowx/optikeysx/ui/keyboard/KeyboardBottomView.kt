@@ -1,7 +1,6 @@
 package com.optiflowx.optikeysx.ui.keyboard
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -15,26 +14,29 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import com.optiflowx.optikeysx.R
-import com.optiflowx.optikeysx.core.enums.KeyboardType
+import com.optiflowx.optikeysx.ime.IMEService
+import com.optiflowx.optikeysx.optikeysxPreferences
 import com.optiflowx.optikeysx.viewmodels.KeyboardViewModel
 import dev.patrickgold.jetpref.datastore.model.observeAsState
 
 @Composable
 fun KeyboardBottomView(viewModel: KeyboardViewModel) {
     val keyboardWidth = LocalConfiguration.current.screenWidthDp.dp
-    val keyboardType = viewModel.keyboardType.collectAsState().value
     val fontType = viewModel.prefs.keyboardFontType.observeAsState().value
+    val state = viewModel.prefs.recognitionState.observeAsState().value
+    val imeService = LocalContext.current as IMEService
+    val prefs by optikeysxPreferences()
 
     Box(
         contentAlignment = Alignment.Center,
@@ -72,7 +74,7 @@ fun KeyboardBottomView(viewModel: KeyboardViewModel) {
                 modifier = Modifier
                     .clip(RoundedCornerShape(50.dp))
                     .background(
-                        if (keyboardType == KeyboardType.Recognizer) {
+                        if (state == 3) {
                             MaterialTheme.colorScheme.scrim
                         } else {
                             MaterialTheme.colorScheme.background
@@ -80,26 +82,24 @@ fun KeyboardBottomView(viewModel: KeyboardViewModel) {
                     )
                     .padding(10.dp)
             ) {
-                Icon(
-                    painter = painterResource(R.drawable.mic_outline),
-                    contentDescription = "microphone",
-                    tint = if (keyboardType == KeyboardType.Recognizer) {
-                        MaterialTheme.colorScheme.background
-                    } else {
-                        MaterialTheme.colorScheme.scrim
-                    },
-                    modifier = Modifier
-                        .size(27.dp)
-                        .clickable(
-                            indication = null,
-                            interactionSource = remember { MutableInteractionSource() },
-                            role = Role.Button,
-                        ) {
-                            if (keyboardType != KeyboardType.Recognizer) {
-                                viewModel.onUpdateKeyboardType(KeyboardType.Recognizer)
-                            } else viewModel.onUpdateKeyboardType(KeyboardType.Normal)
-                        }
-                )
+                if (prefs.modelsOrder.get().isNotEmpty()) {
+                    Icon(
+                        painter = painterResource(R.drawable.mic_outline),
+                        contentDescription = "microphone",
+                        tint = if (state == 3) {
+                            MaterialTheme.colorScheme.background
+                        } else {
+                            MaterialTheme.colorScheme.scrim
+                        },
+                        modifier = Modifier
+                            .size(27.dp)
+                            .clickable(
+                                indication = null,
+                                interactionSource = remember { MutableInteractionSource() },
+                                role = Role.Button,
+                            ) { imeService.onRecognition() }
+                    )
+                }
             }
         }
     }

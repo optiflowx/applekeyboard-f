@@ -3,7 +3,6 @@ package com.optiflowx.optikeysx.ime.recognizers
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
 import com.google.protobuf.ByteString
 import com.optiflowx.optikeysx.core.data.VoskServerData
 import com.optiflowx.optikeysx.core.enums.RecognizerState
@@ -31,11 +30,10 @@ class VoskServer(private val data: VoskServerData) : RecognizerSource {
     private var myRecognizerGRPC: MyRecognizerGRPC? = null
     override val recognizer: Recognizer
         get() = myRecognizerGRPC!!
-    override fun initialize(executor: Executor, onLoaded: Observer<RecognizerSource?>) {
+    override fun initialize(executor: Executor) {
         stateMLD.postValue(RecognizerState.LOADING)
         myRecognizerGRPC = MyRecognizerGRPC(data.uri, 16000.0f, data.locale)
         stateMLD.postValue(RecognizerState.READY)
-        onLoaded.onChanged(this)
     }
 
     override val closed: Boolean

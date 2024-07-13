@@ -2,6 +2,7 @@ package com.optiflowx.optikeysx.views.emoji
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -11,13 +12,11 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PageSize
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
@@ -87,9 +86,8 @@ fun EmojiKeyboardView(
                         )
                     )
 
-                    Surface(
+                    Box(
                         modifier = Modifier.height((viewportHeight.value - 20).dp),
-                        color = Color.Transparent
                     ) {
                         LazyVerticalGrid(columns = GridCells.Fixed(cellCount)) {
                             if (page == 0 && frequentEmojis != null) {

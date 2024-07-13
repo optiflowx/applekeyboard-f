@@ -1,8 +1,8 @@
 package com.optiflowx.optikeysx.screens
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.absolutePadding
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
@@ -29,7 +29,7 @@ import io.github.alexzhirkevich.cupertino.icons.outlined.CheckmarkCircle
 import io.github.alexzhirkevich.cupertino.section.CupertinoSection
 import io.github.alexzhirkevich.cupertino.section.CupertinoSectionDefaults
 import io.github.alexzhirkevich.cupertino.section.LocalSectionStyle
-import io.github.alexzhirkevich.cupertino.section.link
+import io.github.alexzhirkevich.cupertino.section.SectionLink
 import io.github.alexzhirkevich.cupertino.theme.CupertinoColors
 import io.github.alexzhirkevich.cupertino.theme.systemBlue
 
@@ -55,7 +55,7 @@ class KeyboardFontsScreen : Screen {
                 CupertinoTopAppBar(
                     navigationIcon = {
                         CupertinoNavigateBackButton(onClick = { navigator.pop() }) {
-                            CupertinoText("Home")
+                            CupertinoText("Back")
                         }
                     },
                     title = {
@@ -67,31 +67,26 @@ class KeyboardFontsScreen : Screen {
                 )
             }
         ) {
-            LazyColumn(
+            Column(
                 modifier = Modifier
                     .statusBarsPadding()
-                    .absolutePadding(top = 40.dp),
-                userScrollEnabled = true
+                    .absolutePadding(top = 40.dp)
             ) {
-
-                item("Keyboard Fonts") {
-                    CupertinoSection {
-                        fonts.forEachIndexed { index, font ->
-                            this.link(
-                                key = index,
-                                title = { CupertinoText(font.name, style = tileTextStyle) },
-                                trailingIcon = {
-                                    if (font == currentFontType) {
-                                        CupertinoIcon(
-                                            imageVector = CupertinoIcons.Default.CheckmarkCircle,
-                                            contentDescription = "check",
-                                            tint = CupertinoColors.systemBlue,
-                                        )
-                                    }
-                                },
-                                onClick = { prefs.keyboardFontType.set(font) }
-                            )
-                        }
+                CupertinoSection {
+                    fonts.forEach { font ->
+                        SectionLink(
+                            title = { CupertinoText(font.name, style = tileTextStyle) },
+                            chevron = {
+                                if (font == currentFontType) {
+                                    CupertinoIcon(
+                                        imageVector = CupertinoIcons.Default.CheckmarkCircle,
+                                        contentDescription = "check",
+                                        tint = CupertinoColors.systemBlue,
+                                    )
+                                }
+                            },
+                            onClick = { prefs.keyboardFontType.set(font) }
+                        )
                     }
                 }
             }

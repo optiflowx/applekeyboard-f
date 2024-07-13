@@ -7,6 +7,7 @@ import android.media.SoundPool
 import android.os.Build
 import android.os.VibrationEffect
 import android.text.TextUtils
+import android.util.Log
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputConnection
 import androidx.compose.runtime.Stable
@@ -53,7 +54,8 @@ import splitties.systemservices.vibrator
 import java.util.Locale
 
 @Stable
-class KeyboardViewModel(context: Context) : ViewModel() {
+class KeyboardViewModel(ime: IMEService) : ViewModel() {
+
     private val _keyboardType = MutableStateFlow(KeyboardType.Normal)
     val keyboardType = _keyboardType.asStateFlow()
 
@@ -119,12 +121,16 @@ class KeyboardViewModel(context: Context) : ViewModel() {
     private lateinit var _dictionary: Set<String>
 
     private val clipboardManager =
-        context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        ime.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
 
     //UI Locale
     val keyboardLocale = KeyboardLocale(keyboardData.value.locale)
 
     val prefs by optikeysxPreferences()
+
+    companion object {
+        private const val TAG = "KeyboardViewModel"
+    }
 
     init {
         initSoundPool()
@@ -143,8 +149,8 @@ class KeyboardViewModel(context: Context) : ViewModel() {
 
         viewModelScope.launch(Dispatchers.IO) {
             //Init Databases
-            _fuEmojiDB = FrequentlyUsedDatabase.getInstance(context)
-            _clipboardDB = ClipboardDatabase.getInstance(context)
+            _fuEmojiDB = FrequentlyUsedDatabase.getInstance(ime)
+            _clipboardDB = ClipboardDatabase.getInstance(ime)
 
             //Init DAO
             _fuEmojiDbDAO = _fuEmojiDB.fUsedEmojiDatabaseDAO()
@@ -500,7 +506,9 @@ class KeyboardViewModel(context: Context) : ViewModel() {
     @Stable
     private fun onAction(ic: InputConnection) {
         val enterAction: Int = keyboardData.value.enterAction
-        if ((enterAction == EditorInfo.IME_ACTION_UNSPECIFIED || enterAction == EditorInfo.IME_ACTION_NONE)) {
+        if (enterAction == EditorInfo.IME_ACTION_UNSPECIFIED
+            || enterAction == EditorInfo.IME_ACTION_NONE
+        ) {
             ic.commitText("\n", "\n".length)
         } else {
             ic.performEditorAction(enterAction)
@@ -509,26 +517,44 @@ class KeyboardViewModel(context: Context) : ViewModel() {
 
     @Stable
     private fun onErase(context: Context) {
-        val ic = (context as IMEService).currentInputConnection
-        val text = ic.getTextBeforeCursor(12, 0)?.split(" ")?.last()
+        val ic = (context as IMEService).currentInputConnection ?: return
+//        val text = ic.getTextBeforeCursor(12, 0)?.split(" ")?.last()
         val selectedText = ic.getSelectedText(0)
         val data = ic.getTextBeforeCursor(2, 0)
 
         if ((data.isNullOrEmpty() || data == "") && TextUtils.isEmpty(selectedText)) {
+            Log.d(TAG, "Update Caps Lock")
             updateCapsLock()
         } else {
-            if (selectedText != null && !TextUtils.isEmpty(selectedText)) {
-                //Clear all the selected text
-                ic.commitText("", 1)
+            // delete last char
+            val selectedChars = ic.getSelectedText(0)
+
+            if (selectedChars == null) {
+                ic.deleteSurroundingText(1, 0)
+            } else if (selectedChars.toString().isEmpty()) {
+                ic.deleteSurroundingText(1, 0)
             } else {
-                if (text != null && text.codePoints().toArray().isNotEmpty()) {
-                    //Delete Emojis or Any Special text with codepoints
-                    ic.deleteSurroundingTextInCodePoints(1, 0)
-                } else {
-                    //Delete Characters
-                    ic.deleteSurroundingText(1, 0)
-                }
+                ic.performContextMenuAction(android.R.id.cut)
             }
+//            if (selectedText != null && !TextUtils.isEmpty(selectedText)) {
+//                //Clear all the selected text
+//                Log.d(TAG, "Delete Selected Text")
+//                ic.commitText("", 1)
+//            } else {
+//                ic.deleteSurroundingText(1, 0).apply {
+//                    Log.v(TAG, "After Delete Value: $this")
+//                }
+
+//                if (text != null && text.codePoints().toArray().isNotEmpty()) {
+//                    Log.d(TAG, "Delete CodePoints Text")
+//                    //Delete Emojis or Any Special text with codepoints
+//                    ic.deleteSurroundingTextInCodePoints(1, 0)
+//                } else {
+//                    Log.d(TAG, "Delete Text")
+//                    //Delete Characters
+//                    ic.deleteSurroundingText(1, 0)
+//                }
+//            }
 
             getNextSuggestions(ic)
             handleCapsLock()

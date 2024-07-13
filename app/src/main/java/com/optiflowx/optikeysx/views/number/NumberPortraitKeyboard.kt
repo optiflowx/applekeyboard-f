@@ -2,7 +2,7 @@ package com.optiflowx.optikeysx.views.number
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.mandatorySystemGesturesPadding
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
@@ -18,8 +18,7 @@ fun NumberPortraitKeyboard(viewModel: KeyboardViewModel) {
     
 
     Box(
-        Modifier
-            .mandatorySystemGesturesPadding()
+        Modifier.navigationBarsPadding()
     ) {
         Column {
             NumberKeyboardActionView(locale, viewWidth)

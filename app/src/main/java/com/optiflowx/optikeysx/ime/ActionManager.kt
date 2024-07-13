@@ -1,16 +1,10 @@
 package com.optiflowx.optikeysx.ime
 
-import android.content.Context
-import android.content.Intent
 import android.view.KeyEvent
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.ExtractedTextRequest
-import android.view.inputmethod.InputMethodManager
-import com.optiflowx.optikeysx.MainActivity
 
 class ActionManager(private val ime: IMEService) {
-    private val mInputMethodManager: InputMethodManager =
-        ime.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
     private var selectionStart = 0
     private var selectionEnd = 0
 
@@ -72,12 +66,6 @@ class ActionManager(private val ime: IMEService) {
         } else {
             ic.performEditorAction(ime.keyboardData.enterAction)
         }
-    }
-
-    fun openSettings() {
-        val myIntent = Intent(ime, MainActivity::class.java)
-        myIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        ime.startActivity(myIntent)
     }
 
     companion object {

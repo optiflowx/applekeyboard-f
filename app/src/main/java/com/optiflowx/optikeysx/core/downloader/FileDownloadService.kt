@@ -45,7 +45,7 @@ class FileDownloadService : Service() {
         EventBus.getDefault().register(this)
         notificationManager = NotificationManagerCompat.from(this)
         notificationBuilder = NotificationCompat.Builder(this, Constants.DOWNLOADER_CHANNEL_ID)
-        notificationBuilder.setContentTitle("OptiKeysX: Downloading Model")
+        notificationBuilder.setContentTitle("OptiKeysX: Downloading a new model")
             .setContentText("Loading...")
             .setSmallIcon(R.drawable.icon_notification).priority = NotificationCompat.PRIORITY_LOW
         notificationBuilder.setProgress(0, 0, true)

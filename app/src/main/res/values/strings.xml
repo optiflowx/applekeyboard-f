@@ -1,6 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">OptiKeysX</string>
     <string name="abc">ABC</string>
     <string name="num">123</string>
+
+    <string name="experimental_feature_warning">This feature is experimental and it may cause memory leaks and crashes. Continue at your own risk, you can always disable it later. THE APP WILL AUTOMATICALLY RESTART AFTER CHANGES!</string>
+    <string name="caution_unofficial_sources">CAUTION: Acquiring this application from unofficial sources may expose you to potential malware threats. Thus, I strongly advise against accepting or using any modified versions of this app. Download the app from the Google Play Store.</string>
+
+    <string name="back">Back</string>
+    <string name="test_keyboard">TEST KEYBOARD</string>
+    <string name="test_keyboard_description">This section is for testing the keyboard.</string>
+    <string name="type_here" tools:ignore="TypographyEllipsis">Type here...</string>
+    <string name="general">GENERAL</string>
+    <string name="keyboards">Keyboards</string>
+    <string name="keyboard_fonts">Keyboard Fonts</string>
+    <string name="speech_keyboard">Speech Recognition</string>
+    <string name="enable_speech_recognition">Enable Speech Recognition to use this feature</string>
+    <string name="interactions">INTERACTIONS</string>
+    <string name="sound_on_key_press">Sound On Key Press</string>
+    <string name="vibrate_on_key_press">Vibrate On Key Press</string>
+    <string name="all_keyboards">ALL KEYBOARDS</string>
+    <string name="feature_request">Add a Feature Request</string>
+    <string name="double_tap_space_bar">Double tapping the space bar will insert a full stop followed by a space.</string>
+    <string name="auto_capitalisation">Auto-Capitalisation</string>
+    <string name="auto_correction">Auto-Correction</string>
+    <string name="check_spelling">Check Spelling</string>
+    <string name="enable_speech_recognition_all">Enable Speech Recognition</string>
+    <string name="enable_caps_lock">Enable Caps Lock</string>
+    <string name="predictive">Predictive</string>
+    <string name="enable_memoji">Enable Memoji</string>
+    <string name="enable_accents">Enable Accents</string>
+    <string name="character_preview">Character Preview</string>
+    <string name="dot_shortcut">\".\" Shortcut</string>
+    <string name="app_information">APP INFORMATION</string>
+    <string name="version">Version</string>
+    <string name="package_name">Package Name</string>
+    <string name="build_version">Build Version</string>
+    <string name="developer_section">DEVELOPER</string>
+    <string name="developer_section_description">This section contains important information from the developer.</string>
+    <string name="copyright_information">Copyright Information</string>
+    <string name="join_support_channel">Join The Support Channel</string>
+    <string name="keyboard_fonts_general">Keyboard Fonts</string>
+    <string name="keyboards_general">Keyboards</string>
+    <string name="add_keyboard">Add Keyboard</string>
+    <string name="change_keyboard">Change Keyboard</string>
+    <string name="system_default">System Default</string>
+    <string name="do_you_want_to_continue">Do you want to continue?</string>
+
+    <string name="grant_microphone_permission">Grant Microphone Permission</string>
+    <string name="grant_notification_access">Grant Notification Access</string>
+    <string name="enable_keyboard">Enable Keyboard</string>
+    <string name="continue_string">Continue</string>
+
+    <string name="model_download">Model Download</string>
+    <string name="enable_ime_services">Enable IME Services.</string>
+
+    <string name="settings">SETTINGS</string>
+    <string name="keep_model_in_memory">Keep Model In Memory</string>
+    <string name="keep_model_in_memory_description">Keep the model in memory to reduce the time it takes to load the model.</string>
+    <string name="keep_screen_awake">Keep Screen Awake</string>
+    <string name="downloaded_models">DOWNLOADED MODELS</string>
+    <string name="microphone_permission_message">Allow OptiKeysX To Access Your Microphone.</string>
+    <string name="microphone_access">Microphone Access</string>
+    <string name="microphone_access_description">This permission is necessary for voice input functionality.</string>
+    <string name="enable_microphone_access">Enabling microphone access allows OptiKeysX to provide voice typing capabilities.</string>
+    <string name="notification_access">Notification Access</string>
+    <string name="notification_access_description">This permission is necessary for OptiKeysX to provide notifications.</string>
+    <string name="enable_notification_access">OptiKeysX will use notifications for downloads, updates, and important announcements.</string>
+    <string name="input_method_services">Input Method Services</string>
+    <string name="input_method_services_description">This permission is necessary for OptiKeysX to function as a keyboard.</string>
+    <string name="request">Request</string>
+    <string name="request_description" translatable="false">This section is for requesting features, reporting bugs, and providing feedback.</string>
+    <string name="feature_request_placeholder">Write out the feature request you have for this app</string>
+    <string name="feature_requests">Feature Requests</string>
 </resources>

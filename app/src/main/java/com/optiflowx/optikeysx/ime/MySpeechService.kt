@@ -3,43 +3,46 @@
  */
 package com.optiflowx.optikeysx.ime
 
+
 import android.Manifest
+import android.content.Context
 import android.media.AudioFormat
 import android.media.AudioRecord
 import android.media.MediaRecorder
+import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import androidx.annotation.RequiresPermission
 import com.optiflowx.optikeysx.ime.recognizers.Recognizer
 import org.vosk.android.RecognitionListener
 import java.io.IOException
-import kotlin.math.abs
-
+import kotlin.math.roundToInt
 
 class MySpeechService @RequiresPermission(Manifest.permission.RECORD_AUDIO) constructor(
-    private val recognizer: Recognizer, sampleRate: Float, val getAmplitudeData: (Int) -> Unit,
+    private val recognizer: Recognizer, sampleRate: Float,
+    attributionContext: Context? = null
 ) {
     private val sampleRate: Int
     private val bufferSize: Int
-    var recorder: AudioRecord
+    private val recorder: AudioRecord
     private var recognizerThread: RecognizerThread? = null
     private val mainHandler = Handler(Looper.getMainLooper())
 
     init {
         this.sampleRate = sampleRate.toInt()
-        bufferSize = Math.round(this.sampleRate.toFloat() * BUFFER_SIZE_SECONDS)
-        val audioSource = MediaRecorder.AudioSource.VOICE_RECOGNITION
-        val channelConfig = AudioFormat.CHANNEL_IN_MONO
-        val audioFormat = AudioFormat.ENCODING_PCM_16BIT
-        val bufferSizeInBytes = bufferSize * 2
-
-        recorder = AudioRecord(
-            audioSource,
-            this.sampleRate,
-            channelConfig,
-            audioFormat,
-            bufferSizeInBytes
-        )
+        bufferSize = (this.sampleRate.toFloat() * BUFFER_SIZE_SECONDS).roundToInt()
+        recorder = AudioRecord.Builder().apply {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && attributionContext != null) {
+                setContext(attributionContext)
+            }
+            setAudioSource(MediaRecorder.AudioSource.VOICE_RECOGNITION)
+            setAudioFormat(AudioFormat.Builder().apply {
+                setChannelMask(AudioFormat.CHANNEL_IN_MONO)
+                setSampleRate(this@MySpeechService.sampleRate)
+                setEncoding(AudioFormat.ENCODING_PCM_16BIT)
+            }.build())
+            setBufferSizeInBytes(bufferSize * 2)
+        }.build()
 
         if (recorder.state == 0) {
             recorder.release()
@@ -53,6 +56,17 @@ class MySpeechService @RequiresPermission(Manifest.permission.RECORD_AUDIO) cons
         } else {
             recognizerThread =
                 RecognizerThread(listener)
+            recognizerThread!!.start()
+            true
+        }
+    }
+
+    fun startListening(listener: RecognitionListener, timeout: Int): Boolean {
+        return if (null != recognizerThread) {
+            false
+        } else {
+            recognizerThread =
+                RecognizerThread(listener, timeout)
             recognizerThread!!.start()
             true
         }
@@ -116,9 +130,8 @@ class MySpeechService @RequiresPermission(Manifest.permission.RECORD_AUDIO) cons
         init {
             timeoutSamples = if (timeout != -1) {
                 timeout * sampleRate / 1000
-            } else {
-                -1
-            }
+            } else -1
+
             remainingSamples = timeoutSamples
         }
 
@@ -140,51 +153,31 @@ class MySpeechService @RequiresPermission(Manifest.permission.RECORD_AUDIO) cons
             }
             val buffer = ShortArray(bufferSize)
             while (!interrupted() && (timeoutSamples == -1 || remainingSamples > 0)) {
-                // read the data into the buffer
-                val read = recorder.read(buffer, 0, buffer.size)
-//                val amplitude = buffer[0].toInt() and 0xff shl 8 or buffer[1].toInt()
-
-//                val amplitudeDB = 20 * log10(abs(amplitude).toDouble() / 32768).toInt()
-
-                var average = 0.0
-                for (s in buffer) {
-                    average += abs(s.toDouble())
-                }
-
-                val amps: Double = (average / buffer.size)
-
+                val nread = recorder.read(buffer, 0, buffer.size)
                 if (!paused) {
                     if (reset) {
                         recognizer.reset()
                         reset = false
                     }
-
-                    if (read < 0) {
+                    if (nread < 0) {
                         throw RuntimeException("error reading audio buffer")
                     }
-
-                    // Determine amplitude
-                    getAmplitudeData(amps.toInt())
-
                     var result: String?
-                    if (recognizer.acceptWaveForm(buffer, read)) {
+                    if (recognizer.acceptWaveForm(buffer, nread)) {
                         result = recognizer.getResult()
                         mainHandler.post { listener.onResult(result) }
                     } else {
                         result = recognizer.getPartialResult()
                         mainHandler.post { listener.onPartialResult(result) }
                     }
-
-                    if (timeoutSamples != NO_TIMEOUT) {
-                        remainingSamples -= read
+                    if (timeoutSamples != -1) {
+                        remainingSamples -= nread
                     }
                 }
             }
-
             recorder.stop()
-
             if (!paused) {
-                if (timeoutSamples != NO_TIMEOUT && remainingSamples <= 0) {
+                if (timeoutSamples != -1 && remainingSamples <= 0) {
                     mainHandler.post { listener.onTimeout() }
                 } else {
                     val finalResult = recognizer.getFinalResult()

@@ -2,7 +2,7 @@ package com.optiflowx.optikeysx.views.phone
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.mandatorySystemGesturesPadding
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
@@ -18,8 +18,7 @@ fun PhonePortraitKeyboard(viewModel: KeyboardViewModel) {
     val locale = viewModel.keyboardData.collectAsState().value.locale
 
     Box(
-        Modifier
-            .mandatorySystemGesturesPadding()
+        Modifier.navigationBarsPadding()
     ) {
         Column {
             NumberKeyboardActionView(locale, viewWidth)

@@ -15,7 +15,7 @@ import com.optiflowx.optikeysx.core.Tools
 import com.optiflowx.optikeysx.extension.getAudioPermission
 import com.optiflowx.optikeysx.extension.getNotificationPermission
 import com.optiflowx.optikeysx.screens.home.HomeScreen
-import com.optiflowx.optikeysx.screens.permissions.PermissionsScreen
+import com.optiflowx.optikeysx.screens.home.permissions.PermissionsScreen
 import io.github.alexzhirkevich.cupertino.theme.CupertinoTheme
 import kotlinx.coroutines.flow.MutableStateFlow
 
@@ -73,8 +73,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-//        auth = Firebase.auth
 
         Tools.createNotificationChannel(this)
 

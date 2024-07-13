@@ -16,4 +16,3 @@ dependencyResolutionManagement {
 rootProject.name = "OptiKeysX"
 include(":app")
 include(":baselineprofiles")
-include(":audiowaveform")

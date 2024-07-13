@@ -7,7 +7,8 @@ enum class KeyboardType {
     Normal,
     Emoji,
     Symbol,
-    Recognizer,
+
+    //    Recognizer,
 //    Phone,
     Clipboard
 }

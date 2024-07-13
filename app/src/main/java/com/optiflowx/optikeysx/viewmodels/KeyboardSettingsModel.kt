@@ -51,6 +51,13 @@ class KeyboardSettingsModel : ScreenModel {
         context.startActivity(intent)
     }
 
+    fun resetApplication(context: Context) {
+        val resetApplicationIntent =
+            context.packageManager.getLaunchIntentForPackage(context.packageName)
+        resetApplicationIntent?.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        context.startActivity(resetApplicationIntent)
+    }
+
     //
 //    companion object {
 //        private const val TOASTLEN = Toast.LENGTH_LONG + 5

@@ -1,0 +1,75 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="app_name">أوبتيكييسكس</string>
+    <string name="abc">اي بي سي</string>
+    <string name="num">123</string>
+
+    <string name="experimental_feature_warning">هذه الميزة تجريبية وقد تتسبب في تسرب الذاكرة وتعطلها. استمر على مسؤوليتك الخاصة، ويمكنك دائمًا تعطيله لاحقًا. سيتم إعادة تشغيل التطبيق تلقائيًا بعد التغييرات!</string>
+    <string name="caution_unofficial_sources">تنبيه: الحصول على هذا التطبيق من مصادر غير رسمية قد يعرضك لتهديدات البرامج الضارة المحتملة. وبالتالي، أنصح بشدة بعدم قبول أو استخدام أي إصدارات معدلة من هذا التطبيق. قم بتحميل التطبيق من متجر جوجل بلاي.</string>
+
+    <string name="back">خلف</string>
+    <string name="test_keyboard">اختبار لوحة المفاتيح</string>
+    <string name="test_keyboard_description">هذا القسم مخصص لاختبار لوحة المفاتيح.</string>
+    <string name="type_here" tools:ignore="TypographyEllipsis">أكتب هنا...</string>
+    <string name="general">عام</string>
+    <string name="keyboards">لوحات المفاتيح</string>
+    <string name="keyboard_fonts">خطوط لوحة المفاتيح</string>
+    <string name="speech_keyboard">التعرف على الكلام</string>
+    <string name="enable_speech_recognition">قم بتمكين التعرف على الكلام لاستخدام هذه الميزة</string>
+    <string name="interactions">التفاعلات</string>
+    <string name="sound_on_key_press">صوت عند ضغط المفاتيح</string>
+    <string name="vibrate_on_key_press">يهتز عند ضغط الزر</string>
+    <string name="all_keyboards">جميع لوحات المفاتيح</string>
+    <string name="double_tap_space_bar">سيؤدي النقر المزدوج على شريط المسافة إلى إدراج نقطة متبوعة بمسافة.</string>
+    <string name="auto_capitalisation">الكتابة بالأحرف الكبيرة تلقائيًا</string>
+    <string name="auto_correction">تصحيح تلقائي</string>
+    <string name="check_spelling">تأكد من التهجئة</string>
+    <string name="enable_speech_recognition_all">تمكين التعرف على الكلام</string>
+    <string name="enable_caps_lock">تمكين قفل الحروف الكبيرة</string>
+    <string name="predictive">تنبؤي</string>
+    <string name="enable_memoji">تمكين Memoji</string>
+    <string name="enable_accents">تمكين اللهجات</string>
+    <string name="character_preview">معاينة الشخصية</string>
+    <string name="dot_shortcut">\\".\\" الاختصار</string>
+    <string name="app_information">معلومات التطبيق</string>
+    <string name="version">إصدار</string>
+    <string name="package_name">اسم الحزمة</string>
+    <string name="build_version">بناء الإصدار</string>
+    <string name="developer_section">مطور</string>
+    <string name="developer_section_description">يحتوي هذا القسم على معلومات مهمة من المطور.</string>
+    <string name="copyright_information">معلومات حقوق التأليف والنشر</string>
+    <string name="join_support_channel">انضم إلى قناة الدعم</string>
+    <string name="keyboard_fonts_general">خطوط لوحة المفاتيح</string>
+    <string name="keyboards_general">لوحات المفاتيح</string>
+    <string name="add_keyboard">إضافة لوحة المفاتيح</string>
+    <string name="change_keyboard">تغيير لوحة المفاتيح</string>
+    <string name="system_default">النظام الافتراضي</string>
+    <string name="do_you_want_to_continue">هل تريد الاستمرار؟</string>
+
+    <string name="grant_microphone_permission">منح إذن الميكروفون</string>
+    <string name="grant_notification_access">منح الوصول إلى الإخطار</string>
+    <string name="enable_keyboard">تمكين لوحة المفاتيح</string>
+    <string name="continue_string">يكمل</string>
+
+    <string name="model_download">تحميل الموديل</string>
+    <string name="enable_ime_services">تمكين خدمات IME.</string>
+
+    <string name="settings">إعدادات</string>
+    <string name="keep_model_in_memory">احتفظ بالنموذج في الذاكرة</string>
+    <string name="keep_model_in_memory_description">احتفظ بالنموذج في الذاكرة لتقليل الوقت المستغرق لتحميل النموذج.</string>
+    <string name="keep_screen_awake">تبقى مستيقظا الشاشة</string>
+    <string name="downloaded_models">النماذج التي تم تنزيلها</string>
+    <string name="microphone_permission_message">اسمح لـ OptiKeysX بالوصول إلى الميكروفون الخاص بك.</string>
+    <string name="microphone_access">الوصول إلى الميكروفون</string>
+    <string name="microphone_access_description">هذا الإذن ضروري لوظيفة الإدخال الصوتي.</string>
+    <string name="enable_microphone_access">يتيح تمكين الوصول إلى الميكروفون لـ OptiKeysX توفير إمكانات الكتابة الصوتية.</string>
+    <string name="notification_access">الوصول إلى الإخطار</string>
+    <string name="notification_access_description">يعد هذا الإذن ضروريًا لـ OptiKeysX لتقديم الإشعارات.</string>
+    <string name="enable_notification_access">سيستخدم OptiKeysX إشعارات التنزيلات والتحديثات والإعلانات المهمة.</string>
+    <string name="input_method_services">خدمات أسلوب الإدخال</string>
+    <string name="input_method_services_description">يعد هذا الإذن ضروريًا لكي يعمل OptiKeysX كلوحة مفاتيح.</string>
+    <string name="feature_request">طلب المواصفات</string>
+    <string name="request">طلب</string>
+    <string name="feature_request_placeholder">Write out the feature request you have for this app</string>
+    <string name="request_description">هذا القسم مخصص لطلب الميزات والإبلاغ ع�� الأخطاء وتقديم التعليقات.</string>
+    <string name="feature_requests">طلبات الميزات</string>
+</resources>

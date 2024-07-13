@@ -10,7 +10,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
@@ -21,7 +20,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.optiflowx.optikeysx.core.data.KeyboardData
-import com.optiflowx.optikeysx.core.enums.KeyboardType
+import com.optiflowx.optikeysx.ime.IMEService
 import com.optiflowx.optikeysx.ui.AppleKeyboardIMETheme
 import com.optiflowx.optikeysx.viewmodels.KeyboardViewModel
 import com.optiflowx.optikeysx.views.defaults.DefaultLandscapeKeyboard
@@ -55,31 +54,27 @@ class KeyboardViewManager(context: Context, private val data: KeyboardData) :
             factory = object : ViewModelProvider.Factory {
                 @Suppress("UNCHECKED_CAST")
                 override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                    return KeyboardViewModel(context) as T
+                    return KeyboardViewModel(context as IMEService) as T
                 }
             }
         )
-
-        val kType = viewModel.keyboardType.collectAsState().value
 
         LaunchedEffect(data) {
             viewModel.initKeyboardData(data)
 
             viewModel.updateSuggestionsState()
-
-            if (kType == KeyboardType.Recognizer) {
-                viewModel.onUpdateKeyboardType(KeyboardType.Normal)
-            }
-
-            if (viewModel.prefs.autoSwitchIBackIME.get()) {
-                viewModel.onUpdateKeyboardType(KeyboardType.Normal)
-            }
+//
+//            if (viewModel.prefs.autoSwitchIBackIME.get()) {
+//                viewModel.onUpdateKeyboardType(KeyboardType.Normal)
+//            }
         }
 
         DisposableEffect(Unit) {
             viewModel.initSoundIDs(context)
 
-            onDispose { viewModel.onDisposeSoundIDs() }
+            onDispose {
+                viewModel.onDisposeSoundIDs()
+            }
         }
 
         AppleKeyboardIMETheme {
