@@ -11,13 +11,13 @@ import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import com.optiflowx.optikeysx.Constants
-import com.optiflowx.optikeysx.Constants.getTemporaryDownloadLocation
-import com.optiflowx.optikeysx.Constants.getTemporaryUnzipLocation
 import com.optiflowx.optikeysx.R
 import com.optiflowx.optikeysx.core.Tools
 import com.optiflowx.optikeysx.core.downloader.messages.*
-import com.optiflowx.optikeysx.extension.getNotificationPermission
+import com.optiflowx.optikeysx.extensions.DownloadsExtensions
+import com.optiflowx.optikeysx.extensions.DownloadsExtensions.getTemporaryDownloadLocation
+import com.optiflowx.optikeysx.extensions.DownloadsExtensions.getTemporaryUnzipLocation
+import com.optiflowx.optikeysx.extensions.getNotificationPermission
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -44,7 +44,7 @@ class FileDownloadService : Service() {
         super.onCreate()
         EventBus.getDefault().register(this)
         notificationManager = NotificationManagerCompat.from(this)
-        notificationBuilder = NotificationCompat.Builder(this, Constants.DOWNLOADER_CHANNEL_ID)
+        notificationBuilder = NotificationCompat.Builder(this, DownloadsExtensions.DOWNLOADER_CHANNEL_ID)
         notificationBuilder.setContentTitle("OptiKeysX: Downloading a new model")
             .setContentText("Loading...")
             .setSmallIcon(R.drawable.icon_notification).priority = NotificationCompat.PRIORITY_LOW

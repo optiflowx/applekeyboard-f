@@ -3,8 +3,8 @@ package com.optiflowx.optikeysx.core.downloader
 import android.content.Context
 import android.util.Log
 import androidx.lifecycle.Observer
-import com.optiflowx.optikeysx.Constants
 import com.optiflowx.optikeysx.core.Tools.deleteRecursive
+import com.optiflowx.optikeysx.extensions.DownloadsExtensions
 import java.io.*
 import java.util.Locale
 import java.util.regex.Pattern
@@ -27,7 +27,7 @@ object ZipTools {
         progressObserver: Observer<Double>
     ) {
         var locale = definedLocale
-        val tempUnzipLocation = Constants.getTemporaryUnzipLocation(context)
+        val tempUnzipLocation = DownloadsExtensions.getTemporaryUnzipLocation(context)
 
         if (!tempUnzipLocation.parentFile!!.exists()){
             tempUnzipLocation.parentFile!!.mkdirs()
@@ -76,7 +76,7 @@ object ZipTools {
             return
         }
 
-        val unzipFinalDestination = Constants.getDirectoryForModel(
+        val unzipFinalDestination = DownloadsExtensions.getDirectoryForModel(
             context, locale
         )
         if (!unzipFinalDestination.exists()) {

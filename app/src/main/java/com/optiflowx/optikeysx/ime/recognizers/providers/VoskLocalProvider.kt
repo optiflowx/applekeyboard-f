@@ -1,10 +1,10 @@
 package com.optiflowx.optikeysx.ime.recognizers.providers
 
 import android.content.Context
-import com.optiflowx.optikeysx.Constants
 import com.optiflowx.optikeysx.core.Tools
 import com.optiflowx.optikeysx.core.data.InstalledModelReference
 import com.optiflowx.optikeysx.core.data.ModelType
+import com.optiflowx.optikeysx.extensions.DownloadsExtensions
 import com.optiflowx.optikeysx.ime.recognizers.RecognizerSource
 import com.optiflowx.optikeysx.ime.recognizers.VoskLocal
 import java.util.Locale
@@ -12,7 +12,7 @@ import java.util.Locale
 class VoskLocalProvider(private val context: Context) : RecognizerSourceProvider {
     override fun getInstalledModels(): List<InstalledModelReference> {
         val models: MutableList<InstalledModelReference> = ArrayList()
-        val modelsDir = Constants.getModelsDirectory(context)
+        val modelsDir = DownloadsExtensions.getModelsDirectory(context)
         if (!modelsDir.exists()) return models
         for (localeFolder in modelsDir.listFiles()!!) {
             if (!localeFolder.isDirectory) continue

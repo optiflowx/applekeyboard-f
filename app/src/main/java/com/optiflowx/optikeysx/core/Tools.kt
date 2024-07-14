@@ -9,11 +9,11 @@ import android.os.Build
 import android.view.inputmethod.InputMethodManager
 import androidx.compose.runtime.Immutable
 import androidx.core.content.ContextCompat
-import com.optiflowx.optikeysx.Constants
 import com.optiflowx.optikeysx.core.data.InstalledModelReference
 import com.optiflowx.optikeysx.core.data.VoskLocalModel
-import com.optiflowx.optikeysx.extension.getAudioPermission
-import com.optiflowx.optikeysx.extension.getNotificationPermission
+import com.optiflowx.optikeysx.extensions.DownloadsExtensions
+import com.optiflowx.optikeysx.extensions.getAudioPermission
+import com.optiflowx.optikeysx.extensions.getNotificationPermission
 import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
@@ -91,7 +91,7 @@ object Tools {
             val name: CharSequence = "Voice Recognition Model Download"
             val description = "Voice Recognition Model Download Notifications"
             val importance = NotificationManager.IMPORTANCE_LOW
-            val channel = NotificationChannel(Constants.DOWNLOADER_CHANNEL_ID, name, importance)
+            val channel = NotificationChannel(DownloadsExtensions.DOWNLOADER_CHANNEL_ID, name, importance)
             channel.description = description
             // Register the channel with the system; you can't change the importance
             // or other notification behaviors after this

@@ -22,9 +22,9 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.core.widgets.Optimizer
 import androidx.core.content.ContextCompat
 import com.optiflowx.optikeysx.core.enums.KeyboardFontType
-import com.optiflowx.optikeysx.ui.bold
-import com.optiflowx.optikeysx.ui.medium
-import com.optiflowx.optikeysx.ui.regular
+import com.optiflowx.optikeysx.ime.theme.bold
+import com.optiflowx.optikeysx.ime.theme.medium
+import com.optiflowx.optikeysx.ime.theme.regular
 
 const val OPTIMIZATION_STANDARDIZED =
     (Optimizer.OPTIMIZATION_DIRECT
